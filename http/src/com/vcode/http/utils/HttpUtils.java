@@ -9,14 +9,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpCookie;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import com.vcode.http.client.VHttpClient;
 import com.vcode.http.client.VHttpResponse;
+import com.vcode.http.client.methods.VHttpGet;
+import com.vcode.http.impl.VHttpClientImpl;
 
 /**
  * 
@@ -168,6 +176,10 @@ public class HttpUtils {
 		return incode;
 	}
 
+	/**
+	 * 打印Cookie
+	 * @param res
+	 */
 	public static void PrintCookies(VHttpResponse res){
 		List<HttpCookie> cookies = res.getCookies();
 		System.out.println("==================Cookies打印开始=========================");
@@ -175,5 +187,25 @@ public class HttpUtils {
 			System.out.println(cookie.getName()+"==="+cookie.getValue());
 		}
 		System.out.println("==================Cookies打印结束=========================");
+	}
+	
+	/**
+	 * 获取城市信息
+	 * @return
+	 */
+	public static Map<String, String> getCitiInfo() {
+		Map<String, String> map = new HashMap<String, String>();
+		VHttpClient client = new VHttpClientImpl();
+		VHttpGet get = new VHttpGet("https://kyfw.12306.cn/otn/resources/js/framework/station_name.js");
+		VHttpResponse res = client.execute(get);
+		String data = outHtml(res.getBody()).split("=")[1];
+		String[] citiArr = data.replace("'", "").split("@");
+		for (String s : citiArr){
+			String[] citiInfo = s.split("\\|");
+			if (citiInfo.length>1){
+				map.put(citiInfo[1], citiInfo[2]);
+			}
+		}
+		return map;
 	}
 }

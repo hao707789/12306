@@ -1,5 +1,9 @@
 package test;
 
+import java.util.Map;
+import java.util.Scanner;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.vcode.http.Header.VHeader;
@@ -18,11 +22,13 @@ import com.vcode.http.utils.HttpUtils;
  */
 public class T_12306 {
 	
-	private static String username = "华浩";							//昵称，用来验证是否登录成功
+	private static String username = "XXXXXXXX";							//昵称，用来验证是否登录成功
 	
-	private static String loginName = "hao707789";					//12306登录账号
+	private static String loginName = "XXXXXXXXX";					//12306登录账号
 	
-	private static String password = "loveXIAO707789";				//12306登录密码
+	private static String password = "XXXXXXXXXXX";				//12306登录密码
+	
+	private static Map<String, String> citiMap = HttpUtils.getCitiInfo();	//城市列表
 
 	public static void main(String[] args) throws Exception{
 		VHttpClient client = new VHttpClientImpl();
@@ -125,7 +131,38 @@ public class T_12306 {
 		
 		
 		//开始刷票
+		System.out.println("请输入出发地、目的地、时间，用逗号间隔(例：深圳,咸宁,2016-08-18)：");
+		Scanner in = new Scanner(System.in);
+		String citi = in.nextLine();
+		StringBuffer sb = new StringBuffer();
+		sb.append("leftTicketDTO.train_date="+citi.split(",")[2]+"&");
+		sb.append("leftTicketDTO.from_station="+citiMap.get(citi.split(",")[0])+"&");
+		sb.append("leftTicketDTO.to_station="+citiMap.get(citi.split(",")[1])+"&");
+		sb.append("purpose_codes=ADULT");
 		
+		//第一次刷票，不知道干嘛的，没有返回内容
+		get = new VHttpGet("https://kyfw.12306.cn/otn/leftTicket/log?"+sb.toString());
+		res = client.execute(get);
+		res.getEntity().disconnect();
+		
+		//第二次，真正返回刷票结果，此段代码因命令行模拟无法提供很好的交互，所以写死了订无座票，后期改
+		get = new VHttpGet("https://kyfw.12306.cn/otn/leftTicket/queryT?"+sb.toString());
+		res = client.execute(get);
+		body = HttpUtils.outHtml(res.getBody());
+		json = new JSONObject(body);
+		JSONArray jsonArr = new JSONArray(json.get("data").toString());
+		for (int i=0;i<jsonArr.length();i++) {
+			JSONObject obj = (JSONObject)jsonArr.get(i);
+			JSONObject obj2 = new JSONObject(obj.get("queryLeftNewDTO").toString());
+			if (!"--".equals(obj2.get("wz_num")) && "Y".equals(obj2.get("canWebBuy"))){
+				System.out.println(obj2.get("station_train_code")+"次列车，"
+						+obj2.get("start_station_name")+"到"+obj2.get("end_station_name")+"无座票========有票");
+				System.out.println("开始提交订单");
+				break;
+			}
+		}
+		//开始提交订单
+		System.out.println("提交订单逻辑没写");
 	}
 
 }
