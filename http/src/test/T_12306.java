@@ -1,7 +1,5 @@
 package test;
 
-import java.util.Random;
-
 import org.json.JSONObject;
 
 import com.vcode.http.Header.VHeader;
@@ -20,7 +18,11 @@ import com.vcode.http.utils.HttpUtils;
  */
 public class T_12306 {
 	
-	private static String username = "华浩";
+	private static String username = "华浩";							//昵称，用来验证是否登录成功
+	
+	private static String loginName = "hao707789";					//12306登录账号
+	
+	private static String password = "loveXIAO707789";				//12306登录密码
 
 	public static void main(String[] args) throws Exception{
 		VHttpClient client = new VHttpClientImpl();
@@ -65,9 +67,9 @@ public class T_12306 {
 		//开始提交登录信息
 		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/login/loginAysnSuggest");
 		VParames parames = new VParames();
-		parames.put("loginUserDTO.user_name", "hao707789");
+		parames.put("loginUserDTO.user_name", loginName);
 		parames.put("randCode", inCode);
-		parames.put("userDTO.password", "Hh707789");
+		parames.put("userDTO.password", password);
 		
 		VHeader header = new VHeader();
 		header.put("Host", "kyfw.12306.cn");
@@ -120,6 +122,10 @@ public class T_12306 {
 			}
 			res.getEntity().disconnect();
 		}
+		
+		
+		//开始刷票
+		
 	}
 
 }
