@@ -1,10 +1,12 @@
 package com.vcode.http.utils;
 
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,12 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import javax.swing.JPanel;
 
 import com.vcode.http.client.VHttpClient;
 import com.vcode.http.client.VHttpResponse;
@@ -140,34 +143,35 @@ public class HttpUtils {
 	 * @return		验证码
 	 */
 	public static String outCode(InputStream in, int x,int y) {
+		File imageFile = new File("D:/YZM.jpg");
+		if (imageFile.exists()) imageFile.delete();
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];
 		int len = 0;
+		byte[] data = null;
 		try {
 			while ((len = in.read(buffer)) != -1) {
 				// 用输出流往buffer里写入数据，中间参数代表从哪个位置开始读，len代表读取的长度
 				outStream.write(buffer, 0, len);
 			}
 			in.close();
-			byte[] data = outStream.toByteArray();
-			File imageFile = new File("D:/YZM.jpg");
-			FileOutputStream fileOutStream = new FileOutputStream(imageFile);
-			fileOutStream.write(data);
+			data = outStream.toByteArray();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(false);
 		frame.setBounds(x==0?300:x, y==0?100:y,x==0?300:x, y==0?100:y);
 		frame.setLayout(new FlowLayout());
 
-		ImageIcon icon = new ImageIcon("D:/YZM.jpg");
+		ImageIcon icon = null;
+		icon = new ImageIcon(data);
 		frame.add(new JLabel(icon));
 		frame.setVisible(true);
 
-		System.out.print("输入你看到的验证码,12306验证码请输入坐标（例：x,y,x,y）:");
+		System.out.print("输入你看到的验证码,12306验证码请输入序号（例：1,2,3,4,5,6,7,8）:");
 		Scanner scr = new Scanner(System.in);
 
 		String incode = scr.nextLine();
@@ -175,6 +179,7 @@ public class HttpUtils {
 		frame.dispose();
 		return incode;
 	}
+	
 
 	/**
 	 * 打印Cookie
@@ -199,6 +204,7 @@ public class HttpUtils {
 		VHttpGet get = new VHttpGet("https://kyfw.12306.cn/otn/resources/js/framework/station_name.js");
 		VHttpResponse res = client.execute(get);
 		String data = outHtml(res.getBody()).split("=")[1];
+		res.getEntity().disconnect();
 		String[] citiArr = data.replace("'", "").split("@");
 		for (String s : citiArr){
 			String[] citiInfo = s.split("\\|");
@@ -208,4 +214,29 @@ public class HttpUtils {
 		}
 		return map;
 	}
+	
+	/**
+	 * 得到余票数量
+	 * @param ticket
+	 * @param seatNum
+	 * @return
+	 */
+	public static String getCountByJs(String ticket, String seatNum){
+		ScriptEngineManager manager = new ScriptEngineManager();   
+		ScriptEngine engine = manager.getEngineByName("javascript");
+		String jsFileName = HttpUtils.class.getResource(".").getFile().toString()+"\\getCount.js";   // 读取js文件 
+		String rs = "";
+		try {
+			FileReader reader = new FileReader(jsFileName);   // 执行指定脚本   
+			engine.eval(reader);
+			if(engine instanceof Invocable) {    
+				Invocable invoke = (Invocable)engine;    // 调用merge方法，并传入两个参数    
+			rs = (String)invoke.invokeFunction("L", ticket, seatNum);
+		}
+			reader.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}    
+		return rs;
+  	}
 }
