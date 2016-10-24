@@ -1,4 +1,4 @@
-package test;
+package test.douban;
 
 import java.io.IOException;
 import java.util.HashMap;

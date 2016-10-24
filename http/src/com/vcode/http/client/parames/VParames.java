@@ -30,6 +30,13 @@ public class VParames {
 	}
 	
 	/**
+	 * 清空集合
+	 */
+	public void clear(){
+		parames.clear();
+	}
+	
+	/**
 	 * 
 	 */
 	public VParames(){};

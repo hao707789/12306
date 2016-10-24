@@ -1,4 +1,4 @@
-package test;
+package test.t_12306;
 
 import java.text.SimpleDateFormat;
 import java.util.Map;
@@ -17,6 +17,7 @@ import com.vcode.http.impl.VHttpClientImpl;
 import com.vcode.http.utils.HttpUtils;
 
 /**
+ * 自动提交流程
  * Date 2016-08-17 15:15:51
  * @author 默非默
  *

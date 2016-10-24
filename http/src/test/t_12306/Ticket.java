@@ -1,4 +1,4 @@
-package test;
+package test.t_12306;
 
 /**
  * 车票信息实体
