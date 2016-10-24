@@ -51,30 +51,30 @@ public class T_12306_2 {
 			res = client.execute(get);								//获取验证码
 			System.out.println(res.getEntity().getStaus());			//打印状态码
 			HttpUtils.PrintCookies(res);							//打印Cookies
-			inCode = HttpUtils.outCode(res.getBody(), 300, 220);	//定义窗口大小
+			newCode = HttpUtils.outCode(res.getBody());	//定义窗口大小
 			res.getEntity().disconnect();							//耗尽资源
 			
-			String[] codeArr = inCode.split(",");
-			for (int i=0;i<codeArr.length;i++) {
-				if ("1".equals(codeArr[i])) {
-					newCode+="40,40";
-				}else if ("2".equals(codeArr[i])) {
-					newCode+="110,40";
-				}else if ("3".equals(codeArr[i])) {
-					newCode+="180,40";
-				}else if ("4".equals(codeArr[i])){
-					newCode+="250,40";
-				}else if ("5".equals(codeArr[i])) {
-					newCode+="40,110";
-				}else if ("6".equals(codeArr[i])) {
-					newCode+="110,110";
-				}else if ("7".equals(codeArr[i])) {
-					newCode+="180,110";
-				}else if ("8".equals(codeArr[i])) {
-					newCode+="250,110";
-				}
-				if (i!=codeArr.length-1) newCode+=",";
-			}
+//			String[] codeArr = inCode.split(",");
+//			for (int i=0;i<codeArr.length;i++) {
+//				if ("1".equals(codeArr[i])) {
+//					newCode+="40,40";
+//				}else if ("2".equals(codeArr[i])) {
+//					newCode+="110,40";
+//				}else if ("3".equals(codeArr[i])) {
+//					newCode+="180,40";
+//				}else if ("4".equals(codeArr[i])){
+//					newCode+="250,40";
+//				}else if ("5".equals(codeArr[i])) {
+//					newCode+="40,110";
+//				}else if ("6".equals(codeArr[i])) {
+//					newCode+="110,110";
+//				}else if ("7".equals(codeArr[i])) {
+//					newCode+="180,110";
+//				}else if ("8".equals(codeArr[i])) {
+//					newCode+="250,110";
+//				}
+//				if (i!=codeArr.length-1) newCode+=",";
+//			}
 			
 			//开始校验验证码是否正确
 			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
@@ -313,32 +313,32 @@ public class T_12306_2 {
 			//拉取验证码
 			get = new VHttpGet("https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=passenger&rand=randp&"+Math.random());
 			res = client.execute(get);								//获取验证码
-			inCode = HttpUtils.outCode(res.getBody(), 300, 220);	//定义窗口大小
+			newCode = HttpUtils.outCode(res.getBody());	//定义窗口大小
 			res.getEntity().disconnect();							//耗尽资源
 			
-			//验证验证码
-			String[] codeArr = inCode.split(",");
-			newCode = "";
-			for (int i=0;i<codeArr.length;i++) {
-				if ("1".equals(codeArr[i])) {
-					newCode+="40,40";
-				}else if ("2".equals(codeArr[i])) {
-					newCode+="110,40";
-				}else if ("3".equals(codeArr[i])) {
-					newCode+="180,40";
-				}else if ("4".equals(codeArr[i])){
-					newCode+="250,40";
-				}else if ("5".equals(codeArr[i])) {
-					newCode+="40,110";
-				}else if ("6".equals(codeArr[i])) {
-					newCode+="110,110";
-				}else if ("7".equals(codeArr[i])) {
-					newCode+="180,110";
-				}else if ("8".equals(codeArr[i])) {
-					newCode+="250,110";
-				}
-				if (i!=codeArr.length-1) newCode+=",";
-			}
+//			//验证验证码
+//			String[] codeArr = inCode.split(",");
+//			newCode = "";
+//			for (int i=0;i<codeArr.length;i++) {
+//				if ("1".equals(codeArr[i])) {
+//					newCode+="40,40";
+//				}else if ("2".equals(codeArr[i])) {
+//					newCode+="110,40";
+//				}else if ("3".equals(codeArr[i])) {
+//					newCode+="180,40";
+//				}else if ("4".equals(codeArr[i])){
+//					newCode+="250,40";
+//				}else if ("5".equals(codeArr[i])) {
+//					newCode+="40,110";
+//				}else if ("6".equals(codeArr[i])) {
+//					newCode+="110,110";
+//				}else if ("7".equals(codeArr[i])) {
+//					newCode+="180,110";
+//				}else if ("8".equals(codeArr[i])) {
+//					newCode+="250,110";
+//				}
+//				if (i!=codeArr.length-1) newCode+=",";
+//			}
 			
 			post = new VHttpPost("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
 			VParames parames5 = new VParames();

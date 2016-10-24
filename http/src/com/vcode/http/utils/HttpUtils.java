@@ -2,6 +2,10 @@ package com.vcode.http.utils;
 
 import java.awt.FlowLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -20,6 +24,7 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -143,6 +148,7 @@ public class HttpUtils {
 	 * @return		验证码
 	 */
 	public static String outCode(InputStream in, int x,int y) {
+		final StringBuffer sb = new StringBuffer("true");
 		File imageFile = new File("D:/YZM.jpg");
 		if (imageFile.exists()) imageFile.delete();
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -160,24 +166,65 @@ public class HttpUtils {
 			e.printStackTrace();
 		}
 		
-		JFrame frame = new JFrame();
+		final JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(false);
-		frame.setBounds(x==0?300:x, y==0?100:y,x==0?300:x, y==0?100:y);
+		frame.setBounds(x==0?307:x, y==0?266:y,x==0?307:x, y==0?266:y);
 		frame.setLayout(new FlowLayout());
 
-		ImageIcon icon = null;
-		icon = new ImageIcon(data);
+		final StringBuffer incode = new StringBuffer();
+		ImageIcon icon = new ImageIcon(data);
 		frame.add(new JLabel(icon));
+		
+		final JLabel lable = new JLabel("鼠标当前点击位置的坐标是：");
+		JButton bt = new JButton("提交");
+		frame.add(lable);
+		frame.add(bt);
 		frame.setVisible(true);
+		frame.addMouseListener(new MouseAdapter(){  //匿名内部类，鼠标事件
+            public void mouseClicked(MouseEvent e){   //鼠标完成点击事件
+                if(e.getButton() == MouseEvent.BUTTON1){ //e.getButton就会返回点鼠标的那个键，左键还是右健，3代表右键
+                    int x = e.getX();  //得到鼠标x坐标
+                    int y = e.getY();  //得到鼠标y坐标
+                    String banner = x + "," + (y-65) + ",";
+                    incode.append(banner);
+                    lable.setText("鼠标当前点击位置的坐标是" + x + "," + (y-65));
+                }
+            }
+        });
+		bt.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sb.append("2");
+				frame.dispose();
+			}
+		});
+		
+		while ("true".equals(sb.toString())) {
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		}
 
-		System.out.print("输入你看到的验证码,12306验证码请输入序号（例：1,2,3,4,5,6,7,8）:");
-		Scanner scr = new Scanner(System.in);
+//		System.out.print("输入你看到的验证码,12306验证码请输入序号（例：1,2,3,4,5,6,7,8）:");
+//		Scanner scr = new Scanner(System.in);
 
-		String incode = scr.nextLine();
-		System.out.println("验证码 : " + incode);
-		frame.dispose();
-		return incode;
+//		String incode = scr.nextLine();
+		String rs = incode.toString();
+		rs = rs.substring(0,rs.length()-1);
+		System.out.println("验证码 : " + rs);
+		return incode.toString();
+	}
+	
+	/**
+	 * 12306专用验证码
+	 * @param in
+	 * @return
+	 */
+	public static String outCode(InputStream in){
+		return outCode(in, 0, 0);
 	}
 	
 
