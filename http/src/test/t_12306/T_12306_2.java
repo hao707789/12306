@@ -51,7 +51,7 @@ public class T_12306_2 {
 			res = client.execute(get);								//获取验证码
 			System.out.println(res.getEntity().getStaus());			//打印状态码
 			HttpUtils.PrintCookies(res);							//打印Cookies
-			newCode = HttpUtils.outCode(res.getBody());	//定义窗口大小
+			newCode = HttpUtils.outCodeBy12306(res.getBody());	//定义窗口大小
 			res.getEntity().disconnect();							//耗尽资源
 			
 //			String[] codeArr = inCode.split(",");
@@ -222,7 +222,7 @@ public class T_12306_2 {
 		if ("true".equals(res_obj.get("status").toString()) && "true".equals(dataobj.get("flag").toString())) {
 			System.out.println("当前用户已登录");
 		}else {
-			System.out.println("检测用户登录信息过期，请重新登录");
+			System.out.println("检测用户登录信息过期，请重新登录"+body);
 		}
 		res.getEntity().disconnect();
 		
@@ -244,7 +244,7 @@ public class T_12306_2 {
 		if ("true".equals(res_obj.get("status").toString())) {
 			System.out.println("车票预定成功");
 		}else {
-			System.out.println("车票预订失败");
+			System.out.println(res_obj.get("messages").toString());
 			System.exit(0);
 		}
 		res.getEntity().disconnect();
@@ -313,7 +313,7 @@ public class T_12306_2 {
 			//拉取验证码
 			get = new VHttpGet("https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=passenger&rand=randp&"+Math.random());
 			res = client.execute(get);								//获取验证码
-			newCode = HttpUtils.outCode(res.getBody());	//定义窗口大小
+			newCode = HttpUtils.outCodeBy12306(res.getBody());	//定义窗口大小
 			res.getEntity().disconnect();							//耗尽资源
 			
 //			//验证验证码
@@ -447,7 +447,7 @@ public class T_12306_2 {
 		if ("true".equals(dataobj.get("submitStatus").toString())) {
 			System.out.println("提交成功，正在查询订票结果");
 		}else {
-			System.out.println("出票失败");
+			System.out.println("出票失败"+body);
 			System.exit(0);
 		}
 		res.getEntity().disconnect();

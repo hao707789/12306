@@ -141,13 +141,13 @@ public class HttpUtils {
 	}
 	
 	/**
-	 * 针对普通验证码方式
+	 * 针对12306验证码
 	 * @param in	验证码的流
 	 * @param x		展示验证码的窗口的长
 	 * @param y		展示验证码的窗口的宽
 	 * @return		验证码
 	 */
-	public static String outCode(InputStream in, int x,int y) {
+	public static String outCodeBy12306(InputStream in, int x,int y) {
 		final StringBuffer sb = new StringBuffer("true");
 		File imageFile = new File("D:/YZM.jpg");
 		if (imageFile.exists()) imageFile.delete();
@@ -207,23 +207,63 @@ public class HttpUtils {
 				e1.printStackTrace();
 			}
 		}
-
-//		System.out.print("输入你看到的验证码,12306验证码请输入序号（例：1,2,3,4,5,6,7,8）:");
-//		Scanner scr = new Scanner(System.in);
-
-//		String incode = scr.nextLine();
 		String rs = incode.toString();
 		rs = rs.substring(0,rs.length()-1);
 		System.out.println("验证码 : " + rs);
 		return incode.toString();
 	}
 	
+	
+	/**
+	 * 针对普通验证码方式
+	 * @param in	验证码的流
+	 * @param x		展示验证码的窗口的长
+	 * @param y		展示验证码的窗口的宽
+	 * @return		验证码
+	 */
+	public static String outCode(InputStream in, int x,int y) {
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int len = 0;
+		byte[] data = null;
+		try {
+			while ((len = in.read(buffer)) != -1) {
+				// 用输出流往buffer里写入数据，中间参数代表从哪个位置开始读，len代表读取的长度
+				outStream.write(buffer, 0, len);
+			}
+			in.close();
+			data = outStream.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		final JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setVisible(false);
+		frame.setBounds(x==0?307:x, y==0?266:y,x==0?307:x, y==0?266:y);
+		frame.setLayout(new FlowLayout());
+
+		final StringBuffer incode = new StringBuffer();
+		ImageIcon icon = new ImageIcon(data);
+		frame.add(new JLabel(icon));
+		frame.setVisible(true);
+		
+
+		System.out.print("输入你看到的验证码：");
+		Scanner scr = new Scanner(System.in);
+
+		String code = scr.nextLine();
+		System.out.println("验证码 : " + code);
+		return code;
+	}
+	
+	
 	/**
 	 * 12306专用验证码
 	 * @param in
 	 * @return
 	 */
-	public static String outCode(InputStream in){
+	public static String outCodeBy12306(InputStream in){
 		return outCode(in, 0, 0);
 	}
 	
