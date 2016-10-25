@@ -264,7 +264,7 @@ public class HttpUtils {
 	 * @return
 	 */
 	public static String outCodeBy12306(InputStream in){
-		return outCode(in, 0, 0);
+		return outCodeBy12306(in, 0, 0);
 	}
 	
 

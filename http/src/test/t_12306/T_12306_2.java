@@ -54,28 +54,6 @@ public class T_12306_2 {
 			newCode = HttpUtils.outCodeBy12306(res.getBody());	//定义窗口大小
 			res.getEntity().disconnect();							//耗尽资源
 			
-//			String[] codeArr = inCode.split(",");
-//			for (int i=0;i<codeArr.length;i++) {
-//				if ("1".equals(codeArr[i])) {
-//					newCode+="40,40";
-//				}else if ("2".equals(codeArr[i])) {
-//					newCode+="110,40";
-//				}else if ("3".equals(codeArr[i])) {
-//					newCode+="180,40";
-//				}else if ("4".equals(codeArr[i])){
-//					newCode+="250,40";
-//				}else if ("5".equals(codeArr[i])) {
-//					newCode+="40,110";
-//				}else if ("6".equals(codeArr[i])) {
-//					newCode+="110,110";
-//				}else if ("7".equals(codeArr[i])) {
-//					newCode+="180,110";
-//				}else if ("8".equals(codeArr[i])) {
-//					newCode+="250,110";
-//				}
-//				if (i!=codeArr.length-1) newCode+=",";
-//			}
-			
 			//开始校验验证码是否正确
 			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
 			VParames parames = new VParames();
@@ -315,30 +293,6 @@ public class T_12306_2 {
 			res = client.execute(get);								//获取验证码
 			newCode = HttpUtils.outCodeBy12306(res.getBody());	//定义窗口大小
 			res.getEntity().disconnect();							//耗尽资源
-			
-//			//验证验证码
-//			String[] codeArr = inCode.split(",");
-//			newCode = "";
-//			for (int i=0;i<codeArr.length;i++) {
-//				if ("1".equals(codeArr[i])) {
-//					newCode+="40,40";
-//				}else if ("2".equals(codeArr[i])) {
-//					newCode+="110,40";
-//				}else if ("3".equals(codeArr[i])) {
-//					newCode+="180,40";
-//				}else if ("4".equals(codeArr[i])){
-//					newCode+="250,40";
-//				}else if ("5".equals(codeArr[i])) {
-//					newCode+="40,110";
-//				}else if ("6".equals(codeArr[i])) {
-//					newCode+="110,110";
-//				}else if ("7".equals(codeArr[i])) {
-//					newCode+="180,110";
-//				}else if ("8".equals(codeArr[i])) {
-//					newCode+="250,110";
-//				}
-//				if (i!=codeArr.length-1) newCode+=",";
-//			}
 			
 			post = new VHttpPost("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
 			VParames parames5 = new VParames();
