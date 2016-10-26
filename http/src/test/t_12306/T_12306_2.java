@@ -41,11 +41,11 @@ public class T_12306_2 {
 		SimpleDateFormat format = new SimpleDateFormat("yyyyDDmm");
 		String inCode = "";
 		String newCode = "";
+		
 		VHttpGet get = new VHttpGet("https://kyfw.12306.cn/otn/login/init");
 		VHttpResponse res = client.execute(get);				//获取Cookie
 		System.out.println(res.getEntity().getStaus());			//打印状态码
 		res.getEntity().disconnect();							//耗尽资源
-		
 		while (true){
 			get = new VHttpGet("https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&"+Math.random());
 			res = client.execute(get);								//获取验证码
@@ -85,16 +85,6 @@ public class T_12306_2 {
 		parames.put("randCode", newCode);
 		parames.put("userDTO.password", password);
 		
-		VHeader header = new VHeader();
-		header.put("Host", "kyfw.12306.cn");
-		header.put("Referer", "https://kyfw.12306.cn/otn/login/init");
-		header.put("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
-		header.put("X-Requested-With", "XMLHttpRequest");
-		header.put("Connection", "keep-alive");
-		header.put("Accept", "*/*");
-		header.put("Content-Length", "99");
-		
-		post.setHeader(header);
 		post.setParames(parames);
 		res = client.execute(post);
 		System.out.println(res.getEntity().getStaus());			//打印状态码

@@ -213,6 +213,29 @@ public class HttpUtils {
 		return incode.toString();
 	}
 	
+	/**
+	 * 返回验证码字节数组
+	 * @param in
+	 * @return
+	 */
+	public static byte[] outCode(InputStream in){
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int len = 0;
+		byte[] data = null;
+		try {
+			while ((len = in.read(buffer)) != -1) {
+				// 用输出流往buffer里写入数据，中间参数代表从哪个位置开始读，len代表读取的长度
+				outStream.write(buffer, 0, len);
+			}
+			in.close();
+			data = outStream.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return data;
+	}
+	
 	
 	/**
 	 * 针对普通验证码方式
