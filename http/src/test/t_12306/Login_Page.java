@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +25,7 @@ import com.vcode.http.client.parames.VParames;
 import com.vcode.http.utils.Browser;
 import com.vcode.http.utils.HttpUtils;
 
-public class login_page {
+public class Login_Page {
 
 	private JFrame frame;
 	private JTextField txtHao;
@@ -40,7 +41,7 @@ public class login_page {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					login_page window = new login_page();
+					Login_Page window = new Login_Page();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -52,7 +53,7 @@ public class login_page {
 	/**
 	 * Create the application.
 	 */
-	public login_page() {
+	public Login_Page() {
 		initialize();
 	}
 
@@ -60,6 +61,11 @@ public class login_page {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		try {
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		frame = new JFrame();
 		frame.setBounds(100, 100, 441, 450);
 		frame.setLocationRelativeTo(null);
