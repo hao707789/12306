@@ -259,6 +259,9 @@ public class Login_Page {
 		if (res.getEntity().getStaus()==200){
 			if (HttpUtils.outHtml(res.getBody()).contains("欢迎您登录中国铁路客户服务中心网站")){		//验证是否登录成功
 				System.out.println("登录成功");
+				Home_Page window = new Home_Page();
+				frame.dispose();
+				window.show(window);
 			}else {
 				System.out.println("登录失败");
 			}

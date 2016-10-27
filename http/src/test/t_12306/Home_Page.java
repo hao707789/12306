@@ -1,14 +1,20 @@
 package test.t_12306;
 
-import java.awt.Component;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -19,9 +25,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -33,9 +37,22 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.vcode.http.client.VHttpResponse;
+import com.vcode.http.client.methods.VHttpGet;
+import com.vcode.http.client.methods.VHttpPost;
+import com.vcode.http.client.parames.VParames;
+import com.vcode.http.utils.Browser;
 import com.vcode.http.utils.Chooser;
+import com.vcode.http.utils.HttpUtils;
+import javax.swing.JList;
 
 public class Home_Page {
 
@@ -44,12 +61,13 @@ public class Home_Page {
 	private JTextField textField_2;
 	private JTextField textField_3;
 	private JTable table;
-	private JTextField textField_1;
-	private JTextField textField_4;
 	private int[] mouse_gis = new int[2];
 	private JLabel label;
 	private static JFrame jf = new JFrame("日期选择");
-	private JTextField textField_5;
+	private Map<String, String> map = (Map<String, String>)HttpUtils.getCitiInfo();
+	private List<JSONObject> datalist = new ArrayList<JSONObject>();
+	private JTextArea textArea;
+	private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 
 	/**
 	 * Launch the application.
@@ -66,11 +84,16 @@ public class Home_Page {
 			}
 		});
 	}
+	
+	public void show(Home_Page window){
+		window.frame.setVisible(true);
+	}
 
 	/**
 	 * Create the application.
 	 */
 	public Home_Page() {
+		Browser.getInstance();
 		initialize();
 	}
 
@@ -98,14 +121,12 @@ public class Home_Page {
 		 */
 		textField = new JTextField();
 		ArrayList<String> items = new ArrayList<String>();
-        String[] str = new String[]{"aaaaa","bbbbb"};
-        for (int i = 0; i < str.length; i++) {
-            String item = str[i];
-            items.add(item);
-        }
-        ComBoTextField.setupAutoComplete(textField, items);
+		Set<String> set = map.keySet();
+		for (String s : set) {
+			items.add(s);
+		}
+        ComBoTextField.setupAutoComplete2(textField, items,map);
         textField.setColumns(30);
-		
 		textField.setBounds(84, 51, 60, 21);
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
@@ -132,6 +153,8 @@ public class Home_Page {
 		frame.getContentPane().add(textField_2);
 		
 		textField_3 = new JTextField();
+        ComBoTextField.setupAutoComplete2(textField_3, items,map);
+		
 		textField_3.setBounds(229, 51, 60, 21);
 		textField_3.setColumns(10);
 		frame.getContentPane().add(textField_3);
@@ -149,7 +172,7 @@ public class Home_Page {
 		
 		JComboBox comboBox = new JComboBox();
 		comboBox.setFont(new Font("微软雅黑", Font.PLAIN, 12));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"00:00—08:00", "08:00—12:00", "12:00—20:00", "20:00—00:00"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"00:00—24:00", "00:00—08:00", "08:00—12:00", "12:00—20:00", "20:00—24:00"}));
 		comboBox.setBounds(554, 51, 103, 21);
 		frame.getContentPane().add(comboBox);
 		
@@ -181,6 +204,12 @@ public class Home_Page {
 		frame.getContentPane().add(chckbxNewCheckBox_1);
 		
 		JButton btnNewButton = new JButton("手动查票");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				brushVotes();
+			}
+		});
 		btnNewButton.setBounds(964, 41, 80, 67);
 		frame.getContentPane().add(btnNewButton);
 		
@@ -292,134 +321,48 @@ public class Home_Page {
 		checkBox_14.setBounds(864, 120, 49, 23);
 		frame.getContentPane().add(checkBox_14);
 		
-		String tableRows[] = {"编号", "名称", "规格", "数量", "原价", "时间"};//表头
-		int ROW_MAX = 100; //表格最大行数
-		String tableColunms[][] = new String[ROW_MAX][tableRows.length];
-		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(43, 157, 1001, 237);
 		frame.getContentPane().add(scrollPane);
-		table = new JTable(tableColunms,tableRows);
+		table = new JTable();
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount()==2){
+//					textField_5.setText(textField_5.getText()+" "+table.getValueAt(table.getSelectedRow(), 0));
+					SubmitOrder();
+				}
+			}
+		});
 		table.setFillsViewportHeight(true);
 		table.setSurrendersFocusOnKeystroke(true);
-		table.setFont(new Font("微软雅黑", Font.BOLD, 13));
+		table.setFont(new Font("宋体", Font.PLAIN, 12));
 		scrollPane.setViewportView(table);
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
 			},
 			new String[] {
-				"\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u5386\u65F6", "\u53D1\u8F66\u65F6\u95F4", "\u5230\u8FBE\u65F6\u95F4", "\u5546\u52A1", "\u7279\u7B49", "\u4E00\u7B49", "\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367", "\u786C\u5367", "\u8F6F\u5EA7", "\u786C\u5EA7", "\u65E0\u5EA7", "\u5176\u5B83"
+				"\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u5386\u65F6", "\u53D1\u8F66\u65F6\u95F4", "\u5230\u8FBE\u65F6\u95F4", "\u5546\u52A1", "\u7279\u7B49", "\u4E00\u7B49", "\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367", "\u786C\u5367", "\u8F6F\u5EA7", "\u786C\u5EA7", "\u65E0\u5EA7", "\u5176\u5B83", "\u5907\u6CE8"
 			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
-		table.setToolTipText("");
+		));
+		setTableSize();
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		JPanel p1 = new JPanel();
-		tabbedPane.add(p1,"刷票界面");
-		p1.setLayout(null);
-		
-		JTextArea textArea = new JTextArea();
-		textArea.setBounds(10, 10, 394, 185);
-		p1.add(textArea);
-		
-		JSpinner spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null, new Integer(100)));
-		spinner.setBounds(496, 53, 53, 22);
-		p1.add(spinner);
-		
-		JLabel label_6 = new JLabel("刷票频率：");
-		label_6.setBounds(435, 57, 62, 15);
-		p1.add(label_6);
-		
-		JLabel label_7 = new JLabel("乘    客：");
-		label_7.setBounds(436, 171, 62, 15);
-		p1.add(label_7);
-		
-		textField_1 = new JTextField();
-		textField_1.setBounds(497, 162, 404, 32);
-		p1.add(textField_1);
-		textField_1.setColumns(10);
-		
-		JLabel label_8 = new JLabel("优先级别：");
-		label_8.setBounds(436, 134, 62, 15);
-		p1.add(label_8);
-		
-		textField_4 = new JTextField();
-		textField_4.setColumns(10);
-		textField_4.setBounds(497, 125, 404, 32);
-		p1.add(textField_4);
-		
-		JList list = new JList();
-		list.setBounds(950, 69, 25, -19);
-		p1.add(list);
-		
-		JCheckBox chckbxNewCheckBox_2 = new JCheckBox("部分提交");
-		chckbxNewCheckBox_2.setBounds(572, 53, 81, 23);
-		p1.add(chckbxNewCheckBox_2);
-		
-		JCheckBox checkBox_20 = new JCheckBox("无座不提交");
-		checkBox_20.setSelected(true);
-		checkBox_20.setBounds(662, 53, 91, 23);
-		p1.add(checkBox_20);
-		
-		JCheckBox checkBox_21 = new JCheckBox("定时启动");
-		checkBox_21.setBounds(763, 53, 81, 23);
-		p1.add(checkBox_21);
-		
-		JLabel label_9 = new JLabel("乘车信息：");
-		label_9.setBounds(436, 28, 69, 15);
-		p1.add(label_9);
-		
-		JSpinner spinner_1 = new JSpinner();
-		spinner_1.setModel(new SpinnerDateModel(new Date(1477411200000L), null, null, Calendar.MINUTE));
-		spinner_1.setBounds(844, 53, 130, 22);
-		p1.add(spinner_1);
-		
-		JLabel label_10 = new JLabel("深圳——咸宁，2016-10-26，成人票");
-		label_10.setBounds(496, 28, 198, 15);
-		p1.add(label_10);
-		
-		JLabel label_11 = new JLabel("车    次：");
-		label_11.setBounds(435, 94, 62, 15);
-		p1.add(label_11);
-		
-		textField_5 = new JTextField();
-		textField_5.setColumns(10);
-		textField_5.setBounds(496, 85, 404, 32);
-		p1.add(textField_5);
-		
-		JButton btnNewButton_2 = new JButton("删除");
-		btnNewButton_2.setBounds(911, 90, 73, 23);
-		p1.add(btnNewButton_2);
-		
-		JButton button = new JButton("席别");
-		button.setBounds(911, 130, 73, 23);
-		p1.add(button);
-		
-		JButton button_1 = new JButton("乘车人");
-		button_1.setBounds(911, 167, 73, 23);
-		p1.add(button_1);
+        textField.setColumns(30);
 		JPanel p3 = new JPanel();
 		tabbedPane.add(p3,"消息提醒");
 		JPanel p2 = new JPanel();
@@ -438,6 +381,70 @@ public class Home_Page {
 		p4.setLayout(gl_p4);
 		tabbedPane.setBounds(43, 404, 1001, 234);
 		frame.getContentPane().add(tabbedPane);
+		JPanel p1 = new JPanel();
+		tabbedPane.add(p1,"刷票界面");
+		p1.setLayout(null);
+		
+		textArea = new JTextArea();
+		textArea.setBounds(10, 10, 394, 185);
+		textArea.setBorder(BorderFactory.createTitledBorder("信息输出: "));
+		p1.add(textArea);
+		
+		JSpinner spinner = new JSpinner();
+		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null, new Integer(100)));
+		spinner.setBounds(828, 133, 53, 22);
+		p1.add(spinner);
+		
+		JLabel label_6 = new JLabel("刷票频率：");
+		label_6.setBounds(767, 137, 62, 15);
+		p1.add(label_6);
+		
+		JCheckBox chckbxNewCheckBox_2 = new JCheckBox("部分提交");
+		chckbxNewCheckBox_2.setBounds(763, 103, 81, 23);
+		p1.add(chckbxNewCheckBox_2);
+		
+		JCheckBox checkBox_20 = new JCheckBox("无座不提交");
+		checkBox_20.setSelected(true);
+		checkBox_20.setBounds(763, 78, 91, 23);
+		p1.add(checkBox_20);
+		
+		JCheckBox checkBox_21 = new JCheckBox("定时启动");
+		checkBox_21.setBounds(763, 53, 81, 23);
+		p1.add(checkBox_21);
+		
+		JLabel label_9 = new JLabel("乘车信息：");
+		label_9.setBounds(766, 10, 69, 15);
+		p1.add(label_9);
+		
+		JSpinner spinner_1 = new JSpinner();
+		spinner_1.setModel(new SpinnerDateModel(new Date(1477411200000L), null, null, Calendar.MINUTE));
+		spinner_1.setBounds(844, 53, 130, 22);
+		p1.add(spinner_1);
+		
+		JLabel label_10 = new JLabel("深圳——咸宁，2016-10-26，成人票");
+		label_10.setBounds(767, 30, 198, 15);
+		p1.add(label_10);
+		
+		JPanel panel = new JPanel();
+		panel.setForeground(UIManager.getColor("Button.shadow"));
+		panel.setBorder(new TitledBorder(new LineBorder(new Color(160, 160, 160)), "\u4E58\u8F66\u4EBA\uFF1A", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(105, 105, 105)));
+		panel.setBounds(414, 10, 91, 185);
+		p1.add(panel);
+		
+		JCheckBox checkBox_24 = new JCheckBox("11111111");
+		panel.add(checkBox_24);
+		
+		JCheckBox checkBox_26 = new JCheckBox("11111111");
+		panel.add(checkBox_26);
+		
+		JCheckBox checkBox_28 = new JCheckBox("11111111");
+		panel.add(checkBox_28);
+		
+		JCheckBox checkBox_25 = new JCheckBox("11111111");
+		panel.add(checkBox_25);
+		
+		JCheckBox checkBox_29 = new JCheckBox("11111111");
+		panel.add(checkBox_29);
 		
 		JCheckBox checkBox_22 = new JCheckBox("全部车次");
 		checkBox_22.setSelected(true);
@@ -465,21 +472,162 @@ public class Home_Page {
             }
         });
 	}
-	private static void addPopup(Component component, final JPopupMenu popup) {
-		component.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			public void mouseReleased(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			private void showMenu(MouseEvent e) {
-				popup.show(e.getComponent(), e.getX(), e.getY());
+	
+	/**
+	 * 刷票，点击查票按钮后，开始查询车票信息，并填入到表格中
+	 */
+	private void brushVotes(){
+		// 验证出发地、目的地、时间等是否填写，没有则不刷票
+		if ("".equals(textField)) {
+			System.out.println("请输入出发地");
+			return;
+		}
+		if ("".equals(textField_3)) {
+			System.out.println("请输入目的地");
+			return;
+		}
+		if ("".equals(textField_2)) {
+			System.out.println("请输入日期");
+			return;
+		}
+		StringBuffer sb = new StringBuffer();
+		sb.append("leftTicketDTO.train_date=");
+		sb.append(textField_2.getText()+"&");
+		sb.append("leftTicketDTO.from_station=");
+		sb.append(map.get(textField.getText())+"&");
+		sb.append("leftTicketDTO.to_station=");
+		sb.append(map.get(textField_3.getText())+"&");
+		sb.append("purpose_codes=ADULT");
+		
+		//开始刷票
+		VHttpGet get = new VHttpGet("https://kyfw.12306.cn/otn/leftTicket/queryX?"+sb.toString());
+		VHttpResponse res = Browser.execute(get);
+		String body = HttpUtils.outHtml(res.getBody());
+		try {
+			disposeTicketInfo(body);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	/**
+	 * 处理刷票返回信息
+	 */
+	private void disposeTicketInfo(String body)throws JSONException{
+		JSONObject json = new JSONObject(body);
+		JSONArray jsonArr = new JSONArray(json.get("data").toString());
+		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
+				"\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730",
+				"\u5386\u65F6", "\u53D1\u8F66\u65F6\u95F4",
+				"\u5230\u8FBE\u65F6\u95F4", "\u5546\u52A1", "\u7279\u7B49",
+				"\u4E00\u7B49", "\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367",
+				"\u786C\u5367", "\u8F6F\u5EA7", "\u786C\u5EA7", "\u65E0\u5EA7",
+				"\u5176\u5B83", "\u5907\u6CE8" }) {
+			public boolean isCellEditable(int row, int column) {
+				return false;
 			}
 		});
+		for (int i=0;i<jsonArr.length();i++) {
+			JSONObject obj = (JSONObject)jsonArr.get(i);
+			JSONObject obj2 = new JSONObject(obj.get("queryLeftNewDTO").toString());
+			obj2.put("secretStr", obj.get("secretStr").toString());
+			datalist.add(obj2);
+			addRow(obj2);
+		}
+		setTableSize();
+	}
+	
+	/**
+	 * 添加一行数据
+	 * @param obj
+	 */
+	private void addRow(JSONObject obj){
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		Vector<String> vector = new Vector<String>();
+		try {
+			vector.add(obj.get("station_train_code").toString());
+			vector.add(obj.get("start_station_name").toString());
+			vector.add(obj.get("end_station_name").toString());
+			vector.add(obj.get("lishi").toString());
+			vector.add(obj.get("start_time").toString());
+			vector.add(obj.get("arrive_time").toString());
+			vector.add(obj.get("swz_num").toString());
+			vector.add(obj.get("tz_num").toString());
+			vector.add(obj.get("zy_num").toString());
+			vector.add(obj.get("ze_num").toString());
+			vector.add(obj.get("gr_num").toString());
+			vector.add(obj.get("rw_num").toString());
+			vector.add(obj.get("yw_num").toString());
+			vector.add(obj.get("rz_num").toString());
+			vector.add(obj.get("yz_num").toString());
+			vector.add(obj.get("wz_num").toString());
+			vector.add(obj.get("qt_num").toString());
+			if ("Y".equalsIgnoreCase(obj.get("canWebBuy").toString())) {
+				vector.add("可预订");
+			}else {
+				vector.add("不可预订");
+			}
+			model.addRow(vector);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 设置表格样式
+	 */
+	private void setTableSize(){
+		//定义表格列宽
+		table.getColumnModel().getColumn(3).setPreferredWidth(68);
+		table.getColumnModel().getColumn(4).setPreferredWidth(90);
+		table.getColumnModel().getColumn(5).setPreferredWidth(90);
+		table.getColumnModel().getColumn(6).setPreferredWidth(65);
+		table.getColumnModel().getColumn(7).setPreferredWidth(65);
+		table.getColumnModel().getColumn(8).setPreferredWidth(65);
+		table.getColumnModel().getColumn(9).setPreferredWidth(65);
+		table.getColumnModel().getColumn(10).setPreferredWidth(65);
+		table.getColumnModel().getColumn(11).setPreferredWidth(65);
+		table.getColumnModel().getColumn(12).setPreferredWidth(65);
+		table.getColumnModel().getColumn(13).setPreferredWidth(65);
+		table.getColumnModel().getColumn(14).setPreferredWidth(65);
+		table.getColumnModel().getColumn(15).setPreferredWidth(65);
+		table.getColumnModel().getColumn(16).setPreferredWidth(65);
+		table.setToolTipText("");
+	}
+	
+	/**
+	 * 提交订单
+	 */
+	private void SubmitOrder(){
+		JSONObject obj = datalist.get(table.getSelectedRow());
+		try {
+			//预订车票
+			textArea.append(format.format(new Date())+"：开始提交订票信息\r\n");
+			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/leftTicket/submitOrderRequest");
+			VParames parames = new VParames();
+			parames.clear();
+			parames.put("secretStr", obj.get("secretStr").toString());
+			parames.put("train_date", textField_2.getText());
+			parames.put("back_train_date", textField_2.getText());
+			parames.put("tour_flag", "dc");
+			parames.put("purpose_codes", "ADULT");
+			parames.put("query_from_station_name", obj.get("from_station_name").toString());
+			parames.put("query_to_station_name", obj.get("to_station_name").toString());
+			parames.put("undefined", "");
+			post.setParames(parames);
+			VHttpResponse res = Browser.execute(post);
+			String body = HttpUtils.outHtml(res.getBody());
+			JSONObject res_obj = new JSONObject(body);
+			if ("true".equals(res_obj.get("status").toString())) {
+				textArea.append(format.format(new Date())+"：订票信息提交成功\r\n");
+			}else {
+				textArea.append(format.format(new Date())+res_obj.get("messages").toString()+"\r\n");
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

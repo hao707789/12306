@@ -138,10 +138,10 @@ public class T_12306_2 {
 		sb.append("leftTicketDTO.to_station="+citiMap.get(citi.split(",")[1])+"&");
 		sb.append("purpose_codes=ADULT");
 		
-		//第一次刷票，不知道干嘛的，没有返回内容
-		get = new VHttpGet("https://kyfw.12306.cn/otn/leftTicket/log?"+sb.toString());
-		res = client.execute(get);
-		res.getEntity().disconnect();
+//		//第一次刷票，不知道干嘛的，没有返回内容
+//		get = new VHttpGet("https://kyfw.12306.cn/otn/leftTicket/log?"+sb.toString());
+//		res = client.execute(get);
+//		res.getEntity().disconnect();
 		
 		//第二次，真正返回刷票结果，此段代码因命令行模拟无法提供很好的交互，所以写死了订无座票，后期改
 		get = new VHttpGet("https://kyfw.12306.cn/otn/leftTicket/queryX?"+sb.toString());
@@ -178,21 +178,21 @@ public class T_12306_2 {
 		res.getEntity().disconnect();
 		
 		
-		//验证用户是否登录
-		post = new VHttpPost("https://kyfw.12306.cn/otn/login/checkUser");
-		parames.clear();
-		parames.put("_json_att", "");
-		post.setParames(parames);
-		res = client.execute(post);
-		body = HttpUtils.outHtml(res.getBody());
-		JSONObject res_obj = new JSONObject(body);
-		JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
-		if ("true".equals(res_obj.get("status").toString()) && "true".equals(dataobj.get("flag").toString())) {
-			System.out.println("当前用户已登录");
-		}else {
-			System.out.println("检测用户登录信息过期，请重新登录"+body);
-		}
-		res.getEntity().disconnect();
+//		//验证用户是否登录
+//		post = new VHttpPost("https://kyfw.12306.cn/otn/login/checkUser");
+//		parames.clear();
+//		parames.put("_json_att", "");
+//		post.setParames(parames);
+//		res = client.execute(post);
+//		body = HttpUtils.outHtml(res.getBody());
+//		JSONObject res_obj = new JSONObject(body);
+//		JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
+//		if ("true".equals(res_obj.get("status").toString()) && "true".equals(dataobj.get("flag").toString())) {
+//			System.out.println("当前用户已登录");
+//		}else {
+//			System.out.println("检测用户登录信息过期，请重新登录"+body);
+//		}
+//		res.getEntity().disconnect();
 		
 		//预订车票
 		post = new VHttpPost("https://kyfw.12306.cn/otn/leftTicket/submitOrderRequest");
@@ -208,7 +208,7 @@ public class T_12306_2 {
 		post.setParames(parames);
 		res = client.execute(post);
 		body = HttpUtils.outHtml(res.getBody());
-		res_obj = new JSONObject(body);
+		JSONObject res_obj = new JSONObject(body);
 		if ("true".equals(res_obj.get("status").toString())) {
 			System.out.println("车票预定成功");
 		}else {
@@ -323,7 +323,7 @@ public class T_12306_2 {
 		res = client.execute(post);
 		body = HttpUtils.outHtml(res.getBody());
 		res_obj = new JSONObject(body);
-		dataobj = new JSONObject(res_obj.get("data").toString());
+		JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
 		if ("true".equals(dataobj.get("submitStatus").toString())) {
 			System.out.println("当前用户可以提交订单");
 		}else {
