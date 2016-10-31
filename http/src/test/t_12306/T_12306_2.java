@@ -128,6 +128,38 @@ public class T_12306_2 {
 		}
 		
 		
+		//获取订单人员列表
+		post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/getPassengerDTOs");
+		res = client.execute(post);
+		body = HttpUtils.outHtml(res.getBody());
+		JSONObject userListObj = (JSONObject)new JSONObject(body).get("data");
+		if (userListObj.length()<1) {
+			System.out.println(new JSONObject(body).get("messages"));
+			System.exit(0);
+		}
+		JSONArray userArr = (JSONArray)(userListObj.get("normal_passengers"));
+		System.out.println("=================乘客人员列表===================");
+		for (int i=0;i<userArr.length();i++){
+			JSONObject obj = (JSONObject)userArr.get(i);
+			System.out.print(i+": "+obj.get("passenger_name"));
+			if (i<userArr.length()-1){
+				System.out.print(",");
+			}
+		}
+		System.out.println("请输入乘客人员的ID（单个）：");
+		Scanner userin = new Scanner(System.in);
+		String userCode = userin.nextLine();		//乘车人序号
+		JSONObject userObj = new JSONObject();		//乘车人Json对象
+		for (int i=0;i<userArr.length();i++){
+			JSONObject obj = (JSONObject)userArr.get(i);
+			if ((i+"").equals(userCode)){
+				System.out.println("你选择了："+obj.getString("passenger_name"));
+				userObj = obj;
+				break;
+			}
+		}
+		
+		
 		//开始刷票
 		System.out.println("请输入出发地、目的地、时间，用逗号间隔(例：深圳,咸宁,2016-10-17)：");
 		Scanner in = new Scanner(System.in);
@@ -241,40 +273,40 @@ public class T_12306_2 {
 		res.getEntity().disconnect();
 		
 		
-		//获取订单人员列表
-		post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/getPassengerDTOs");
-		parames.clear();
-		parames.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
-		parames.put("_json_att", "");
-		post.setParames(parames);
-		res = client.execute(post);
-		body = HttpUtils.outHtml(res.getBody());
-		JSONObject userListObj = (JSONObject)new JSONObject(body).get("data");
-		if (userListObj.length()<1) {
-			System.out.println(new JSONObject(body).get("messages"));
-			System.exit(0);
-		}
-		JSONArray userArr = (JSONArray)(userListObj.get("normal_passengers"));
-		System.out.println("=================乘客人员列表===================");
-		for (int i=0;i<userArr.length();i++){
-			JSONObject user_obj = (JSONObject)userArr.get(i);
-			System.out.print(i+": "+user_obj.get("passenger_name"));
-			if (i<userArr.length()-1){
-				System.out.print(",");
-			}
-		}
-		System.out.println("请输入乘客人员的ID（单个）：");
-		Scanner userin = new Scanner(System.in);
-		String userCode = userin.nextLine();		//乘车人序号
-		JSONObject userObj = new JSONObject();		//乘车人Json对象
-		for (int i=0;i<userArr.length();i++){
-			JSONObject user_obj = (JSONObject)userArr.get(i);
-			if ((i+"").equals(userCode)){
-				System.out.println("你选择了："+user_obj.getString("passenger_name"));
-				userObj = user_obj;
-				break;
-			}
-		}
+//		//获取订单人员列表
+//		post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/getPassengerDTOs");
+//		parames.clear();
+//		parames.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
+//		parames.put("_json_att", "");
+//		post.setParames(parames);
+//		res = client.execute(post);
+//		body = HttpUtils.outHtml(res.getBody());
+//		JSONObject userListObj = (JSONObject)new JSONObject(body).get("data");
+//		if (userListObj.length()<1) {
+//			System.out.println(new JSONObject(body).get("messages"));
+//			System.exit(0);
+//		}
+//		JSONArray userArr = (JSONArray)(userListObj.get("normal_passengers"));
+//		System.out.println("=================乘客人员列表===================");
+//		for (int i=0;i<userArr.length();i++){
+//			JSONObject user_obj = (JSONObject)userArr.get(i);
+//			System.out.print(i+": "+user_obj.get("passenger_name"));
+//			if (i<userArr.length()-1){
+//				System.out.print(",");
+//			}
+//		}
+//		System.out.println("请输入乘客人员的ID（单个）：");
+//		Scanner userin = new Scanner(System.in);
+//		String userCode = userin.nextLine();		//乘车人序号
+//		JSONObject userObj = new JSONObject();		//乘车人Json对象
+//		for (int i=0;i<userArr.length();i++){
+//			JSONObject user_obj = (JSONObject)userArr.get(i);
+//			if ((i+"").equals(userCode)){
+//				System.out.println("你选择了："+user_obj.getString("passenger_name"));
+//				userObj = user_obj;
+//				break;
+//			}
+//		}
 		
 		
 		while (true){

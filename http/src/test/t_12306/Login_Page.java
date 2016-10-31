@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -33,6 +35,7 @@ public class Login_Page {
 	private StringBuffer code = new StringBuffer();
 	private JLabel lblNewLabel_1;
 	private JLabel lblNewLabel_2;
+	private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 
 	/**
 	 * Launch the application.
@@ -54,6 +57,7 @@ public class Login_Page {
 	 * Create the application.
 	 */
 	public Login_Page() {
+		Browser.getInstance();
 		initialize();
 	}
 
@@ -142,7 +146,7 @@ public class Login_Page {
 	 */
 	private void ticket_init(){
 		VHttpGet get = new VHttpGet("https://kyfw.12306.cn/otn/login/init");
-		VHttpResponse res = Browser.getInstance().execute(get);	
+		VHttpResponse res = Browser.execute(get);	
 		res.getEntity().disconnect();							
 	}
 	
@@ -152,7 +156,7 @@ public class Login_Page {
 	 */
 	public byte[] getLoginCode(){
 		VHttpGet get = new VHttpGet("https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&"+Math.random());
-		VHttpResponse res = Browser.getInstance().execute(get);								//获取验证码
+		VHttpResponse res = Browser.execute(get);								//获取验证码
 		return HttpUtils.outCode(res.getBody());		
 	}
 	
@@ -199,7 +203,7 @@ public class Login_Page {
 		parames.put("rand", "sjrand");
 		parames.put("randCode", newCode);
 		post.setParames(parames);							//装配提交的Form
-		VHttpResponse res = Browser.getInstance().execute(post);
+		VHttpResponse res = Browser.execute(post);
 		String body = HttpUtils.outHtml(res.getBody());		//将网页内容转为文本
 		try {
 			JSONObject json = new JSONObject(body);
@@ -229,7 +233,7 @@ public class Login_Page {
 		parames.put("userDTO.password", new String(passwordField.getPassword()));
 		
 		post.setParames(parames);
-		VHttpResponse res = Browser.getInstance().execute(post);
+		VHttpResponse res = Browser.execute(post);
 		String body = HttpUtils.outHtml(res.getBody());			//将网页内容转为文本
 		try {
 			JSONObject json = new JSONObject(body);
@@ -255,15 +259,17 @@ public class Login_Page {
 		VParames parames2 = new VParames();
 		parames2.put("_json_att", "");
 		post.setParames(parames2);								//装配参数
-		res = Browser.getInstance().execute(post);								//提交登录
+		res = Browser.execute(post);								//提交登录
 		if (res.getEntity().getStaus()==200){
 			if (HttpUtils.outHtml(res.getBody()).contains("欢迎您登录中国铁路客户服务中心网站")){		//验证是否登录成功
 				System.out.println("登录成功");
 				Home_Page window = new Home_Page();
+				window.textArea.append(format.format(new Date())+"：登录成功,欢迎使用V代码抢票工具");
 				frame.dispose();
 				window.show(window);
 			}else {
-				System.out.println("登录失败");
+				lblNewLabel_2.setText("✖登录失败");
+				lblNewLabel_2.setForeground(Color.red);
 			}
 			res.getEntity().disconnect();
 		}

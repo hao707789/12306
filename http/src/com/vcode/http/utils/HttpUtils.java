@@ -142,15 +142,13 @@ public class HttpUtils {
 	
 	/**
 	 * 针对12306验证码
-	 * @param in	验证码的流
+	 * @param in	验证码的流s
 	 * @param x		展示验证码的窗口的长
 	 * @param y		展示验证码的窗口的宽
 	 * @return		验证码
 	 */
 	public static String outCodeBy12306(InputStream in, int x,int y) {
 		final StringBuffer sb = new StringBuffer("true");
-		File imageFile = new File("D:/YZM.jpg");
-		if (imageFile.exists()) imageFile.delete();
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];
 		int len = 0;
@@ -166,22 +164,22 @@ public class HttpUtils {
 			e.printStackTrace();
 		}
 		
-		final JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setVisible(false);
-		frame.setBounds(x==0?307:x, y==0?266:y,x==0?307:x, y==0?266:y);
-		frame.setLayout(new FlowLayout());
+		final JFrame frame2 = new JFrame();
+		frame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame2.setVisible(false);
+		frame2.setBounds(x==0?307:x, y==0?266:y,x==0?307:x, y==0?266:y);
+		frame2.setLayout(new FlowLayout());
 
 		final StringBuffer incode = new StringBuffer();
 		ImageIcon icon = new ImageIcon(data);
-		frame.add(new JLabel(icon));
+		frame2.add(new JLabel(icon));
 		
 		final JLabel lable = new JLabel("鼠标当前点击位置的坐标是：");
 		JButton bt = new JButton("提交");
-		frame.add(lable);
-		frame.add(bt);
-		frame.setVisible(true);
-		frame.addMouseListener(new MouseAdapter(){  //匿名内部类，鼠标事件
+		frame2.add(lable);
+		frame2.add(bt);
+		frame2.setVisible(true);
+		frame2.addMouseListener(new MouseAdapter(){  //匿名内部类，鼠标事件
             public void mouseClicked(MouseEvent e){   //鼠标完成点击事件
                 if(e.getButton() == MouseEvent.BUTTON1){ //e.getButton就会返回点鼠标的那个键，左键还是右健，3代表右键
                     int x = e.getX();  //得到鼠标x坐标
@@ -196,7 +194,7 @@ public class HttpUtils {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				sb.append("2");
-				frame.dispose();
+				frame2.dispose();
 			}
 		});
 		

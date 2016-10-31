@@ -1,17 +1,27 @@
 package test.t_12306;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -34,7 +44,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
@@ -64,12 +73,16 @@ public class Home_Page {
 	private int[] mouse_gis = new int[2];
 	private JLabel label;
 	private Map<String, String> map = (Map<String, String>)HttpUtils.getCitiInfo();
+	private Map<String, JSONObject> userMap = new HashMap<String, JSONObject>();
 	private List<JSONObject> datalist = new ArrayList<JSONObject>();
-	private JTextArea textArea;
+	public JTextArea textArea;
 	private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 	private JList<Object> list_1;
 	private JList<Object> list_2;
 	private JList<Object> list_3;
+	private String REPEAT_SUBMIT_TOKEN = "";
+	private String key_check_isChange = "";
+	private String subMitCode = "";
 	private DefaultListModel<Object> model_train = new DefaultListModel<Object>();
 
 	/**
@@ -332,7 +345,12 @@ public class Home_Page {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton()==e.BUTTON3) {
-					model_train.addElement(table.getValueAt(table.getSelectedRow(), 0));
+					int[] rows = table.getSelectedRows();
+					for (int row : rows) {
+						if (!model_train.contains(table.getValueAt(row, 0))) {
+							model_train.addElement(table.getValueAt(row, 0));
+						}
+					}
 				}
 				
 				if(e.getClickCount()==2){
@@ -429,7 +447,7 @@ public class Home_Page {
 		p1.add(label_11);
 		
 		JButton button = new JButton("席别");
-		button.setBounds(911, 96, 73, 40);
+		button.setBounds(911, 130, 73, 23);
 		p1.add(button);
 		
 		DefaultListModel<Object> pupModel = new DefaultListModel<Object>();
@@ -446,7 +464,7 @@ public class Home_Page {
 		pupModel.addElement("其它");
 		
 		JButton button_1 = new JButton("乘车人");
-		button_1.setBounds(911, 155, 73, 40);
+		button_1.setBounds(911, 167, 73, 23);
 		p1.add(button_1);
 		
 		list_1 = new JList<Object>(model_train);
@@ -494,7 +512,7 @@ public class Home_Page {
 					DefaultListModel<Object> model_Passenger = new DefaultListModel<Object>();
 					for (int i =0;i<list_3.getModel().getSize();i++) {
 						if (i!=list_3.getSelectedIndex()) {
-							model_Passenger.addElement(list_3.getModel().getElementAt(i));
+							model_Passenger.addElement(list_3.getModel().getElementAt(i)+" ");
 						}
 					}
 					list_3.setModel(model_Passenger);
@@ -508,7 +526,18 @@ public class Home_Page {
 		p1.add(list_3);
 		
 		PopList.initPopup(button,list_2, pupModel);
-		PopList.initPopup(button_1,list_3, pupModel);
+//		DefaultListModel<Object> pupModel2 = getPassengerDTOs();
+//		PopList.initPopup(button_1,list_3, pupModel2);
+		
+		JButton button_2 = new JButton("清空");
+		button_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				model_train.removeAllElements();
+			}
+		});
+		button_2.setBounds(911, 92, 73, 23);
+		p1.add(button_2);
 		
 		JPanel p3 = new JPanel();
 		tabbedPane.add(p3,"消息提醒");
@@ -705,12 +734,279 @@ public class Home_Page {
 			JSONObject res_obj = new JSONObject(body);
 			if ("true".equals(res_obj.get("status").toString())) {
 				textArea.append(format.format(new Date())+"：订票信息提交成功\r\n");
+				res.getEntity().disconnect();
+				initDc();
 			}else {
 				textArea.append(format.format(new Date())+res_obj.get("messages").toString()+"\r\n");
+				res.getEntity().disconnect();
 			}
+		} catch (JSONException e) {
+			textArea.append(format.format(new Date())+"：提交订单失败，请联系作者QQ：3094759846\r\n");
+		}
+	}
+	
+	/**
+	 * 预定界面
+	 */
+	private void initDc(){
+		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/initDc");
+		VParames parames = new VParames();
+		parames.clear();
+		parames.put("_json_att", "");
+		post.setParames(parames);
+		VHttpResponse res = Browser.execute(post);
+		String body = HttpUtils.outHtml(res.getBody());
+		
+		Pattern pattern = Pattern.compile("var globalRepeatSubmitToken = '[0-9 | a-z]{32}'");
+		Pattern pattern2 = Pattern.compile("'key_check_isChange':'[0-9 | A-Z]{56}'");
+		Matcher matcher = pattern.matcher(body);
+		Matcher matcher2 = pattern2.matcher(body);
+		while (matcher.find()) {
+			REPEAT_SUBMIT_TOKEN = matcher.group(0).replace("var globalRepeatSubmitToken = '", "").replace("'", "");
+		}
+		while (matcher2.find()) {
+			key_check_isChange = matcher2.group(0).replace("'key_check_isChange':'", "").replace("'", "");
+		}
+		res.getEntity().disconnect();
+		textArea.append(format.format(new Date())+"：开始拉取验证......\r\n");
+		
+		boolean CodeIsTrue = false;
+		CodeIsTrue = getAndCheckSubmitCode();
+//		while (!CodeIsTrue) {
+//			CodeIsTrue = getAndCheckSubmitCode();
+//			textArea.append(format.format(new Date())+"："+CodeIsTrue+"\r\n");
+//		}
+		
+		if (checkOrderInfo()) {
+			getQueueCount();
+			confirmSingleForQueue();
+			queryOrderWaitTime();
+		}
+	}
+	
+	/**
+	 * 拉取提交订单验证码及校验，返回true表示校验成功，反之否
+	 * @return	校验是否成功
+	 */
+	private boolean getAndCheckSubmitCode(){
+		boolean rs = false;
+		JFrame frame2 = new JFrame();
+		frame2.setSize(new Dimension(300,400));
+		JButton button = new JButton("123");
+		frame2.add(button);
+		frame2.setVisible(true);
+		
+		
+		Scanner can = new Scanner(System.in);
+		String s = can.nextLine();
+		System.out.println(s);
+		
+		
+//		//拉取验证码
+//		String url = "https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&"+Math.random();
+//		VHttpGet get = new VHttpGet(url);
+//		VHttpResponse res = Browser.execute(get);							//获取验证码
+//		subMitCode = HttpUtils.outCodeBy12306(res.getBody());	//定义窗口大小
+//		res.getEntity().disconnect();							//耗尽资源
+		
+		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
+		VParames parames5 = new VParames();
+		parames5.put("randCode", subMitCode);
+		parames5.put("rand", "randp");
+		parames5.put("_json_att", "");
+		parames5.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
+		
+		post.setParames(parames5);
+		VHttpResponse res = Browser.execute(post); 
+		String body = HttpUtils.outHtml(res.getBody());
+		try {
+			JSONObject res_obj = new JSONObject(body);
+			JSONObject dataObj = (JSONObject)res_obj.get("data");
+			if ("1".equals(dataObj.get("result").toString())) {
+				textArea.append(format.format(new Date())+"：验证码正确，开始确认用户是否可以订单\r\n");
+				rs = true;
+			}else {
+				textArea.append(format.format(new Date())+"："+res_obj.get("validateMessages").toString()+"\r\n");
+				textArea.append(format.format(new Date())+"：验证码错误，请重新验证\r\n");
+			}
+		} catch (JSONException e) {
+			textArea.append(format.format(new Date())+"：解析验证码错误，请联系作者QQ：3094759846\r\n");
+		}
+		return rs;
+	}
+	
+	/**
+	 * 确认用户是否可以提交订单
+	 */
+	private boolean checkOrderInfo(){
+		String username = list_3.getModel().getElementAt(0).toString();
+		JSONObject userObj = userMap.get(username);
+		boolean rs  = false;
+		try {
+			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/checkOrderInfo");
+			VParames parames = new VParames();
+			parames.clear();
+			parames.put("cancel_flag", "2");
+			parames.put("bed_level_order_num", "000000000000000000000000000000");
+			parames.put("passengerTicketStr", "1,0,1,"+userObj.getString("passenger_name")+",1,"+userObj.getString("passenger_id_no")+","+userObj.getString("mobile_no")+",N");
+			parames.put("oldPassengerStr", userObj.getString("passenger_name")+",1,"+userObj.getString("passenger_id_no")+",1_");
+			parames.put("tour_flag", "dc");
+			parames.put("randCode", subMitCode);
+			parames.put("_json_att", "");
+			parames.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
+			post.setParames(parames);
+			VHttpResponse res = Browser.execute(post);
+			String body = HttpUtils.outHtml(res.getBody());
+			JSONObject res_obj = new JSONObject(body);
+			JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
+			if ("true".equals(dataobj.get("submitStatus").toString())) {
+				textArea.append(format.format(new Date())+"：当前用户可以提交订单\r\n");
+				rs = true;
+			}else {
+				textArea.append(format.format(new Date())+"："+res_obj.get("messages").toString()+"\r\n");
+			}
+			res.getEntity().disconnect();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		return rs;
+	}
+	
+	/**
+	 * 获取余票数量
+	 */
+	private void getQueueCount(){
+		JSONObject obj = datalist.get(table.getSelectedRow());
+		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/getQueueCount");
+		VParames parames4 = new VParames();
+		try {
+			parames4.put("train_date", format.parse(textField_3.getText())+"");
+			parames4.put("train_no", obj.get("train_no").toString());
+			parames4.put("stationTrainCode", obj.get("station_train_code").toString());
+			parames4.put("seatType", "3");
+			parames4.put("fromStationTelecode", obj.get("from_station_telecode").toString());
+			parames4.put("toStationTelecode", obj.get("to_station_telecode").toString());
+			parames4.put("leftTicket", obj.getString("yp_info"));
+			parames4.put("purpose_codes", "00");
+			parames4.put("train_location", obj.getString("location_code"));
+			parames4.put("_json_att", "");
+			parames4.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
+			post.setParames(parames4);
+			VHttpResponse res = Browser.execute(post);
+			String body = HttpUtils.outHtml(res.getBody());
+			JSONObject jsonBody = new JSONObject(body);
+			if ("true".equals(jsonBody.get("status").toString())){
+				JSONObject dataObj = (JSONObject)jsonBody.get("data");
+				String[] counts = HttpUtils.getCountByJs(dataObj.get("ticket").toString(), "1").split(",");
+				if (Integer.parseInt(counts[0]) > 0) {
+					textArea.append(format.format(new Date())+"："+obj.get("station_train_code")+"：硬座剩余:"+counts[0]+"张"+"\r\n");
+				}
+				if (Integer.parseInt(counts[1]) > 0){
+					textArea.append(format.format(new Date())+"："+obj.get("station_train_code")+"：硬座剩余:"+counts[1]+"张"+"\r\n");
+				}
+				textArea.append(format.format(new Date())+"：开始提交订单\r\n");
+			}else {
+				textArea.append(format.format(new Date())+"："+jsonBody.get("messages").toString()+"\r\n");
+			}
+			res.getEntity().disconnect();
+		} catch (Exception e) {
+			textArea.append(format.format(new Date())+"：解析余票数量失败，请联系作者QQ：3094759846\r\n");
+		}
+	}
+	
+	/**
+	 * 确认提交订单
+	 */
+	private void confirmSingleForQueue(){
+		String username = list_3.getModel().getElementAt(0).toString();
+		JSONObject userObj = userMap.get(username);
+		JSONObject obj = datalist.get(table.getSelectedRow());
 		
+		try {
+			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/confirmSingleForQueue");
+			VParames parames = new VParames();
+			parames.clear();
+			parames.put("passengerTicketStr", "1,0,1,"+userObj.getString("passenger_name")+",1,"+userObj.getString("passenger_id_no")+","+userObj.getString("mobile_no")+",N");
+			parames.put("oldPassengerStr", userObj.getString("passenger_name")+",1,"+userObj.getString("passenger_id_no")+",1_");
+			parames.put("randCode", subMitCode);
+			parames.put("purpose_codes", "00");
+			parames.put("key_check_isChange", key_check_isChange);
+			parames.put("leftTicketStr", obj.getString("yp_info"));
+			parames.put("train_location", obj.getString("location_code"));
+			parames.put("roomType", "00");
+			parames.put("dwAll", "N");
+			parames.put("_json_att", "");
+			parames.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
+			post.setParames(parames);
+			VHttpResponse res = Browser.execute(post);
+			String body = HttpUtils.outHtml(res.getBody());
+			JSONObject res_obj = new JSONObject(body);
+			JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
+			if ("true".equals(dataobj.get("submitStatus").toString())) {
+				textArea.append(format.format(new Date())+"：订单提交成功，正在查询订票结果\r\n");
+			}else {
+				textArea.append(format.format(new Date())+"："+body+"\r\n");
+			}
+			res.getEntity().disconnect();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 开始查询订单
+	 */
+	private void queryOrderWaitTime(){
+		JSONObject obj = datalist.get(table.getSelectedRow());
+		boolean order = true;
+		String orderId = "";
+		try {
+			while (order) {
+				Random ne=new Random();
+		        int x=ne.nextInt(9999-1000+1)+1000;
+				String query_url = "https://kyfw.12306.cn/otn/confirmPassenger/queryOrderWaitTime?";
+				query_url = query_url + "random=14772940"+x+"&tourFlag=dc&_json_att=&REPEAT_SUBMIT_TOKEN="+REPEAT_SUBMIT_TOKEN;
+				VHttpGet get = new VHttpGet(query_url);
+				VHttpResponse res = Browser.execute(get);
+				String body = HttpUtils.outHtml(res.getBody());
+				JSONObject res_obj = new JSONObject(body);
+				JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
+				if (!"null".equals(dataobj.get("orderId").toString())) {
+					order = false;
+					orderId = dataobj.get("orderId").toString();
+				}
+			}
+			textArea.append(format.format(new Date())+"："+"恭喜你，成功订到一张"+obj.getString("from_station_name")+"至"+obj.getString("end_station_name")+"的硬座，订单号为："+orderId+"，请尽快付款，以免耽误行程"+"\r\n");
+		} catch (JSONException e) {
+			textArea.append(format.format(new Date())+"：解析订票结果失败，请联系作者QQ：3094759846\r\n");
+		}
+	}
+	
+	/**
+	 * 获取乘客列表
+	 * @return
+	 */
+	private DefaultListModel<Object> getPassengerDTOs(){
+		DefaultListModel<Object> model_Seats = new DefaultListModel<Object>();
+		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/getPassengerDTOs");
+		VHttpResponse res = Browser.execute(post);
+		String body = HttpUtils.outHtml(res.getBody());
+		try {
+			JSONObject res_obj = new JSONObject(body);
+			JSONObject userListObj = (JSONObject) res_obj.get("data");
+			if (userListObj.length()<1) {
+				textArea.append(format.format(new Date())+"："+new JSONObject(body).get("messages")+"\r\n");
+			}else {
+				JSONArray userArr = (JSONArray)(userListObj.get("normal_passengers"));
+				for (int i=0;i<userArr.length();i++){
+					JSONObject obj = (JSONObject)userArr.get(i);
+					model_Seats.addElement(obj.get("passenger_name"));
+					userMap.put(obj.get("passenger_name").toString(), obj);
+				}
+			}
+		} catch (JSONException e) {
+			textArea.append(format.format(new Date())+"：获取乘客列表失败，请联系作者QQ：3094759846\r\n");
+		}
+		return model_Seats;
 	}
 }
