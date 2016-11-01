@@ -2,6 +2,7 @@ package test.t_12306;
 
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
@@ -41,6 +42,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import org.json.JSONArray;
@@ -56,9 +58,23 @@ import com.vcode.http.utils.Chooser;
 import com.vcode.http.utils.HttpUtils;
 import com.vcode.http.utils.JTextAreaExt;
 import com.vcode.http.utils.PopList;
-import javax.swing.border.TitledBorder;
-import java.awt.SystemColor;
 
+/**
+ * 刷票界面
+ * 
+ * 座位编号：
+ *	 硬座：1
+ *	 软座：2
+ * 	硬卧：3
+ * 	软卧：4
+ * 	一等座：M
+ * 	二等座：O
+ * 	商务座：9
+ * 
+ * 
+ * @author huahao
+ *
+ */
 public class Home_Page {
 
 	private Home_Page window;
@@ -69,8 +85,7 @@ public class Home_Page {
 	private JTable table;
 	private int[] mouse_gis = new int[2];
 	private JLabel label;
-	private Map<String, String> map = (Map<String, String>) HttpUtils
-			.getCitiInfo();
+	private Map<String, String> map = (Map<String, String>) HttpUtils.getCitiInfo();
 	private Map<String, JSONObject> userMap = new HashMap<String, JSONObject>();
 	private List<JSONObject> datalist = new ArrayList<JSONObject>();
 	public JTextAreaExt textArea;
@@ -117,8 +132,7 @@ public class Home_Page {
 	 */
 	private void initialize() {
 		try {
-			UIManager
-					.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -186,12 +200,18 @@ public class Home_Page {
 
 		JComboBox<Object> comboBox = new JComboBox<Object>();
 		comboBox.setFont(new Font("微软雅黑", Font.PLAIN, 12));
-		comboBox.setModel(new DefaultComboBoxModel<Object>(new String[] {
-				"00:00—24:00", "00:00—08:00", "08:00—12:00", "12:00—20:00",
-				"20:00—24:00" }));
+		comboBox.setModel(new DefaultComboBoxModel<Object>(
+				new String[] { "00:00—24:00", "00:00—08:00", "08:00—12:00", "12:00—20:00", "20:00—24:00" }));
 		comboBox.setBounds(554, 51, 103, 21);
 		frame.getContentPane().add(comboBox);
 
+		
+		/**
+		 * 	adult: "1",  
+		 *	child: "2",  
+		 *	student: "3",  
+		 *	disability: "4" 
+		 */
 		JRadioButton radioButton = new JRadioButton("成人");
 		radioButton.setSelected(true);
 		radioButton.setBounds(661, 51, 61, 23);
@@ -363,40 +383,38 @@ public class Home_Page {
 		table.setFont(new Font("宋体", Font.PLAIN, 12));
 		scrollPane.setViewportView(table);
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		table.setModel(new DefaultTableModel(new Object[][] {
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null }, },
-				new String[] { "\u8F66\u6B21", "\u51FA\u53D1\u5730",
-						"\u76EE\u7684\u5730", "\u5386\u65F6",
-						"\u53D1\u8F66\u65F6\u95F4", "\u5230\u8FBE\u65F6\u95F4",
-						"\u5546\u52A1", "\u7279\u7B49", "\u4E00\u7B49",
-						"\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367",
-						"\u786C\u5367", "\u8F6F\u5EA7", "\u786C\u5EA7",
-						"\u65E0\u5EA7", "\u5176\u5B83", "\u5907\u6CE8" }));
+		table.setModel(new DefaultTableModel(
+				new Object[][] {
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null },
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null },
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null },
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null },
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null },
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null },
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null },
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null },
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null },
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null },
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null },
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null },
+						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+								null, null, null }, },
+				new String[] { "\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u5386\u65F6",
+						"\u53D1\u8F66\u65F6\u95F4", "\u5230\u8FBE\u65F6\u95F4", "\u5546\u52A1", "\u7279\u7B49",
+						"\u4E00\u7B49", "\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367", "\u786C\u5367", "\u8F6F\u5EA7",
+						"\u786C\u5EA7", "\u65E0\u5EA7", "\u5176\u5B83", "\u5907\u6CE8" }));
 		setTableSize();
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -415,8 +433,7 @@ public class Home_Page {
 
 		JSpinner spinner = new JSpinner();
 		spinner.setBounds(496, 53, 53, 22);
-		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null,
-				new Integer(100)));
+		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null, new Integer(100)));
 		p1.add(spinner);
 
 		JLabel label_6 = new JLabel("刷票频率：");
@@ -454,8 +471,7 @@ public class Home_Page {
 
 		JSpinner spinner_1 = new JSpinner();
 		spinner_1.setBounds(844, 53, 130, 22);
-		spinner_1.setModel(new SpinnerDateModel(new Date(1477411200000L), null,
-				null, Calendar.MINUTE));
+		spinner_1.setModel(new SpinnerDateModel(new Date(1477411200000L), null, null, Calendar.MINUTE));
 		p1.add(spinner_1);
 
 		JLabel label_10 = new JLabel("深圳——咸宁，2016-10-26，成人票");
@@ -482,6 +498,7 @@ public class Home_Page {
 		pupModel.addElement("硬座");
 		pupModel.addElement("无座");
 		pupModel.addElement("其它");
+		DefaultListModel<Object> pupModel2 = getPassengerDTOs();
 
 		JButton button_1 = new JButton("乘车人");
 		button_1.setBounds(911, 167, 73, 23);
@@ -511,8 +528,7 @@ public class Home_Page {
 					DefaultListModel<Object> model_Seats = new DefaultListModel<Object>();
 					for (int i = 0; i < list_2.getModel().getSize(); i++) {
 						if (i != list_2.getSelectedIndex()) {
-							model_Seats.addElement(list_2.getModel()
-									.getElementAt(i));
+							model_Seats.addElement(list_2.getModel().getElementAt(i));
 						}
 					}
 					list_2.setModel(model_Seats);
@@ -533,8 +549,7 @@ public class Home_Page {
 					DefaultListModel<Object> model_Passenger = new DefaultListModel<Object>();
 					for (int i = 0; i < list_3.getModel().getSize(); i++) {
 						if (i != list_3.getSelectedIndex()) {
-							model_Passenger.addElement(list_3.getModel()
-									.getElementAt(i) + " ");
+							model_Passenger.addElement(list_3.getModel().getElementAt(i) + " ");
 						}
 					}
 					list_3.setModel(model_Passenger);
@@ -547,7 +562,6 @@ public class Home_Page {
 		p1.add(list_3);
 
 		PopList.initPopup(button, list_2, pupModel);
-		DefaultListModel<Object> pupModel2 = getPassengerDTOs();
 		PopList.initPopup(button_1, list_3, pupModel2);
 
 		JButton button_2 = new JButton("清空");
@@ -567,7 +581,6 @@ public class Home_Page {
 		btnNewButton_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("刷新订单");
 				getOrderList();
 			}
 		});
@@ -583,26 +596,20 @@ public class Home_Page {
 		});
 		table_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table_1.setFillsViewportHeight(true);
-		table_1.setModel(new DefaultTableModel(new Object[][] {
-				{ null, null, null, null, "", null, null, null, null, null,
-						null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null }, },
-				new String[] { "\u8F66\u6B21", "\u8BA2\u5355\u53F7",
-						"\u4E58\u5BA2\u59D3\u540D", "\u53D1\u8F66\u65F6\u95F4",
-						"\u51FA\u53D1\u5730", "\u76EE\u7684\u5730",
-						"\u7968\u79CD", "\u5E2D\u522B", "\u8F66\u53A2",
-						"\u5EA7\u4F4D", "\u7968\u4EF7", "\u72B6\u6001" }));
+		table_1.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null, null, null, null},
+			},
+			new String[] {
+				"\u8F66\u6B21", "\u8BA2\u5355\u53F7", "\u4E58\u5BA2\u59D3\u540D", "\u53D1\u8F66\u65F6\u95F4", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u7968\u79CD", "\u5E2D\u522B", "\u8F66\u53A2", "\u5EA7\u4F4D", "\u7968\u4EF7", "\u72B6\u6001"
+			}
+		));
 
 		JScrollPane scrollPane_1 = new JScrollPane(table_1);
 		scrollPane_1.setBounds(10, 62, 976, 140);
@@ -610,10 +617,8 @@ public class Home_Page {
 
 		JPanel panel = new JPanel();
 		panel.setBounds(10, 0, 465, 60);
-		panel.setBorder(new TitledBorder(UIManager
-				.getBorder("TitledBorder.border"), "订单操作: ",
-				TitledBorder.LEADING, TitledBorder.TOP, null,
-				SystemColor.controlText));
+		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "订单操作: ", TitledBorder.LEADING,
+				TitledBorder.TOP, null, SystemColor.controlText));
 		p2.add(panel);
 		panel.setLayout(null);
 
@@ -631,6 +636,7 @@ public class Home_Page {
 		button_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				String OrderId = table_1.getValueAt(table_1.getSelectedRow(), 1).toString();
 				System.out.println("取消订单");
 			}
 		});
@@ -662,10 +668,8 @@ public class Home_Page {
 		JPanel p4 = new JPanel();
 		tabbedPane.add(p4, "其它功能");
 		GroupLayout gl_p4 = new GroupLayout(p4);
-		gl_p4.setHorizontalGroup(gl_p4.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 996, Short.MAX_VALUE));
-		gl_p4.setVerticalGroup(gl_p4.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 205, Short.MAX_VALUE));
+		gl_p4.setHorizontalGroup(gl_p4.createParallelGroup(Alignment.LEADING).addGap(0, 996, Short.MAX_VALUE));
+		gl_p4.setVerticalGroup(gl_p4.createParallelGroup(Alignment.LEADING).addGap(0, 205, Short.MAX_VALUE));
 		p4.setLayout(gl_p4);
 		tabbedPane.setBounds(43, 404, 1001, 234);
 		frame.getContentPane().add(tabbedPane);
@@ -728,8 +732,7 @@ public class Home_Page {
 		sb.append("purpose_codes=ADULT");
 
 		// 开始刷票
-		VHttpGet get = new VHttpGet(
-				"https://kyfw.12306.cn/otn/leftTicket/queryX?" + sb.toString());
+		VHttpGet get = new VHttpGet("https://kyfw.12306.cn/otn/leftTicket/queryX?" + sb.toString());
 		VHttpResponse res = Browser.execute(get);
 		String body = HttpUtils.outHtml(res.getBody());
 		try {
@@ -745,21 +748,18 @@ public class Home_Page {
 	private void disposeTicketInfo(String body) throws JSONException {
 		JSONObject json = new JSONObject(body);
 		JSONArray jsonArr = new JSONArray(json.get("data").toString());
-		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
-				"\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730",
-				"\u5386\u65F6", "\u53D1\u8F66\u65F6\u95F4",
-				"\u5230\u8FBE\u65F6\u95F4", "\u5546\u52A1", "\u7279\u7B49",
-				"\u4E00\u7B49", "\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367",
-				"\u786C\u5367", "\u8F6F\u5EA7", "\u786C\u5EA7", "\u65E0\u5EA7",
-				"\u5176\u5B83", "\u5907\u6CE8" }) {
+		table.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u5386\u65F6",
+						"\u53D1\u8F66\u65F6\u95F4", "\u5230\u8FBE\u65F6\u95F4", "\u5546\u52A1", "\u7279\u7B49",
+						"\u4E00\u7B49", "\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367", "\u786C\u5367", "\u8F6F\u5EA7",
+						"\u786C\u5EA7", "\u65E0\u5EA7", "\u5176\u5B83", "\u5907\u6CE8" }) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		});
 		for (int i = 0; i < jsonArr.length(); i++) {
 			JSONObject obj = (JSONObject) jsonArr.get(i);
-			JSONObject obj2 = new JSONObject(obj.get("queryLeftNewDTO")
-					.toString());
+			JSONObject obj2 = new JSONObject(obj.get("queryLeftNewDTO").toString());
 			obj2.put("secretStr", obj.get("secretStr").toString());
 			datalist.add(obj2);
 			addRow(obj2);
@@ -834,8 +834,7 @@ public class Home_Page {
 		try {
 			// 预订车票
 			textArea.append(format.format(new Date()) + "：开始提交订票信息\r\n");
-			VHttpPost post = new VHttpPost(
-					"https://kyfw.12306.cn/otn/leftTicket/submitOrderRequest");
+			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/leftTicket/submitOrderRequest");
 			VParames parames = new VParames();
 			parames.clear();
 			parames.put("secretStr", obj.get("secretStr").toString());
@@ -843,10 +842,8 @@ public class Home_Page {
 			parames.put("back_train_date", textField_2.getText());
 			parames.put("tour_flag", "dc");
 			parames.put("purpose_codes", "ADULT");
-			parames.put("query_from_station_name", obj.get("from_station_name")
-					.toString());
-			parames.put("query_to_station_name", obj.get("to_station_name")
-					.toString());
+			parames.put("query_from_station_name", obj.get("from_station_name").toString());
+			parames.put("query_to_station_name", obj.get("to_station_name").toString());
 			parames.put("undefined", "");
 			post.setParames(parames);
 			VHttpResponse res = Browser.execute(post);
@@ -857,13 +854,11 @@ public class Home_Page {
 				res.getEntity().disconnect();
 				initDc();
 			} else {
-				textArea.append(format.format(new Date())
-						+ res_obj.get("messages").toString() + "\r\n");
+				textArea.append(format.format(new Date()) + res_obj.get("messages").toString() + "\r\n");
 				res.getEntity().disconnect();
 			}
 		} catch (JSONException e) {
-			textArea.append(format.format(new Date())
-					+ "：提交订单失败，请联系作者QQ：3094759846\r\n");
+			textArea.append(format.format(new Date()) + "：提交订单失败，请联系作者QQ：3094759846\r\n");
 		}
 	}
 
@@ -871,8 +866,7 @@ public class Home_Page {
 	 * 预定界面
 	 */
 	private void initDc() {
-		VHttpPost post = new VHttpPost(
-				"https://kyfw.12306.cn/otn/confirmPassenger/initDc");
+		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/initDc");
 		VParames parames = new VParames();
 		parames.clear();
 		parames.put("_json_att", "");
@@ -880,20 +874,15 @@ public class Home_Page {
 		VHttpResponse res = Browser.execute(post);
 		String body = HttpUtils.outHtml(res.getBody());
 
-		Pattern pattern = Pattern
-				.compile("var globalRepeatSubmitToken = '[0-9 | a-z]{32}'");
-		Pattern pattern2 = Pattern
-				.compile("'key_check_isChange':'[0-9 | A-Z]{56}'");
+		Pattern pattern = Pattern.compile("var globalRepeatSubmitToken = '[0-9 | a-z]{32}'");
+		Pattern pattern2 = Pattern.compile("'key_check_isChange':'[0-9 | A-Z]{56}'");
 		Matcher matcher = pattern.matcher(body);
 		Matcher matcher2 = pattern2.matcher(body);
 		while (matcher.find()) {
-			REPEAT_SUBMIT_TOKEN = matcher.group(0)
-					.replace("var globalRepeatSubmitToken = '", "")
-					.replace("'", "");
+			REPEAT_SUBMIT_TOKEN = matcher.group(0).replace("var globalRepeatSubmitToken = '", "").replace("'", "");
 		}
 		while (matcher2.find()) {
-			key_check_isChange = matcher2.group(0)
-					.replace("'key_check_isChange':'", "").replace("'", "");
+			key_check_isChange = matcher2.group(0).replace("'key_check_isChange':'", "").replace("'", "");
 		}
 		res.getEntity().disconnect();
 		textArea.append(format.format(new Date()) + "：开始拉取验证......\r\n");
@@ -916,11 +905,9 @@ public class Home_Page {
 	}
 
 	public void checkSubmitCode() {
-		String code = HttpUtils.incode.toString().substring(0,
-				HttpUtils.incode.toString().length() - 1);
+		String code = HttpUtils.incode.toString().substring(0, HttpUtils.incode.toString().length() - 1);
 		textArea.append(format.format(new Date()) + "：当前验证码：" + code + "\r\n");
-		VHttpPost post = new VHttpPost(
-				"https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
+		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
 		VParames parames5 = new VParames();
 		parames5.put("randCode", code);
 		parames5.put("rand", "randp");
@@ -934,18 +921,14 @@ public class Home_Page {
 			JSONObject res_obj = new JSONObject(body);
 			JSONObject dataObj = (JSONObject) res_obj.get("data");
 			if ("1".equals(dataObj.get("result").toString())) {
-				textArea.append(format.format(new Date())
-						+ "：验证码正确，开始确认用户是否可以订单\r\n");
+				textArea.append(format.format(new Date()) + "：验证码正确，开始确认用户是否可以提交订单\r\n");
 				checkOrderInfo();
 			} else {
-				textArea.append(format.format(new Date()) + "："
-						+ res_obj.get("validateMessages").toString() + "\r\n");
 				textArea.append(format.format(new Date()) + "：验证码错误，请重新验证\r\n");
 				getSubmitCode();
 			}
 		} catch (JSONException e) {
-			textArea.append(format.format(new Date())
-					+ "：解析验证码错误，请联系作者QQ：3094759846\r\n");
+			textArea.append(format.format(new Date()) + "：解析验证码错误，请联系作者QQ：3094759846\r\n");
 		}
 	}
 
@@ -956,23 +939,17 @@ public class Home_Page {
 		String username = list_3.getModel().getElementAt(0).toString();
 		JSONObject userObj = userMap.get(username);
 		try {
-			VHttpPost post = new VHttpPost(
-					"https://kyfw.12306.cn/otn/confirmPassenger/checkOrderInfo");
+			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/checkOrderInfo");
 			VParames parames = new VParames();
 			parames.clear();
 			parames.put("cancel_flag", "2");
 			parames.put("bed_level_order_num", "000000000000000000000000000000");
-			parames.put("passengerTicketStr",
-					"1,0,1," + userObj.getString("passenger_name") + ",1,"
-							+ userObj.getString("passenger_id_no") + ","
-							+ userObj.getString("mobile_no") + ",N");
-			parames.put("oldPassengerStr", userObj.getString("passenger_name")
-					+ ",1," + userObj.getString("passenger_id_no") + ",1_");
+			parames.put("passengerTicketStr", "1,0,1," + userObj.getString("passenger_name") + ",1,"
+					+ userObj.getString("passenger_id_no") + "," + userObj.getString("mobile_no") + ",N");
+			parames.put("oldPassengerStr",
+					userObj.getString("passenger_name") + ",1," + userObj.getString("passenger_id_no") + ",1_");
 			parames.put("tour_flag", "dc");
-			parames.put(
-					"randCode",
-					HttpUtils.incode.toString().substring(0,
-							HttpUtils.incode.toString().length() - 1));
+			parames.put("randCode", HttpUtils.incode.toString().substring(0, HttpUtils.incode.toString().length() - 1));
 			parames.put("_json_att", "");
 			parames.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
 			post.setParames(parames);
@@ -984,8 +961,8 @@ public class Home_Page {
 				textArea.append(format.format(new Date()) + "：当前用户可以提交订单\r\n");
 				getQueueCount();
 			} else {
-				textArea.append(format.format(new Date()) + "："
-						+ res_obj.get("messages").toString() + "\r\n");
+				textArea.append(format.format(new Date()) + "：" + dataobj.get("errMsg").toString() + "\r\n");
+				return;
 			}
 			res.getEntity().disconnect();
 		} catch (JSONException e) {
@@ -998,19 +975,15 @@ public class Home_Page {
 	 */
 	private void getQueueCount() {
 		JSONObject obj = datalist.get(table.getSelectedRow());
-		VHttpPost post = new VHttpPost(
-				"https://kyfw.12306.cn/otn/confirmPassenger/getQueueCount");
+		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/getQueueCount");
 		VParames parames4 = new VParames();
 		try {
 			parames4.put("train_date", format.parse(textField_3.getText()) + "");
 			parames4.put("train_no", obj.get("train_no").toString());
-			parames4.put("stationTrainCode", obj.get("station_train_code")
-					.toString());
+			parames4.put("stationTrainCode", obj.get("station_train_code").toString());
 			parames4.put("seatType", "3");
-			parames4.put("fromStationTelecode", obj
-					.get("from_station_telecode").toString());
-			parames4.put("toStationTelecode", obj.get("to_station_telecode")
-					.toString());
+			parames4.put("fromStationTelecode", obj.get("from_station_telecode").toString());
+			parames4.put("toStationTelecode", obj.get("to_station_telecode").toString());
 			parames4.put("leftTicket", obj.getString("yp_info"));
 			parames4.put("purpose_codes", "00");
 			parames4.put("train_location", obj.getString("location_code"));
@@ -1022,27 +995,22 @@ public class Home_Page {
 			JSONObject jsonBody = new JSONObject(body);
 			if ("true".equals(jsonBody.get("status").toString())) {
 				JSONObject dataObj = (JSONObject) jsonBody.get("data");
-				String[] counts = HttpUtils.getCountByJs(
-						dataObj.get("ticket").toString(), "1").split(",");
+				String[] counts = HttpUtils.getCountByJs(dataObj.get("ticket").toString(), "1").split(",");
 				if (Integer.parseInt(counts[0]) > 0) {
-					textArea.append(format.format(new Date()) + "："
-							+ obj.get("station_train_code") + "：硬座剩余:"
+					textArea.append(format.format(new Date()) + "：" + obj.get("station_train_code") + "：硬座剩余:"
 							+ counts[0] + "张" + "\r\n");
 				}
 				if (Integer.parseInt(counts[1]) > 0) {
-					textArea.append(format.format(new Date()) + "："
-							+ obj.get("station_train_code") + "：硬座剩余:"
+					textArea.append(format.format(new Date()) + "：" + obj.get("station_train_code") + "：硬座剩余:"
 							+ counts[1] + "张" + "\r\n");
 				}
 				textArea.append(format.format(new Date()) + "：开始提交订单\r\n");
 			} else {
-				textArea.append(format.format(new Date()) + "："
-						+ jsonBody.get("messages").toString() + "\r\n");
+				textArea.append(format.format(new Date()) + "：" + jsonBody.get("messages").toString() + "\r\n");
 			}
 			res.getEntity().disconnect();
 		} catch (Exception e) {
-			textArea.append(format.format(new Date())
-					+ "：解析余票数量失败，请联系作者QQ：3094759846\r\n");
+			textArea.append(format.format(new Date()) + "：解析余票数量失败，请联系作者QQ：3094759846\r\n");
 		}
 		confirmSingleForQueue();
 	}
@@ -1056,20 +1024,14 @@ public class Home_Page {
 		JSONObject obj = datalist.get(table.getSelectedRow());
 
 		try {
-			VHttpPost post = new VHttpPost(
-					"https://kyfw.12306.cn/otn/confirmPassenger/confirmSingleForQueue");
+			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/confirmSingleForQueue");
 			VParames parames = new VParames();
 			parames.clear();
-			parames.put("passengerTicketStr",
-					"1,0,1," + userObj.getString("passenger_name") + ",1,"
-							+ userObj.getString("passenger_id_no") + ","
-							+ userObj.getString("mobile_no") + ",N");
-			parames.put("oldPassengerStr", userObj.getString("passenger_name")
-					+ ",1," + userObj.getString("passenger_id_no") + ",1_");
-			parames.put(
-					"randCode",
-					HttpUtils.incode.toString().substring(0,
-							HttpUtils.incode.toString().length() - 1));
+			parames.put("passengerTicketStr", "1,0,1," + userObj.getString("passenger_name") + ",1,"
+					+ userObj.getString("passenger_id_no") + "," + userObj.getString("mobile_no") + ",N");
+			parames.put("oldPassengerStr",
+					userObj.getString("passenger_name") + ",1," + userObj.getString("passenger_id_no") + ",1_");
+			parames.put("randCode", HttpUtils.incode.toString().substring(0, HttpUtils.incode.toString().length() - 1));
 			parames.put("purpose_codes", "00");
 			parames.put("key_check_isChange", key_check_isChange);
 			parames.put("leftTicketStr", obj.getString("yp_info"));
@@ -1084,8 +1046,7 @@ public class Home_Page {
 			JSONObject res_obj = new JSONObject(body);
 			JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
 			if ("true".equals(dataobj.get("submitStatus").toString())) {
-				textArea.append(format.format(new Date())
-						+ "：订单提交成功，正在查询订票结果\r\n");
+				textArea.append(format.format(new Date()) + "：订单提交成功，正在查询订票结果\r\n");
 				queryOrderWaitTime();
 			} else {
 				textArea.append(format.format(new Date()) + "：" + body + "\r\n");
@@ -1108,28 +1069,22 @@ public class Home_Page {
 				Random ne = new Random();
 				int x = ne.nextInt(9999 - 1000 + 1) + 1000;
 				String query_url = "https://kyfw.12306.cn/otn/confirmPassenger/queryOrderWaitTime?";
-				query_url = query_url + "random=14772940" + x
-						+ "&tourFlag=dc&_json_att=&REPEAT_SUBMIT_TOKEN="
+				query_url = query_url + "random=14772940" + x + "&tourFlag=dc&_json_att=&REPEAT_SUBMIT_TOKEN="
 						+ REPEAT_SUBMIT_TOKEN;
 				VHttpGet get = new VHttpGet(query_url);
 				VHttpResponse res = Browser.execute(get);
 				String body = HttpUtils.outHtml(res.getBody());
 				JSONObject res_obj = new JSONObject(body);
-				JSONObject dataobj = new JSONObject(res_obj.get("data")
-						.toString());
+				JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
 				if (!"null".equals(dataobj.get("orderId").toString())) {
 					order = false;
 					orderId = dataobj.get("orderId").toString();
 				}
 			}
-			textArea.append("<html><font color='red'>"
-					+ format.format(new Date()) + "：" + "恭喜你，成功订到一张"
-					+ obj.getString("from_station_name") + "至"
-					+ obj.getString("end_station_name") + "的硬座，订单号为：" + orderId
-					+ "，请尽快付款，以免耽误行程" + "\r\n" + "</font></html>");
+			textArea.append(format.format(new Date()) + "：" + "恭喜你，成功订到一张" + obj.getString("from_station_name") + "至"
+					+ obj.getString("end_station_name") + "的硬座，订单号为：" + orderId + "，请尽快付款，以免耽误行程" + "\r\n");
 		} catch (JSONException e) {
-			textArea.append(format.format(new Date())
-					+ "：解析订票结果失败，请联系作者QQ：3094759846\r\n");
+			textArea.append(format.format(new Date()) + "：解析订票结果失败，请联系作者QQ：3094759846\r\n");
 		}
 	}
 
@@ -1140,19 +1095,16 @@ public class Home_Page {
 	 */
 	private DefaultListModel<Object> getPassengerDTOs() {
 		DefaultListModel<Object> model_Seats = new DefaultListModel<Object>();
-		VHttpPost post = new VHttpPost(
-				"https://kyfw.12306.cn/otn/confirmPassenger/getPassengerDTOs");
+		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/getPassengerDTOs");
 		VHttpResponse res = Browser.execute(post);
 		String body = HttpUtils.outHtml(res.getBody());
 		try {
 			JSONObject res_obj = new JSONObject(body);
 			JSONObject userListObj = (JSONObject) res_obj.get("data");
 			if (userListObj.length() < 1) {
-				textArea.append(format.format(new Date()) + "："
-						+ new JSONObject(body).get("messages") + "\r\n");
+				textArea.append(format.format(new Date()) + "：" + new JSONObject(body).get("messages") + "\r\n");
 			} else {
-				JSONArray userArr = (JSONArray) (userListObj
-						.get("normal_passengers"));
+				JSONArray userArr = (JSONArray) (userListObj.get("normal_passengers"));
 				for (int i = 0; i < userArr.length(); i++) {
 					JSONObject obj = (JSONObject) userArr.get(i);
 					model_Seats.addElement(obj.get("passenger_name"));
@@ -1160,8 +1112,7 @@ public class Home_Page {
 				}
 			}
 		} catch (JSONException e) {
-			textArea.append(format.format(new Date())
-					+ "：获取乘客列表失败，请联系作者QQ：3094759846\r\n");
+			textArea.append(format.format(new Date()) + "：获取乘客列表失败，请联系作者QQ：3094759846\r\n");
 		}
 		return model_Seats;
 	}
@@ -1170,10 +1121,9 @@ public class Home_Page {
 	 * 查询订单列表
 	 */
 	private void getOrderList() {
-		
+
 		try {
-			VHttpPost post = new VHttpPost(
-					"https://kyfw.12306.cn/otn/queryOrder/queryMyOrderNoComplete");
+			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/queryOrder/queryMyOrderNoComplete");
 			VParames parames = new VParames();
 			parames.clear();
 			parames.put("_json_att", "");
@@ -1186,14 +1136,69 @@ public class Home_Page {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 处理订单列表
 	 */
-	private void disposeOrder(JSONObject res_obj){
+	private void disposeOrder(JSONObject res_obj) {
 		try {
+			table_1.setModel(new DefaultTableModel(new Object[][] {},
+					new String[] { "\u8F66\u6B21", "\u8BA2\u5355\u53F7", "\u4E58\u5BA2\u59D3\u540D",
+							"\u53D1\u8F66\u65F6\u95F4", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u7968\u79CD",
+							"\u5E2D\u522B", "\u8F66\u53A2", "\u5EA7\u4F4D", "\u7968\u4EF7", "\u72B6\u6001" }));
+			DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+			if (res_obj.isNull("data")) {
+				model.addRow(new Vector<String>());
+				return;
+			}
 			JSONObject userListObj = (JSONObject) res_obj.get("data");
 			
+			JSONArray jsonArr = ((JSONArray) userListObj.get("orderDBList"));
+
+			for (int i = 0; i < jsonArr.length(); i++) {
+				JSONObject obj = jsonArr.getJSONObject(i);
+				JSONArray jsonArr2 = ((JSONArray) obj.get("tickets"));
+				JSONObject tickets = jsonArr2.getJSONObject(0);
+				JSONObject stationTrainDTO = (JSONObject) tickets.get("stationTrainDTO");
+				JSONObject passengerDTO = (JSONObject) tickets.get("passengerDTO");
+
+				Vector<String> vector = new Vector<String>();
+				vector.add(obj.get("train_code_page").toString());
+				vector.add(obj.get("sequence_no").toString());
+				vector.add(passengerDTO.get("passenger_name").toString());
+				vector.add(stationTrainDTO.get("start_time").toString());
+				vector.add(stationTrainDTO.get("from_station_name").toString());
+				vector.add(stationTrainDTO.get("to_station_name").toString());
+				vector.add(tickets.get("ticket_type_name").toString());
+				vector.add(tickets.get("seat_type_name").toString());
+				vector.add(tickets.get("coach_name").toString());
+				vector.add(tickets.get("seat_name").toString());
+				vector.add(tickets.get("str_ticket_price_page").toString());
+				vector.add(tickets.get("ticket_status_name").toString());
+				model.addRow(vector);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void cancelOrder(String orderId){
+		try {
+			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/queryOrder/cancelNoCompleteMyOrder");
+			VParames parames = new VParames();
+			parames.clear();
+			parames.put("_json_att", "");
+			parames.put("cancel_flag", "cancel_order");
+			parames.put("sequence_no", orderId);
+			post.setParames(parames);
+			VHttpResponse res = Browser.execute(post);
+			String body = HttpUtils.outHtml(res.getBody());
+			JSONObject res_obj = new JSONObject(body);
+			JSONObject data_obj = (JSONObject) res_obj.get("data");
+			if ("N".equals(data_obj.get("existError"))) {
+				textArea.append(format.format(new Date()) + "：订单取消成功\r\n");
+				getOrderList();
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

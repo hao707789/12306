@@ -26,6 +26,8 @@ import com.vcode.http.client.methods.VHttpPost;
 import com.vcode.http.client.parames.VParames;
 import com.vcode.http.utils.Browser;
 import com.vcode.http.utils.HttpUtils;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class Login_Page {
 
@@ -126,6 +128,9 @@ public class Login_Page {
                     code.append(banner);
                     lblNewLabel_2.setText("鼠标当前点击位置的坐标是" + x + "," + y);
                     lblNewLabel_2.setForeground(Color.black);
+                }
+                if(e.getButton() == MouseEvent.BUTTON3){
+                	CheckCode();
                 }
             }
         });

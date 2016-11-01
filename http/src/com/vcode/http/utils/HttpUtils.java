@@ -1,5 +1,6 @@
 package com.vcode.http.utils;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
@@ -158,6 +159,7 @@ public class HttpUtils {
 	 * @param y
 	 */
 	public static void getSubmitCodeBy12306(InputStream in,final Home_Page home) {
+		incode.setLength(0);
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];
 		int len = 0;
@@ -197,6 +199,7 @@ public class HttpUtils {
                   String banner = x + "," + (y-33) + ",";
                   incode.append(banner);
                   label_1.setText("当前点击坐标是：" + x + "," + (y-33));
+                  label_1.setForeground(Color.black);
               }
 			}
 		});
@@ -206,8 +209,13 @@ public class HttpUtils {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				//回调方法
-				frame2.dispose();
-				home.checkSubmitCode();
+				if ("".equals(incode.toString())) {
+					label_1.setText("未选择任何验证码，不进行提交");
+					label_1.setForeground(Color.red);
+				}else {
+					frame2.dispose();
+					home.checkSubmitCode();
+				}
 			}
 		});
 		button.setBounds(214, 200, 62, 25);
