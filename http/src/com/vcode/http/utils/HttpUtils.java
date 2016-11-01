@@ -1,15 +1,14 @@
 package com.vcode.http.utils;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +26,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+
+import test.t_12306.Home_Page;
 
 import com.vcode.http.client.VHttpClient;
 import com.vcode.http.client.VHttpResponse;
@@ -40,6 +40,8 @@ import com.vcode.http.impl.VHttpClientImpl;
  *
  */
 public class HttpUtils {
+	
+	public static StringBuffer incode = new StringBuffer();
 	
 	/**
 	 * 将网页返回的结果封装成字符串
@@ -141,14 +143,21 @@ public class HttpUtils {
 	}
 	
 	/**
-	 * 针对12306验证码
-	 * @param in	验证码的流s
-	 * @param x		展示验证码的窗口的长
-	 * @param y		展示验证码的窗口的宽
-	 * @return		验证码
+	 * 12306专用验证码(登录用)
+	 * @param in
+	 * @return
 	 */
-	public static String outCodeBy12306(InputStream in, int x,int y) {
-		final StringBuffer sb = new StringBuffer("true");
+	public static String outCodeBy12306(InputStream in){
+		return getCodeBy12306(in, 0, 0);
+	}
+	
+	/**
+	 * 12306专用验证码(提交订单用)
+	 * @param in
+	 * @param x
+	 * @param y
+	 */
+	public static void getSubmitCodeBy12306(InputStream in,final Home_Page home) {
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];
 		int len = 0;
@@ -164,51 +173,121 @@ public class HttpUtils {
 			e.printStackTrace();
 		}
 		
-		final JFrame frame2 = new JFrame();
-		frame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame2.setVisible(false);
-		frame2.setBounds(x==0?307:x, y==0?266:y,x==0?307:x, y==0?266:y);
-		frame2.setLayout(new FlowLayout());
-
-		final StringBuffer incode = new StringBuffer();
-		ImageIcon icon = new ImageIcon(data);
-		frame2.add(new JLabel(icon));
+		final JFrame frame2 = new JFrame("验证码");
+		frame2.setSize(new Dimension(302, 268));
+		frame2.setLocationRelativeTo(null);
+		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame2.getContentPane().setLayout(null);
 		
-		final JLabel lable = new JLabel("鼠标当前点击位置的坐标是：");
-		JButton bt = new JButton("提交");
-		frame2.add(lable);
-		frame2.add(bt);
-		frame2.setVisible(true);
-		frame2.addMouseListener(new MouseAdapter(){  //匿名内部类，鼠标事件
-            public void mouseClicked(MouseEvent e){   //鼠标完成点击事件
-                if(e.getButton() == MouseEvent.BUTTON1){ //e.getButton就会返回点鼠标的那个键，左键还是右健，3代表右键
-                    int x = e.getX();  //得到鼠标x坐标
-                    int y = e.getY();  //得到鼠标y坐标
-                    String banner = x + "," + (y-65) + ",";
-                    incode.append(banner);
-                    lable.setText("鼠标当前点击位置的坐标是" + x + "," + (y-65));
-                }
-            }
-        });
-		bt.addActionListener(new ActionListener() {
+		JLabel label = new JLabel("");
+		label.setIcon(new ImageIcon(data));
+		label.setSize(new Dimension(284, 196));
+		frame2.getContentPane().add(label);
+		
+		final JLabel label_1 = new JLabel("当前点击坐标是：");
+		label_1.setBounds(10, 195, 184, 35);
+		frame2.getContentPane().add(label_1);
+		
+		label.addMouseListener(new MouseAdapter() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				sb.append("2");
-				frame2.dispose();
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton() == MouseEvent.BUTTON1){ //e.getButton就会返回点鼠标的那个键，左键还是右健，3代表右键
+                  int x = e.getX();  //得到鼠标x坐标
+                  int y = e.getY();  //得到鼠标y坐标
+                  String banner = x + "," + (y-33) + ",";
+                  incode.append(banner);
+                  label_1.setText("当前点击坐标是：" + x + "," + (y-33));
+              }
 			}
 		});
 		
-		while ("true".equals(sb.toString())) {
+		JButton button = new JButton("提交");
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				//回调方法
+				frame2.dispose();
+				home.checkSubmitCode();
+			}
+		});
+		button.setBounds(214, 200, 62, 25);
+		frame2.getContentPane().add(button);
+		frame2.setVisible(true);
+	}
+	
+	/**
+	 * 12306登录使用
+	 * @param in
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public static String getCodeBy12306(InputStream in, int x,int y) {
+		StringBuffer sb = new StringBuffer("true");
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int len = 0;
+		byte[] data = null;
+		try {
+			while ((len = in.read(buffer)) != -1) {
+				// 用输出流往buffer里写入数据，中间参数代表从哪个位置开始读，len代表读取的长度
+				outStream.write(buffer, 0, len);
+			}
+			in.close();
+			data = outStream.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		final JFrame frame2 = new JFrame("验证码");
+		frame2.setSize(new Dimension(302, 268));
+		frame2.setLocationRelativeTo(null);
+		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame2.getContentPane().setLayout(null);
+		
+		JLabel label = new JLabel("");
+		label.setIcon(new ImageIcon("d:/123.png"));
+		label.setSize(new Dimension(284, 196));
+		frame2.getContentPane().add(label);
+		
+		final JLabel label_1 = new JLabel("当前点击坐标是：");
+		label_1.setBounds(10, 195, 184, 35);
+		frame2.getContentPane().add(label_1);
+		
+		label.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton() == MouseEvent.BUTTON1){ //e.getButton就会返回点鼠标的那个键，左键还是右健，3代表右键
+                  int x = e.getX();  //得到鼠标x坐标
+                  int y = e.getY();  //得到鼠标y坐标
+                  String banner = x + "," + (y-65) + ",";
+                  incode.append(banner);
+                  label_1.setText("当前点击坐标是：" + x + "," + (y-65));
+              }
+			}
+		});
+		
+		JButton button = new JButton("提交");
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				//回调方法
+				
+				frame2.dispose();
+			}
+		});
+		button.setBounds(214, 200, 62, 25);
+		frame2.getContentPane().add(button);
+		frame2.setVisible(true);
+		
+		while ("true".equals(sb.toString())){
 			try {
-				Thread.sleep(200);
+				Thread.sleep(100);
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
 		}
-		String rs = incode.toString();
-		rs = rs.substring(0,rs.length()-1);
-		System.out.println("验证码 : " + rs);
-		return incode.toString();
+		return sb.substring(0, sb.length()-1);
 	}
 	
 	/**
@@ -241,6 +320,7 @@ public class HttpUtils {
 	 * @param x		展示验证码的窗口的长
 	 * @param y		展示验证码的窗口的宽
 	 * @return		验证码
+	 * @wbp.parser.entryPoint
 	 */
 	public static String outCode(InputStream in, int x,int y) {
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -262,11 +342,11 @@ public class HttpUtils {
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(false);
 		frame.setBounds(x==0?307:x, y==0?266:y,x==0?307:x, y==0?266:y);
-		frame.setLayout(new FlowLayout());
+		frame.getContentPane().setLayout(new FlowLayout());
 
 		final StringBuffer incode = new StringBuffer();
 		ImageIcon icon = new ImageIcon(data);
-		frame.add(new JLabel(icon));
+		frame.getContentPane().add(new JLabel(icon));
 		frame.setVisible(true);
 		
 
@@ -277,17 +357,6 @@ public class HttpUtils {
 		System.out.println("验证码 : " + code);
 		return code;
 	}
-	
-	
-	/**
-	 * 12306专用验证码
-	 * @param in
-	 * @return
-	 */
-	public static String outCodeBy12306(InputStream in){
-		return outCodeBy12306(in, 0, 0);
-	}
-	
 
 	/**
 	 * 打印Cookie
@@ -347,4 +416,8 @@ public class HttpUtils {
 		}    
 		return rs;
   	}
+	
+	public static void main(String[] args) throws FileNotFoundException {
+		outCodeBy12306(new FileInputStream(new File("d:/123.png")));
+	}
 }

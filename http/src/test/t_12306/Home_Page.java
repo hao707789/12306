@@ -1,14 +1,9 @@
 package test.t_12306;
 
-import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -42,7 +36,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerDateModel;
@@ -61,10 +54,12 @@ import com.vcode.http.client.parames.VParames;
 import com.vcode.http.utils.Browser;
 import com.vcode.http.utils.Chooser;
 import com.vcode.http.utils.HttpUtils;
+import com.vcode.http.utils.JTextAreaExt;
 import com.vcode.http.utils.PopList;
 
 public class Home_Page {
 
+	private Home_Page window;
 	private JFrame frame;
 	private JTextField textField;
 	private JTextField textField_2;
@@ -75,14 +70,13 @@ public class Home_Page {
 	private Map<String, String> map = (Map<String, String>)HttpUtils.getCitiInfo();
 	private Map<String, JSONObject> userMap = new HashMap<String, JSONObject>();
 	private List<JSONObject> datalist = new ArrayList<JSONObject>();
-	public JTextArea textArea;
+	public JTextAreaExt textArea;
 	private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 	private JList<Object> list_1;
 	private JList<Object> list_2;
 	private JList<Object> list_3;
 	private String REPEAT_SUBMIT_TOKEN = "";
 	private String key_check_isChange = "";
-	private String subMitCode = "";
 	private DefaultListModel<Object> model_train = new DefaultListModel<Object>();
 
 	/**
@@ -102,6 +96,7 @@ public class Home_Page {
 	}
 	
 	public void show(Home_Page window){
+		this.window = window;
 		window.frame.setVisible(true);
 	}
 
@@ -390,14 +385,18 @@ public class Home_Page {
 		tabbedPane.add(p1,"刷票界面");
 		p1.setLayout(null);
 		
-		textArea = new JTextArea();
-		textArea.setBounds(10, 10, 394, 185);
+		textArea = new JTextAreaExt();
+		textArea.setLineWrap(true);
+		JScrollPane scroll = new JScrollPane(textArea);
+		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+		scroll.setBounds(0, 0, 368, 205);
 		textArea.setBorder(BorderFactory.createTitledBorder("信息输出: "));
-		p1.add(textArea);
+		p1.add(scroll);
 		
 		JSpinner spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null, new Integer(100)));
 		spinner.setBounds(496, 53, 53, 22);
+		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null, new Integer(100)));
 		p1.add(spinner);
 		
 		JLabel label_6 = new JLabel("刷票频率：");
@@ -421,8 +420,8 @@ public class Home_Page {
 		p1.add(chckbxNewCheckBox_2);
 		
 		JCheckBox checkBox_20 = new JCheckBox("无座不提交");
-		checkBox_20.setSelected(true);
 		checkBox_20.setBounds(662, 53, 91, 23);
+		checkBox_20.setSelected(true);
 		p1.add(checkBox_20);
 		
 		JCheckBox checkBox_21 = new JCheckBox("定时启动");
@@ -434,8 +433,8 @@ public class Home_Page {
 		p1.add(label_9);
 		
 		JSpinner spinner_1 = new JSpinner();
-		spinner_1.setModel(new SpinnerDateModel(new Date(1477411200000L), null, null, Calendar.MINUTE));
 		spinner_1.setBounds(844, 53, 130, 22);
+		spinner_1.setModel(new SpinnerDateModel(new Date(1477411200000L), null, null, Calendar.MINUTE));
 		p1.add(spinner_1);
 		
 		JLabel label_10 = new JLabel("深圳——咸宁，2016-10-26，成人票");
@@ -468,6 +467,7 @@ public class Home_Page {
 		p1.add(button_1);
 		
 		list_1 = new JList<Object>(model_train);
+		list_1.setBounds(496, 87, 404, 32);
 		list_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -479,11 +479,11 @@ public class Home_Page {
 		list_1.setVisibleRowCount(2);
 		list_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list_1.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		list_1.setBounds(496, 87, 404, 32);
 		p1.add(list_1);
 		
 		
 		list_2 = new JList<Object>();
+		list_2.setBounds(496, 125, 404, 32);
 		list_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -501,10 +501,10 @@ public class Home_Page {
 		list_2.setVisibleRowCount(2);
 		list_2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list_2.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		list_2.setBounds(496, 125, 404, 32);
 		p1.add(list_2);
 		
 		list_3 = new JList<Object>();
+		list_3.setBounds(496, 162, 404, 32);
 		list_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -522,21 +522,20 @@ public class Home_Page {
 		list_3.setVisibleRowCount(2);
 		list_3.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list_3.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		list_3.setBounds(496, 162, 404, 32);
 		p1.add(list_3);
 		
 		PopList.initPopup(button,list_2, pupModel);
-//		DefaultListModel<Object> pupModel2 = getPassengerDTOs();
-//		PopList.initPopup(button_1,list_3, pupModel2);
+		DefaultListModel<Object> pupModel2 = getPassengerDTOs();
+		PopList.initPopup(button_1,list_3, pupModel2);
 		
 		JButton button_2 = new JButton("清空");
+		button_2.setBounds(911, 92, 73, 23);
 		button_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				model_train.removeAllElements();
 			}
 		});
-		button_2.setBounds(911, 92, 73, 23);
 		p1.add(button_2);
 		
 		JPanel p3 = new JPanel();
@@ -591,15 +590,19 @@ public class Home_Page {
 	private void brushVotes(){
 		// 验证出发地、目的地、时间等是否填写，没有则不刷票
 		if ("".equals(textField)) {
-			System.out.println("请输入出发地");
+			textArea.append(format.format(new Date())+"：请输入出发地\r\n");
 			return;
 		}
 		if ("".equals(textField_3)) {
-			System.out.println("请输入目的地");
+			textArea.append(format.format(new Date())+"：请输入目的地\r\n");
 			return;
 		}
 		if ("".equals(textField_2)) {
-			System.out.println("请输入日期");
+			textArea.append(format.format(new Date())+"：请输入日期\r\n");
+			return;
+		}
+		if (list_3.getModel().getSize()<=0) {
+			textArea.append(format.format(new Date())+"：请选择乘车人\r\n");
 			return;
 		}
 		StringBuffer sb = new StringBuffer();
@@ -620,8 +623,6 @@ public class Home_Page {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
-		
 	}
 	
 	/**
@@ -769,49 +770,28 @@ public class Home_Page {
 		}
 		res.getEntity().disconnect();
 		textArea.append(format.format(new Date())+"：开始拉取验证......\r\n");
-		
-		boolean CodeIsTrue = false;
-		CodeIsTrue = getAndCheckSubmitCode();
-//		while (!CodeIsTrue) {
-//			CodeIsTrue = getAndCheckSubmitCode();
-//			textArea.append(format.format(new Date())+"："+CodeIsTrue+"\r\n");
-//		}
-		
-		if (checkOrderInfo()) {
-			getQueueCount();
-			confirmSingleForQueue();
-			queryOrderWaitTime();
-		}
+		getSubmitCode();
 	}
 	
 	/**
 	 * 拉取提交订单验证码及校验，返回true表示校验成功，反之否
 	 * @return	校验是否成功
 	 */
-	private boolean getAndCheckSubmitCode(){
-		boolean rs = false;
-		JFrame frame2 = new JFrame();
-		frame2.setSize(new Dimension(300,400));
-		JButton button = new JButton("123");
-		frame2.add(button);
-		frame2.setVisible(true);
-		
-		
-		Scanner can = new Scanner(System.in);
-		String s = can.nextLine();
-		System.out.println(s);
-		
-		
-//		//拉取验证码
-//		String url = "https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&"+Math.random();
-//		VHttpGet get = new VHttpGet(url);
-//		VHttpResponse res = Browser.execute(get);							//获取验证码
-//		subMitCode = HttpUtils.outCodeBy12306(res.getBody());	//定义窗口大小
-//		res.getEntity().disconnect();							//耗尽资源
-		
+	private void getSubmitCode(){
+		//拉取验证码
+		String url = "https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=passenger&rand=randp&"+Math.random();
+		VHttpGet get = new VHttpGet(url);
+		VHttpResponse res = Browser.execute(get);			//获取验证码
+		HttpUtils.getSubmitCodeBy12306(res.getBody(),window);				
+		res.getEntity().disconnect();						//耗尽资源
+	}
+	
+	public void checkSubmitCode(){
+		String code = HttpUtils.incode.toString().substring(0,HttpUtils.incode.toString().length()-1);
+		textArea.append(format.format(new Date())+"：当前验证码："+code+"\r\n");
 		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
 		VParames parames5 = new VParames();
-		parames5.put("randCode", subMitCode);
+		parames5.put("randCode", code);
 		parames5.put("rand", "randp");
 		parames5.put("_json_att", "");
 		parames5.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
@@ -824,24 +804,23 @@ public class Home_Page {
 			JSONObject dataObj = (JSONObject)res_obj.get("data");
 			if ("1".equals(dataObj.get("result").toString())) {
 				textArea.append(format.format(new Date())+"：验证码正确，开始确认用户是否可以订单\r\n");
-				rs = true;
+				checkOrderInfo();
 			}else {
 				textArea.append(format.format(new Date())+"："+res_obj.get("validateMessages").toString()+"\r\n");
 				textArea.append(format.format(new Date())+"：验证码错误，请重新验证\r\n");
+				getSubmitCode();
 			}
 		} catch (JSONException e) {
 			textArea.append(format.format(new Date())+"：解析验证码错误，请联系作者QQ：3094759846\r\n");
 		}
-		return rs;
 	}
 	
 	/**
 	 * 确认用户是否可以提交订单
 	 */
-	private boolean checkOrderInfo(){
+	private void checkOrderInfo(){
 		String username = list_3.getModel().getElementAt(0).toString();
 		JSONObject userObj = userMap.get(username);
-		boolean rs  = false;
 		try {
 			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/checkOrderInfo");
 			VParames parames = new VParames();
@@ -851,7 +830,7 @@ public class Home_Page {
 			parames.put("passengerTicketStr", "1,0,1,"+userObj.getString("passenger_name")+",1,"+userObj.getString("passenger_id_no")+","+userObj.getString("mobile_no")+",N");
 			parames.put("oldPassengerStr", userObj.getString("passenger_name")+",1,"+userObj.getString("passenger_id_no")+",1_");
 			parames.put("tour_flag", "dc");
-			parames.put("randCode", subMitCode);
+			parames.put("randCode", HttpUtils.incode.toString().substring(0,HttpUtils.incode.toString().length()-1));
 			parames.put("_json_att", "");
 			parames.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
 			post.setParames(parames);
@@ -861,7 +840,7 @@ public class Home_Page {
 			JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
 			if ("true".equals(dataobj.get("submitStatus").toString())) {
 				textArea.append(format.format(new Date())+"：当前用户可以提交订单\r\n");
-				rs = true;
+				getQueueCount();
 			}else {
 				textArea.append(format.format(new Date())+"："+res_obj.get("messages").toString()+"\r\n");
 			}
@@ -869,7 +848,6 @@ public class Home_Page {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return rs;
 	}
 	
 	/**
@@ -912,6 +890,7 @@ public class Home_Page {
 		} catch (Exception e) {
 			textArea.append(format.format(new Date())+"：解析余票数量失败，请联系作者QQ：3094759846\r\n");
 		}
+		confirmSingleForQueue();
 	}
 	
 	/**
@@ -928,7 +907,7 @@ public class Home_Page {
 			parames.clear();
 			parames.put("passengerTicketStr", "1,0,1,"+userObj.getString("passenger_name")+",1,"+userObj.getString("passenger_id_no")+","+userObj.getString("mobile_no")+",N");
 			parames.put("oldPassengerStr", userObj.getString("passenger_name")+",1,"+userObj.getString("passenger_id_no")+",1_");
-			parames.put("randCode", subMitCode);
+			parames.put("randCode", HttpUtils.incode.toString().substring(0,HttpUtils.incode.toString().length()-1));
 			parames.put("purpose_codes", "00");
 			parames.put("key_check_isChange", key_check_isChange);
 			parames.put("leftTicketStr", obj.getString("yp_info"));
@@ -944,6 +923,7 @@ public class Home_Page {
 			JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
 			if ("true".equals(dataobj.get("submitStatus").toString())) {
 				textArea.append(format.format(new Date())+"：订单提交成功，正在查询订票结果\r\n");
+				queryOrderWaitTime();
 			}else {
 				textArea.append(format.format(new Date())+"："+body+"\r\n");
 			}
@@ -976,7 +956,10 @@ public class Home_Page {
 					orderId = dataobj.get("orderId").toString();
 				}
 			}
-			textArea.append(format.format(new Date())+"："+"恭喜你，成功订到一张"+obj.getString("from_station_name")+"至"+obj.getString("end_station_name")+"的硬座，订单号为："+orderId+"，请尽快付款，以免耽误行程"+"\r\n");
+			textArea.append("<html><font color='red'>"
+					+format.format(new Date())+"："+"恭喜你，成功订到一张"
+					+obj.getString("from_station_name")+"至"+obj.getString("end_station_name")
+					+"的硬座，订单号为："+orderId+"，请尽快付款，以免耽误行程"+"\r\n"+ "</font></html>");
 		} catch (JSONException e) {
 			textArea.append(format.format(new Date())+"：解析订票结果失败，请联系作者QQ：3094759846\r\n");
 		}

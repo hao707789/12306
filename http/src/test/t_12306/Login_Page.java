@@ -71,7 +71,7 @@ public class Login_Page {
 			e1.printStackTrace();
 		}
 		frame = new JFrame();
-		frame.setBounds(100, 100, 441, 450);
+		frame.setBounds(100, 100, 440, 465);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -136,7 +136,7 @@ public class Login_Page {
 				CheckCode();
 			}
 		});
-		btnNewButton.setBounds(100, 379, 210, 23);
+		btnNewButton.setBounds(61, 366, 303, 51);
 		frame.getContentPane().add(btnNewButton);
 		ticket_init();
 	}
@@ -196,7 +196,7 @@ public class Login_Page {
 		newCode = newCode.substring(0,newCode.length()-1);
 		code.setLength(0);
 		code.append(newCode);
-		System.out.println("当前验证码是："+newCode);
+		lblNewLabel_2.setText("当前验证码是："+newCode);
 		
 		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
 		VParames parames = new VParames();
@@ -209,7 +209,7 @@ public class Login_Page {
 			JSONObject json = new JSONObject(body);
 			JSONObject json2 = new JSONObject(json.get("data").toString());
 			if ("1".equals(json2.get("result"))) {
-				System.out.println("验证码正确，开始提交表单");
+				lblNewLabel_2.setText("验证码正确，开始提交表单");
 				res.getEntity().disconnect();
 				login();
 			}else {
@@ -240,7 +240,7 @@ public class Login_Page {
 			if ("true".equals(json.get("status").toString())) {
 				JSONObject json2 = new JSONObject(json.get("data").toString());
 				if (json2.length()>1 && "Y".equals(json2.get("loginCheck").toString())) {
-					System.out.println("登录成功，正在跳转到主页");
+					lblNewLabel_2.setText("登录成功，正在跳转到主页");
 				}else {
 					System.out.println(json.get("messages"));
 					System.exit(0);
@@ -262,9 +262,9 @@ public class Login_Page {
 		res = Browser.execute(post);								//提交登录
 		if (res.getEntity().getStaus()==200){
 			if (HttpUtils.outHtml(res.getBody()).contains("欢迎您登录中国铁路客户服务中心网站")){		//验证是否登录成功
-				System.out.println("登录成功");
+				lblNewLabel_2.setText("登录成功");
 				Home_Page window = new Home_Page();
-				window.textArea.append(format.format(new Date())+"：登录成功,欢迎使用V代码抢票工具");
+				window.textArea.append(format.format(new Date())+"：登录成功,欢迎使用V代码抢票工具\r\n");
 				frame.dispose();
 				window.show(window);
 			}else {
