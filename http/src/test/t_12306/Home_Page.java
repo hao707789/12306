@@ -846,6 +846,15 @@ public class Home_Page {
 		checkBox_14.setSelected(true);
 
 		JLabel lblNewLabel = new JLabel(new ImageIcon("arrow.png"));
+		lblNewLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String one=textField.getText();
+				String two=textField_3.getText();
+				textField.setText(two);
+				textField_3.setText(one);
+			}
+		});
 		lblNewLabel.setText("◄►");
 		lblNewLabel.setBounds(151, 54, 27, 15);
 		frame.getContentPane().add(lblNewLabel);
