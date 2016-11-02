@@ -1,5 +1,6 @@
 package test.t_12306;
 
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.SystemColor;
@@ -59,17 +60,20 @@ import com.vcode.http.utils.HttpUtils;
 import com.vcode.http.utils.JTextAreaExt;
 import com.vcode.http.utils.PopList;
 
+import javax.swing.border.LineBorder;
+
+import java.awt.Color;
+
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+
 /**
  * 刷票界面
  * 
- * 座位编号：
- *	 硬座：1
- *	 软座：2
- * 	硬卧：3
- * 	软卧：4
- * 	一等座：M
- * 	二等座：O
- * 	商务座：9
+ * 座位编号： 硬座：1 软座：2 硬卧：3 软卧：4 一等座：M 二等座：O 商务座：9
  * 
  * 
  * @author huahao
@@ -85,11 +89,13 @@ public class Home_Page {
 	private JTable table;
 	private int[] mouse_gis = new int[2];
 	private JLabel label;
-	private Map<String, String> map = (Map<String, String>) HttpUtils.getCitiInfo();
+	private Map<String, String> map = (Map<String, String>) HttpUtils
+			.getCitiInfo();
 	private Map<String, JSONObject> userMap = new HashMap<String, JSONObject>();
 	private List<JSONObject> datalist = new ArrayList<JSONObject>();
 	public JTextAreaExt textArea;
 	private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+	private SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
 	private JList<Object> list_1;
 	private JList<Object> list_2;
 	private JList<Object> list_3;
@@ -132,7 +138,8 @@ public class Home_Page {
 	 */
 	private void initialize() {
 		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			UIManager
+					.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -200,17 +207,14 @@ public class Home_Page {
 
 		JComboBox<Object> comboBox = new JComboBox<Object>();
 		comboBox.setFont(new Font("微软雅黑", Font.PLAIN, 12));
-		comboBox.setModel(new DefaultComboBoxModel<Object>(
-				new String[] { "00:00—24:00", "00:00—08:00", "08:00—12:00", "12:00—20:00", "20:00—24:00" }));
+		comboBox.setModel(new DefaultComboBoxModel<Object>(new String[] {
+				"00:00—24:00", "00:00—08:00", "08:00—12:00", "12:00—20:00",
+				"20:00—24:00" }));
 		comboBox.setBounds(554, 51, 103, 21);
 		frame.getContentPane().add(comboBox);
 
-		
 		/**
-		 * 	adult: "1",  
-		 *	child: "2",  
-		 *	student: "3",  
-		 *	disability: "4" 
+		 * adult: "1", child: "2", student: "3", disability: "4"
 		 */
 		JRadioButton radioButton = new JRadioButton("成人");
 		radioButton.setSelected(true);
@@ -250,112 +254,17 @@ public class Home_Page {
 		frame.getContentPane().add(btnNewButton);
 
 		JLabel label_4 = new JLabel("车  型");
-		label_4.setBounds(43, 90, 41, 18);
+		label_4.setBounds(43, 89, 41, 18);
 		frame.getContentPane().add(label_4);
 
-		JCheckBox checkBox = new JCheckBox("高铁");
-		checkBox.setSelected(true);
-		checkBox.setBounds(193, 88, 49, 23);
-		frame.getContentPane().add(checkBox);
-
-		JCheckBox checkBox_1 = new JCheckBox("城铁");
-		checkBox_1.setSelected(true);
-		checkBox_1.setBounds(260, 88, 49, 23);
-		frame.getContentPane().add(checkBox_1);
-
-		JCheckBox checkBox_2 = new JCheckBox("动车");
-		checkBox_2.setSelected(true);
-		checkBox_2.setBounds(327, 88, 49, 23);
-		frame.getContentPane().add(checkBox_2);
-
-		JCheckBox checkBox_3 = new JCheckBox("特快");
-		checkBox_3.setSelected(true);
-		checkBox_3.setBounds(394, 88, 49, 23);
-		frame.getContentPane().add(checkBox_3);
-
-		JCheckBox checkBox_4 = new JCheckBox("直达");
-		checkBox_4.setSelected(true);
-		checkBox_4.setBounds(461, 88, 49, 23);
-		frame.getContentPane().add(checkBox_4);
-
-		JCheckBox checkBox_5 = new JCheckBox("快车");
-		checkBox_5.setSelected(true);
-		checkBox_5.setBounds(528, 88, 49, 23);
-		frame.getContentPane().add(checkBox_5);
-
-		JCheckBox checkBox_6 = new JCheckBox("普客");
-		checkBox_6.setSelected(true);
-		checkBox_6.setBounds(595, 88, 49, 23);
-		frame.getContentPane().add(checkBox_6);
-
-		JCheckBox checkBox_7 = new JCheckBox("临客");
-		checkBox_7.setSelected(true);
-		checkBox_7.setBounds(662, 88, 49, 23);
-		frame.getContentPane().add(checkBox_7);
-
-		JCheckBox checkBox_9 = new JCheckBox("其它");
-		checkBox_9.setSelected(true);
-		checkBox_9.setBounds(729, 88, 49, 23);
-		frame.getContentPane().add(checkBox_9);
-
 		JLabel label_5 = new JLabel("席  别");
-		label_5.setBounds(43, 122, 41, 18);
+		label_5.setBounds(43, 123, 41, 18);
 		frame.getContentPane().add(label_5);
 
-		JCheckBox checkBox_8 = new JCheckBox("特等");
-		checkBox_8.setSelected(true);
-		checkBox_8.setBounds(260, 120, 49, 23);
-		frame.getContentPane().add(checkBox_8);
-
-		JCheckBox checkBox_10 = new JCheckBox("商务");
-		checkBox_10.setSelected(true);
-		checkBox_10.setBounds(193, 120, 49, 23);
-		frame.getContentPane().add(checkBox_10);
-
-		JCheckBox checkBox_11 = new JCheckBox("一等");
-		checkBox_11.setSelected(true);
-		checkBox_11.setBounds(327, 120, 49, 23);
-		frame.getContentPane().add(checkBox_11);
-
-		JCheckBox checkBox_12 = new JCheckBox("二等");
-		checkBox_12.setSelected(true);
-		checkBox_12.setBounds(394, 120, 49, 23);
-		frame.getContentPane().add(checkBox_12);
-
-		JCheckBox checkBox_13 = new JCheckBox("高软");
-		checkBox_13.setSelected(true);
-		checkBox_13.setBounds(461, 120, 49, 23);
-		frame.getContentPane().add(checkBox_13);
-
-		JCheckBox checkBox_15 = new JCheckBox("软卧");
-		checkBox_15.setSelected(true);
-		checkBox_15.setBounds(528, 120, 49, 23);
-		frame.getContentPane().add(checkBox_15);
-
-		JCheckBox checkBox_16 = new JCheckBox("无座");
-		checkBox_16.setSelected(true);
-		checkBox_16.setBounds(796, 120, 49, 23);
-		frame.getContentPane().add(checkBox_16);
-
-		JCheckBox checkBox_17 = new JCheckBox("硬座");
-		checkBox_17.setSelected(true);
-		checkBox_17.setBounds(729, 120, 49, 23);
-		frame.getContentPane().add(checkBox_17);
-
-		JCheckBox checkBox_18 = new JCheckBox("软座");
-		checkBox_18.setSelected(true);
-		checkBox_18.setBounds(662, 120, 49, 23);
-		frame.getContentPane().add(checkBox_18);
-
-		JCheckBox checkBox_19 = new JCheckBox("硬卧");
-		checkBox_19.setSelected(true);
-		checkBox_19.setBounds(595, 120, 49, 23);
-		frame.getContentPane().add(checkBox_19);
-
-		JCheckBox checkBox_14 = new JCheckBox("其它");
-		checkBox_14.setSelected(true);
-		checkBox_14.setBounds(864, 120, 49, 23);
-		frame.getContentPane().add(checkBox_14);
+		final JPanel panel_1 = new JPanel();
+		panel_1.setBounds(84, 82, 656, 31);
+		final JPanel panel_2 = new JPanel();
+		panel_2.setBounds(84, 117, 786, 31);
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(43, 157, 1001, 237);
@@ -383,38 +292,40 @@ public class Home_Page {
 		table.setFont(new Font("宋体", Font.PLAIN, 12));
 		scrollPane.setViewportView(table);
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		table.setModel(new DefaultTableModel(
-				new Object[][] {
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null },
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null },
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null },
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null },
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null },
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null },
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null },
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null },
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null },
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null },
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null },
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null },
-						{ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-								null, null, null }, },
-				new String[] { "\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u5386\u65F6",
-						"\u53D1\u8F66\u65F6\u95F4", "\u5230\u8FBE\u65F6\u95F4", "\u5546\u52A1", "\u7279\u7B49",
-						"\u4E00\u7B49", "\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367", "\u786C\u5367", "\u8F6F\u5EA7",
-						"\u786C\u5EA7", "\u65E0\u5EA7", "\u5176\u5B83", "\u5907\u6CE8" }));
+		table.setModel(new DefaultTableModel(new Object[][] {
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null, null, null, null, null, null, null }, },
+				new String[] { "\u8F66\u6B21", "\u51FA\u53D1\u5730",
+						"\u76EE\u7684\u5730", "\u5386\u65F6",
+						"\u53D1\u8F66\u65F6\u95F4", "\u5230\u8FBE\u65F6\u95F4",
+						"\u5546\u52A1", "\u7279\u7B49", "\u4E00\u7B49",
+						"\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367",
+						"\u786C\u5367", "\u8F6F\u5EA7", "\u786C\u5EA7",
+						"\u65E0\u5EA7", "\u5176\u5B83", "\u5907\u6CE8" }));
 		setTableSize();
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -433,7 +344,8 @@ public class Home_Page {
 
 		JSpinner spinner = new JSpinner();
 		spinner.setBounds(496, 53, 53, 22);
-		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null, new Integer(100)));
+		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null,
+				new Integer(100)));
 		p1.add(spinner);
 
 		JLabel label_6 = new JLabel("刷票频率：");
@@ -471,7 +383,8 @@ public class Home_Page {
 
 		JSpinner spinner_1 = new JSpinner();
 		spinner_1.setBounds(844, 53, 130, 22);
-		spinner_1.setModel(new SpinnerDateModel(new Date(1477411200000L), null, null, Calendar.MINUTE));
+		spinner_1.setModel(new SpinnerDateModel(new Date(1477411200000L), null,
+				null, Calendar.MINUTE));
 		p1.add(spinner_1);
 
 		JLabel label_10 = new JLabel("深圳——咸宁，2016-10-26，成人票");
@@ -528,7 +441,8 @@ public class Home_Page {
 					DefaultListModel<Object> model_Seats = new DefaultListModel<Object>();
 					for (int i = 0; i < list_2.getModel().getSize(); i++) {
 						if (i != list_2.getSelectedIndex()) {
-							model_Seats.addElement(list_2.getModel().getElementAt(i));
+							model_Seats.addElement(list_2.getModel()
+									.getElementAt(i));
 						}
 					}
 					list_2.setModel(model_Seats);
@@ -549,7 +463,8 @@ public class Home_Page {
 					DefaultListModel<Object> model_Passenger = new DefaultListModel<Object>();
 					for (int i = 0; i < list_3.getModel().getSize(); i++) {
 						if (i != list_3.getSelectedIndex()) {
-							model_Passenger.addElement(list_3.getModel().getElementAt(i) + " ");
+							model_Passenger.addElement(list_3.getModel()
+									.getElementAt(i) + " ");
 						}
 					}
 					list_3.setModel(model_Passenger);
@@ -577,11 +492,12 @@ public class Home_Page {
 		tabbedPane.add(p2, "订单界面");
 		p2.setLayout(null);
 
-		JButton btnNewButton_1 = new JButton("刷新订单列表");
+		final JButton btnNewButton_1 = new JButton("刷新订单列表");
 		btnNewButton_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				getOrderList();
+				btnNewButton_1.setEnabled(false);
+				getOrderList(btnNewButton_1);
 			}
 		});
 		btnNewButton_1.setBounds(20, 19, 105, 32);
@@ -596,20 +512,27 @@ public class Home_Page {
 		});
 		table_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table_1.setFillsViewportHeight(true);
-		table_1.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null, null, null, null, null, null},
-			},
-			new String[] {
-				"\u8F66\u6B21", "\u8BA2\u5355\u53F7", "\u4E58\u5BA2\u59D3\u540D", "\u53D1\u8F66\u65F6\u95F4", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u7968\u79CD", "\u5E2D\u522B", "\u8F66\u53A2", "\u5EA7\u4F4D", "\u7968\u4EF7", "\u72B6\u6001"
-			}
-		));
+		table_1.setModel(new DefaultTableModel(new Object[][] {
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null },
+				{ null, null, null, null, null, null, null, null, null, null,
+						null, null }, },
+				new String[] { "\u8F66\u6B21", "\u8BA2\u5355\u53F7",
+						"\u4E58\u5BA2\u59D3\u540D", "\u53D1\u8F66\u65F6\u95F4",
+						"\u51FA\u53D1\u5730", "\u76EE\u7684\u5730",
+						"\u7968\u79CD", "\u5E2D\u522B", "\u8F66\u53A2",
+						"\u5EA7\u4F4D", "\u7968\u4EF7", "\u72B6\u6001" }));
+		table_1.getColumnModel().getColumn(3).setPreferredWidth(124);
 
 		JScrollPane scrollPane_1 = new JScrollPane(table_1);
 		scrollPane_1.setBounds(10, 62, 976, 140);
@@ -617,8 +540,10 @@ public class Home_Page {
 
 		JPanel panel = new JPanel();
 		panel.setBounds(10, 0, 465, 60);
-		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "订单操作: ", TitledBorder.LEADING,
-				TitledBorder.TOP, null, SystemColor.controlText));
+		panel.setBorder(new TitledBorder(UIManager
+				.getBorder("TitledBorder.border"), "订单操作: ",
+				TitledBorder.LEADING, TitledBorder.TOP, null,
+				SystemColor.controlText));
 		p2.add(panel);
 		panel.setLayout(null);
 
@@ -632,12 +557,18 @@ public class Home_Page {
 		button_4.setBounds(205, 19, 81, 32);
 		panel.add(button_4);
 
-		JButton button_3 = new JButton("取消订单");
+		final JButton button_3 = new JButton("取消订单");
 		button_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				String OrderId = table_1.getValueAt(table_1.getSelectedRow(), 1).toString();
-				System.out.println("取消订单");
+				if (table_1.getSelectedRows().length > 0) {
+					if (table_1.getValueAt(table_1.getSelectedRow(), 1) != null) {
+						button_3.setEnabled(false);
+						String OrderId = table_1.getValueAt(
+								table_1.getSelectedRow(), 1).toString();
+						cancelOrder(OrderId, button_3);
+					}
+				}
 			}
 		});
 		button_3.setBounds(120, 19, 81, 32);
@@ -668,21 +599,251 @@ public class Home_Page {
 		JPanel p4 = new JPanel();
 		tabbedPane.add(p4, "其它功能");
 		GroupLayout gl_p4 = new GroupLayout(p4);
-		gl_p4.setHorizontalGroup(gl_p4.createParallelGroup(Alignment.LEADING).addGap(0, 996, Short.MAX_VALUE));
-		gl_p4.setVerticalGroup(gl_p4.createParallelGroup(Alignment.LEADING).addGap(0, 205, Short.MAX_VALUE));
+		gl_p4.setHorizontalGroup(gl_p4.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 996, Short.MAX_VALUE));
+		gl_p4.setVerticalGroup(gl_p4.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 205, Short.MAX_VALUE));
 		p4.setLayout(gl_p4);
 		tabbedPane.setBounds(43, 404, 1001, 234);
 		frame.getContentPane().add(tabbedPane);
 
-		JCheckBox checkBox_22 = new JCheckBox("全部车次");
-		checkBox_22.setSelected(true);
-		checkBox_22.setBounds(103, 88, 85, 23);
-		frame.getContentPane().add(checkBox_22);
+		frame.getContentPane().add(panel_1);
+		panel_1.setLayout(null);
 
-		JCheckBox checkBox_23 = new JCheckBox("全部席别");
+		final JCheckBox checkBox_22 = new JCheckBox("全部车次");
+		checkBox_22.setBounds(15, 5, 73, 23);
+		panel_1.add(checkBox_22);
+		checkBox_22.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (checkBox_22.isSelected()) {
+					Component[] comps = panel_1.getComponents();
+					for (int i = 0; i < comps.length; i++) {
+						Component comp = comps[i];
+						if (comp instanceof JCheckBox) {
+							JCheckBox box = (JCheckBox) comp;
+							box.setSelected(true);
+						}
+					}
+				} else {
+					Component[] comps = panel_1.getComponents();
+					for (int i = 0; i < comps.length; i++) {
+						Component comp = comps[i];
+						if (comp instanceof JCheckBox) {
+							JCheckBox box = (JCheckBox) comp;
+							box.setSelected(false);
+						}
+					}
+				}
+			}
+		});
+		checkBox_22.setSelected(true);
+
+		JCheckBox chckbxg = new JCheckBox("高铁-G");
+		chckbxg.setBounds(90, 5, 61, 23);
+		panel_1.add(chckbxg);
+		chckbxg.setSelected(true);
+
+		JCheckBox chckbxc = new JCheckBox("城铁-C");
+		chckbxc.setBounds(153, 5, 61, 23);
+		panel_1.add(chckbxc);
+		chckbxc.setSelected(true);
+
+		JCheckBox chckbxd = new JCheckBox("动车-D");
+		chckbxd.setBounds(216, 5, 61, 23);
+		panel_1.add(chckbxd);
+		chckbxd.setSelected(true);
+
+		JCheckBox chckbxt = new JCheckBox("特快-T");
+		chckbxt.setBounds(279, 5, 61, 23);
+		panel_1.add(chckbxt);
+		chckbxt.setSelected(true);
+
+		JCheckBox chckbxz = new JCheckBox("直达-Z");
+		chckbxz.setBounds(342, 5, 61, 23);
+		panel_1.add(chckbxz);
+		chckbxz.setSelected(true);
+
+		JCheckBox chckbxk = new JCheckBox("快车-K");
+		chckbxk.setBounds(405, 5, 61, 23);
+		panel_1.add(chckbxk);
+		chckbxk.setSelected(true);
+
+		JCheckBox checkBox_6 = new JCheckBox("普客");
+		checkBox_6.setBounds(468, 5, 49, 23);
+		panel_1.add(checkBox_6);
+		checkBox_6.setSelected(true);
+
+		JCheckBox checkBox_7 = new JCheckBox("临客");
+		checkBox_7.setBounds(519, 5, 49, 23);
+		panel_1.add(checkBox_7);
+		checkBox_7.setSelected(true);
+
+		JCheckBox checkBox_9 = new JCheckBox("其它");
+		checkBox_9.setBounds(570, 5, 49, 23);
+		panel_1.add(checkBox_9);
+		checkBox_9.setSelected(true);
+		frame.getContentPane().add(panel_2);
+		panel_2.setLayout(null);
+
+		final JCheckBox checkBox_23 = new JCheckBox("全部席别");
+		checkBox_23.setBounds(15, 4, 73, 23);
+		panel_2.add(checkBox_23);
+		checkBox_23.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Component[] comps = panel_2.getComponents();
+				for (int i = 0; i < comps.length; i++) {
+					Component comp = comps[i];
+					if (comp instanceof JCheckBox) {
+						JCheckBox box = (JCheckBox) comp;
+						if (checkBox_23.isSelected()){
+							box.setSelected(true);
+						}else {
+							box.setSelected(false);
+						}
+					}
+				}
+				for (int i = 0; i < comps.length; i++) {
+					Component comp = comps[i];
+					if (comp instanceof JCheckBox) {
+						JCheckBox box = (JCheckBox) comp;
+						if (!"全部席别".equals(box.getText())) {
+							int col_size = table.getColumnModel().getColumnCount();
+							int col_num = 0;
+							for (int j=0;j<col_size;j++) {
+								if (box.getText().equals(table.getColumnModel().getColumn(j).getHeaderValue())) {
+									col_num = j;
+								}
+							}
+							CheckMethods(box, col_num, box.getWidth(), panel_2, checkBox_23);
+						}
+					}
+				}
+			}
+		});
 		checkBox_23.setSelected(true);
-		checkBox_23.setBounds(103, 120, 85, 23);
-		frame.getContentPane().add(checkBox_23);
+
+		final JCheckBox checkBox_10 = new JCheckBox("商务");
+		checkBox_10.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods(checkBox_10, 6, 65, panel_2, checkBox_23);
+			}
+		});
+		checkBox_10.setBounds(90, 4, 49, 23);
+		panel_2.add(checkBox_10);
+		checkBox_10.setSelected(true);
+
+		final JCheckBox checkBox_8 = new JCheckBox("特等");
+		checkBox_8.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods(checkBox_8, 7, 65, panel_2, checkBox_23);
+			}
+		});
+		checkBox_8.setBounds(153, 4, 49, 23);
+		panel_2.add(checkBox_8);
+		checkBox_8.setSelected(true);
+
+		final JCheckBox checkBox_11 = new JCheckBox("一等");
+		checkBox_11.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods(checkBox_11, 8, 65, panel_2, checkBox_23);
+			}
+		});
+		checkBox_11.setBounds(216, 4, 49, 23);
+		panel_2.add(checkBox_11);
+		checkBox_11.setSelected(true);
+
+		final JCheckBox checkBox_12 = new JCheckBox("二等");
+		checkBox_12.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods(checkBox_12, 9, 65, panel_2, checkBox_23);
+			}
+		});
+		checkBox_12.setBounds(279, 4, 49, 23);
+		panel_2.add(checkBox_12);
+		checkBox_12.setSelected(true);
+
+		final JCheckBox checkBox_13 = new JCheckBox("高软");
+		checkBox_13.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods(checkBox_13, 10, 65, panel_2, checkBox_23);
+			}
+		});
+		checkBox_13.setBounds(342, 4, 49, 23);
+		panel_2.add(checkBox_13);
+		checkBox_13.setSelected(true);
+
+		final JCheckBox checkBox_19 = new JCheckBox("硬卧");
+		checkBox_19.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods(checkBox_19, 11, 65, panel_2, checkBox_23);
+			}
+		});
+		checkBox_19.setBounds(405, 4, 49, 23);
+		panel_2.add(checkBox_19);
+		checkBox_19.setSelected(true);
+
+		final JCheckBox checkBox_15 = new JCheckBox("软卧");
+		checkBox_15.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods(checkBox_15, 12, 65, panel_2, checkBox_23);
+			}
+		});
+		checkBox_15.setBounds(468, 4, 49, 23);
+		panel_2.add(checkBox_15);
+		checkBox_15.setSelected(true);
+
+		final JCheckBox checkBox_18 = new JCheckBox("软座");
+		checkBox_18.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods(checkBox_18, 13, 65, panel_2, checkBox_23);
+			}
+		});
+		checkBox_18.setBounds(519, 4, 49, 23);
+		panel_2.add(checkBox_18);
+		checkBox_18.setSelected(true);
+
+		final JCheckBox checkBox_17 = new JCheckBox("硬座");
+		checkBox_17.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods(checkBox_17, 14, 65, panel_2, checkBox_23);
+			}
+		});
+		checkBox_17.setBounds(570, 4, 49, 23);
+		panel_2.add(checkBox_17);
+		checkBox_17.setSelected(true);
+
+		final JCheckBox checkBox_16 = new JCheckBox("无座");
+		checkBox_16.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods(checkBox_16, 15, 65, panel_2, checkBox_23);
+			}
+		});
+		checkBox_16.setBounds(628, 4, 49, 23);
+		panel_2.add(checkBox_16);
+		checkBox_16.setSelected(true);
+
+		final JCheckBox checkBox_14 = new JCheckBox("其它");
+		checkBox_14.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods(checkBox_14, 16, 65, panel_2, checkBox_23);
+			}
+		});
+		checkBox_14.setBounds(682, 4, 49, 23);
+		panel_2.add(checkBox_14);
+		checkBox_14.setSelected(true);
 
 		JLabel lblNewLabel = new JLabel(new ImageIcon("arrow.png"));
 		lblNewLabel.setText("◄►");
@@ -732,7 +893,8 @@ public class Home_Page {
 		sb.append("purpose_codes=ADULT");
 
 		// 开始刷票
-		VHttpGet get = new VHttpGet("https://kyfw.12306.cn/otn/leftTicket/queryX?" + sb.toString());
+		VHttpGet get = new VHttpGet(
+				"https://kyfw.12306.cn/otn/leftTicket/queryX?" + sb.toString());
 		VHttpResponse res = Browser.execute(get);
 		String body = HttpUtils.outHtml(res.getBody());
 		try {
@@ -748,18 +910,21 @@ public class Home_Page {
 	private void disposeTicketInfo(String body) throws JSONException {
 		JSONObject json = new JSONObject(body);
 		JSONArray jsonArr = new JSONArray(json.get("data").toString());
-		table.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u5386\u65F6",
-						"\u53D1\u8F66\u65F6\u95F4", "\u5230\u8FBE\u65F6\u95F4", "\u5546\u52A1", "\u7279\u7B49",
-						"\u4E00\u7B49", "\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367", "\u786C\u5367", "\u8F6F\u5EA7",
-						"\u786C\u5EA7", "\u65E0\u5EA7", "\u5176\u5B83", "\u5907\u6CE8" }) {
+		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
+				"\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730",
+				"\u5386\u65F6", "\u53D1\u8F66\u65F6\u95F4",
+				"\u5230\u8FBE\u65F6\u95F4", "\u5546\u52A1", "\u7279\u7B49",
+				"\u4E00\u7B49", "\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367",
+				"\u786C\u5367", "\u8F6F\u5EA7", "\u786C\u5EA7", "\u65E0\u5EA7",
+				"\u5176\u5B83", "\u5907\u6CE8" }) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		});
 		for (int i = 0; i < jsonArr.length(); i++) {
 			JSONObject obj = (JSONObject) jsonArr.get(i);
-			JSONObject obj2 = new JSONObject(obj.get("queryLeftNewDTO").toString());
+			JSONObject obj2 = new JSONObject(obj.get("queryLeftNewDTO")
+					.toString());
 			obj2.put("secretStr", obj.get("secretStr").toString());
 			datalist.add(obj2);
 			addRow(obj2);
@@ -834,7 +999,8 @@ public class Home_Page {
 		try {
 			// 预订车票
 			textArea.append(format.format(new Date()) + "：开始提交订票信息\r\n");
-			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/leftTicket/submitOrderRequest");
+			VHttpPost post = new VHttpPost(
+					"https://kyfw.12306.cn/otn/leftTicket/submitOrderRequest");
 			VParames parames = new VParames();
 			parames.clear();
 			parames.put("secretStr", obj.get("secretStr").toString());
@@ -842,8 +1008,10 @@ public class Home_Page {
 			parames.put("back_train_date", textField_2.getText());
 			parames.put("tour_flag", "dc");
 			parames.put("purpose_codes", "ADULT");
-			parames.put("query_from_station_name", obj.get("from_station_name").toString());
-			parames.put("query_to_station_name", obj.get("to_station_name").toString());
+			parames.put("query_from_station_name", obj.get("from_station_name")
+					.toString());
+			parames.put("query_to_station_name", obj.get("to_station_name")
+					.toString());
 			parames.put("undefined", "");
 			post.setParames(parames);
 			VHttpResponse res = Browser.execute(post);
@@ -854,11 +1022,13 @@ public class Home_Page {
 				res.getEntity().disconnect();
 				initDc();
 			} else {
-				textArea.append(format.format(new Date()) + res_obj.get("messages").toString() + "\r\n");
+				textArea.append(format.format(new Date())
+						+ res_obj.get("messages").toString() + "\r\n");
 				res.getEntity().disconnect();
 			}
 		} catch (JSONException e) {
-			textArea.append(format.format(new Date()) + "：提交订单失败，请联系作者QQ：3094759846\r\n");
+			textArea.append(format.format(new Date())
+					+ "：提交订单失败，请联系作者QQ：3094759846\r\n");
 		}
 	}
 
@@ -866,7 +1036,8 @@ public class Home_Page {
 	 * 预定界面
 	 */
 	private void initDc() {
-		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/initDc");
+		VHttpPost post = new VHttpPost(
+				"https://kyfw.12306.cn/otn/confirmPassenger/initDc");
 		VParames parames = new VParames();
 		parames.clear();
 		parames.put("_json_att", "");
@@ -874,15 +1045,20 @@ public class Home_Page {
 		VHttpResponse res = Browser.execute(post);
 		String body = HttpUtils.outHtml(res.getBody());
 
-		Pattern pattern = Pattern.compile("var globalRepeatSubmitToken = '[0-9 | a-z]{32}'");
-		Pattern pattern2 = Pattern.compile("'key_check_isChange':'[0-9 | A-Z]{56}'");
+		Pattern pattern = Pattern
+				.compile("var globalRepeatSubmitToken = '[0-9 | a-z]{32}'");
+		Pattern pattern2 = Pattern
+				.compile("'key_check_isChange':'[0-9 | A-Z]{56}'");
 		Matcher matcher = pattern.matcher(body);
 		Matcher matcher2 = pattern2.matcher(body);
 		while (matcher.find()) {
-			REPEAT_SUBMIT_TOKEN = matcher.group(0).replace("var globalRepeatSubmitToken = '", "").replace("'", "");
+			REPEAT_SUBMIT_TOKEN = matcher.group(0)
+					.replace("var globalRepeatSubmitToken = '", "")
+					.replace("'", "");
 		}
 		while (matcher2.find()) {
-			key_check_isChange = matcher2.group(0).replace("'key_check_isChange':'", "").replace("'", "");
+			key_check_isChange = matcher2.group(0)
+					.replace("'key_check_isChange':'", "").replace("'", "");
 		}
 		res.getEntity().disconnect();
 		textArea.append(format.format(new Date()) + "：开始拉取验证......\r\n");
@@ -894,7 +1070,7 @@ public class Home_Page {
 	 * 
 	 * @return 校验是否成功
 	 */
-	private void getSubmitCode() {
+	public void getSubmitCode() {
 		// 拉取验证码
 		String url = "https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=passenger&rand=randp&"
 				+ Math.random();
@@ -905,9 +1081,11 @@ public class Home_Page {
 	}
 
 	public void checkSubmitCode() {
-		String code = HttpUtils.incode.toString().substring(0, HttpUtils.incode.toString().length() - 1);
+		String code = HttpUtils.incode.toString().substring(0,
+				HttpUtils.incode.toString().length() - 1);
 		textArea.append(format.format(new Date()) + "：当前验证码：" + code + "\r\n");
-		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
+		VHttpPost post = new VHttpPost(
+				"https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
 		VParames parames5 = new VParames();
 		parames5.put("randCode", code);
 		parames5.put("rand", "randp");
@@ -921,14 +1099,16 @@ public class Home_Page {
 			JSONObject res_obj = new JSONObject(body);
 			JSONObject dataObj = (JSONObject) res_obj.get("data");
 			if ("1".equals(dataObj.get("result").toString())) {
-				textArea.append(format.format(new Date()) + "：验证码正确，开始确认用户是否可以提交订单\r\n");
+				textArea.append(format.format(new Date())
+						+ "：验证码正确，开始确认用户是否可以提交订单\r\n");
 				checkOrderInfo();
 			} else {
 				textArea.append(format.format(new Date()) + "：验证码错误，请重新验证\r\n");
 				getSubmitCode();
 			}
 		} catch (JSONException e) {
-			textArea.append(format.format(new Date()) + "：解析验证码错误，请联系作者QQ：3094759846\r\n");
+			textArea.append(format.format(new Date())
+					+ "：解析验证码错误，请联系作者QQ：3094759846\r\n");
 		}
 	}
 
@@ -939,17 +1119,23 @@ public class Home_Page {
 		String username = list_3.getModel().getElementAt(0).toString();
 		JSONObject userObj = userMap.get(username);
 		try {
-			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/checkOrderInfo");
+			VHttpPost post = new VHttpPost(
+					"https://kyfw.12306.cn/otn/confirmPassenger/checkOrderInfo");
 			VParames parames = new VParames();
 			parames.clear();
 			parames.put("cancel_flag", "2");
 			parames.put("bed_level_order_num", "000000000000000000000000000000");
-			parames.put("passengerTicketStr", "1,0,1," + userObj.getString("passenger_name") + ",1,"
-					+ userObj.getString("passenger_id_no") + "," + userObj.getString("mobile_no") + ",N");
-			parames.put("oldPassengerStr",
-					userObj.getString("passenger_name") + ",1," + userObj.getString("passenger_id_no") + ",1_");
+			parames.put("passengerTicketStr",
+					"1,0,1," + userObj.getString("passenger_name") + ",1,"
+							+ userObj.getString("passenger_id_no") + ","
+							+ userObj.getString("mobile_no") + ",N");
+			parames.put("oldPassengerStr", userObj.getString("passenger_name")
+					+ ",1," + userObj.getString("passenger_id_no") + ",1_");
 			parames.put("tour_flag", "dc");
-			parames.put("randCode", HttpUtils.incode.toString().substring(0, HttpUtils.incode.toString().length() - 1));
+			parames.put(
+					"randCode",
+					HttpUtils.incode.toString().substring(0,
+							HttpUtils.incode.toString().length() - 1));
 			parames.put("_json_att", "");
 			parames.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
 			post.setParames(parames);
@@ -961,7 +1147,8 @@ public class Home_Page {
 				textArea.append(format.format(new Date()) + "：当前用户可以提交订单\r\n");
 				getQueueCount();
 			} else {
-				textArea.append(format.format(new Date()) + "：" + dataobj.get("errMsg").toString() + "\r\n");
+				textArea.append(format.format(new Date()) + "："
+						+ dataobj.get("errMsg").toString() + "\r\n");
 				return;
 			}
 			res.getEntity().disconnect();
@@ -975,15 +1162,20 @@ public class Home_Page {
 	 */
 	private void getQueueCount() {
 		JSONObject obj = datalist.get(table.getSelectedRow());
-		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/getQueueCount");
+		VHttpPost post = new VHttpPost(
+				"https://kyfw.12306.cn/otn/confirmPassenger/getQueueCount");
 		VParames parames4 = new VParames();
 		try {
-			parames4.put("train_date", format.parse(textField_3.getText()) + "");
+			parames4.put("train_date", format2.parse(textField_2.getText())
+					+ "");
 			parames4.put("train_no", obj.get("train_no").toString());
-			parames4.put("stationTrainCode", obj.get("station_train_code").toString());
+			parames4.put("stationTrainCode", obj.get("station_train_code")
+					.toString());
 			parames4.put("seatType", "3");
-			parames4.put("fromStationTelecode", obj.get("from_station_telecode").toString());
-			parames4.put("toStationTelecode", obj.get("to_station_telecode").toString());
+			parames4.put("fromStationTelecode", obj
+					.get("from_station_telecode").toString());
+			parames4.put("toStationTelecode", obj.get("to_station_telecode")
+					.toString());
 			parames4.put("leftTicket", obj.getString("yp_info"));
 			parames4.put("purpose_codes", "00");
 			parames4.put("train_location", obj.getString("location_code"));
@@ -995,22 +1187,27 @@ public class Home_Page {
 			JSONObject jsonBody = new JSONObject(body);
 			if ("true".equals(jsonBody.get("status").toString())) {
 				JSONObject dataObj = (JSONObject) jsonBody.get("data");
-				String[] counts = HttpUtils.getCountByJs(dataObj.get("ticket").toString(), "1").split(",");
+				String[] counts = HttpUtils.getCountByJs(
+						dataObj.get("ticket").toString(), "1").split(",");
 				if (Integer.parseInt(counts[0]) > 0) {
-					textArea.append(format.format(new Date()) + "：" + obj.get("station_train_code") + "：硬座剩余:"
+					textArea.append(format.format(new Date()) + "："
+							+ obj.get("station_train_code") + "：硬座剩余:"
 							+ counts[0] + "张" + "\r\n");
 				}
 				if (Integer.parseInt(counts[1]) > 0) {
-					textArea.append(format.format(new Date()) + "：" + obj.get("station_train_code") + "：硬座剩余:"
+					textArea.append(format.format(new Date()) + "："
+							+ obj.get("station_train_code") + "：硬座剩余:"
 							+ counts[1] + "张" + "\r\n");
 				}
 				textArea.append(format.format(new Date()) + "：开始提交订单\r\n");
 			} else {
-				textArea.append(format.format(new Date()) + "：" + jsonBody.get("messages").toString() + "\r\n");
+				textArea.append(format.format(new Date()) + "："
+						+ jsonBody.get("messages").toString() + "\r\n");
 			}
 			res.getEntity().disconnect();
 		} catch (Exception e) {
-			textArea.append(format.format(new Date()) + "：解析余票数量失败，请联系作者QQ：3094759846\r\n");
+			textArea.append(format.format(new Date())
+					+ "：解析余票数量失败，请联系作者QQ：3094759846\r\n");
 		}
 		confirmSingleForQueue();
 	}
@@ -1024,14 +1221,20 @@ public class Home_Page {
 		JSONObject obj = datalist.get(table.getSelectedRow());
 
 		try {
-			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/confirmSingleForQueue");
+			VHttpPost post = new VHttpPost(
+					"https://kyfw.12306.cn/otn/confirmPassenger/confirmSingleForQueue");
 			VParames parames = new VParames();
 			parames.clear();
-			parames.put("passengerTicketStr", "1,0,1," + userObj.getString("passenger_name") + ",1,"
-					+ userObj.getString("passenger_id_no") + "," + userObj.getString("mobile_no") + ",N");
-			parames.put("oldPassengerStr",
-					userObj.getString("passenger_name") + ",1," + userObj.getString("passenger_id_no") + ",1_");
-			parames.put("randCode", HttpUtils.incode.toString().substring(0, HttpUtils.incode.toString().length() - 1));
+			parames.put("passengerTicketStr",
+					"1,0,1," + userObj.getString("passenger_name") + ",1,"
+							+ userObj.getString("passenger_id_no") + ","
+							+ userObj.getString("mobile_no") + ",N");
+			parames.put("oldPassengerStr", userObj.getString("passenger_name")
+					+ ",1," + userObj.getString("passenger_id_no") + ",1_");
+			parames.put(
+					"randCode",
+					HttpUtils.incode.toString().substring(0,
+							HttpUtils.incode.toString().length() - 1));
 			parames.put("purpose_codes", "00");
 			parames.put("key_check_isChange", key_check_isChange);
 			parames.put("leftTicketStr", obj.getString("yp_info"));
@@ -1046,7 +1249,8 @@ public class Home_Page {
 			JSONObject res_obj = new JSONObject(body);
 			JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
 			if ("true".equals(dataobj.get("submitStatus").toString())) {
-				textArea.append(format.format(new Date()) + "：订单提交成功，正在查询订票结果\r\n");
+				textArea.append(format.format(new Date())
+						+ "：订单提交成功，正在查询订票结果\r\n");
 				queryOrderWaitTime();
 			} else {
 				textArea.append(format.format(new Date()) + "：" + body + "\r\n");
@@ -1069,22 +1273,27 @@ public class Home_Page {
 				Random ne = new Random();
 				int x = ne.nextInt(9999 - 1000 + 1) + 1000;
 				String query_url = "https://kyfw.12306.cn/otn/confirmPassenger/queryOrderWaitTime?";
-				query_url = query_url + "random=14772940" + x + "&tourFlag=dc&_json_att=&REPEAT_SUBMIT_TOKEN="
+				query_url = query_url + "random=14772940" + x
+						+ "&tourFlag=dc&_json_att=&REPEAT_SUBMIT_TOKEN="
 						+ REPEAT_SUBMIT_TOKEN;
 				VHttpGet get = new VHttpGet(query_url);
 				VHttpResponse res = Browser.execute(get);
 				String body = HttpUtils.outHtml(res.getBody());
 				JSONObject res_obj = new JSONObject(body);
-				JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
+				JSONObject dataobj = new JSONObject(res_obj.get("data")
+						.toString());
 				if (!"null".equals(dataobj.get("orderId").toString())) {
 					order = false;
 					orderId = dataobj.get("orderId").toString();
 				}
 			}
-			textArea.append(format.format(new Date()) + "：" + "恭喜你，成功订到一张" + obj.getString("from_station_name") + "至"
-					+ obj.getString("end_station_name") + "的硬座，订单号为：" + orderId + "，请尽快付款，以免耽误行程" + "\r\n");
+			textArea.append(format.format(new Date()) + "：" + "恭喜你，成功订到一张"
+					+ obj.getString("from_station_name") + "至"
+					+ obj.getString("end_station_name") + "的硬座，订单号为：" + orderId
+					+ "，请尽快付款，以免耽误行程" + "\r\n");
 		} catch (JSONException e) {
-			textArea.append(format.format(new Date()) + "：解析订票结果失败，请联系作者QQ：3094759846\r\n");
+			textArea.append(format.format(new Date())
+					+ "：解析订票结果失败，请联系作者QQ：3094759846\r\n");
 		}
 	}
 
@@ -1095,16 +1304,19 @@ public class Home_Page {
 	 */
 	private DefaultListModel<Object> getPassengerDTOs() {
 		DefaultListModel<Object> model_Seats = new DefaultListModel<Object>();
-		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/confirmPassenger/getPassengerDTOs");
+		VHttpPost post = new VHttpPost(
+				"https://kyfw.12306.cn/otn/confirmPassenger/getPassengerDTOs");
 		VHttpResponse res = Browser.execute(post);
 		String body = HttpUtils.outHtml(res.getBody());
 		try {
 			JSONObject res_obj = new JSONObject(body);
 			JSONObject userListObj = (JSONObject) res_obj.get("data");
 			if (userListObj.length() < 1) {
-				textArea.append(format.format(new Date()) + "：" + new JSONObject(body).get("messages") + "\r\n");
+				textArea.append(format.format(new Date()) + "："
+						+ new JSONObject(body).get("messages") + "\r\n");
 			} else {
-				JSONArray userArr = (JSONArray) (userListObj.get("normal_passengers"));
+				JSONArray userArr = (JSONArray) (userListObj
+						.get("normal_passengers"));
 				for (int i = 0; i < userArr.length(); i++) {
 					JSONObject obj = (JSONObject) userArr.get(i);
 					model_Seats.addElement(obj.get("passenger_name"));
@@ -1112,7 +1324,8 @@ public class Home_Page {
 				}
 			}
 		} catch (JSONException e) {
-			textArea.append(format.format(new Date()) + "：获取乘客列表失败，请联系作者QQ：3094759846\r\n");
+			textArea.append(format.format(new Date())
+					+ "：获取乘客列表失败，请联系作者QQ：3094759846\r\n");
 		}
 		return model_Seats;
 	}
@@ -1120,10 +1333,11 @@ public class Home_Page {
 	/**
 	 * 查询订单列表
 	 */
-	private void getOrderList() {
+	private void getOrderList(JButton btnNewButton_1) {
 
 		try {
-			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/queryOrder/queryMyOrderNoComplete");
+			VHttpPost post = new VHttpPost(
+					"https://kyfw.12306.cn/otn/queryOrder/queryMyOrderNoComplete");
 			VParames parames = new VParames();
 			parames.clear();
 			parames.put("_json_att", "");
@@ -1131,7 +1345,7 @@ public class Home_Page {
 			VHttpResponse res = Browser.execute(post);
 			String body = HttpUtils.outHtml(res.getBody());
 			JSONObject res_obj = new JSONObject(body);
-			disposeOrder(res_obj);
+			disposeOrder(res_obj, btnNewButton_1);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -1140,27 +1354,40 @@ public class Home_Page {
 	/**
 	 * 处理订单列表
 	 */
-	private void disposeOrder(JSONObject res_obj) {
+	private void disposeOrder(JSONObject res_obj, JButton btnNewButton_1) {
 		try {
 			table_1.setModel(new DefaultTableModel(new Object[][] {},
-					new String[] { "\u8F66\u6B21", "\u8BA2\u5355\u53F7", "\u4E58\u5BA2\u59D3\u540D",
-							"\u53D1\u8F66\u65F6\u95F4", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u7968\u79CD",
-							"\u5E2D\u522B", "\u8F66\u53A2", "\u5EA7\u4F4D", "\u7968\u4EF7", "\u72B6\u6001" }));
+					new String[] { "\u8F66\u6B21", "\u8BA2\u5355\u53F7",
+							"\u4E58\u5BA2\u59D3\u540D",
+							"\u53D1\u8F66\u65F6\u95F4", "\u51FA\u53D1\u5730",
+							"\u76EE\u7684\u5730", "\u7968\u79CD",
+							"\u5E2D\u522B", "\u8F66\u53A2", "\u5EA7\u4F4D",
+							"\u7968\u4EF7", "\u72B6\u6001" }) {
+				public boolean isCellEditable(int row, int column) {
+					return false;
+				}
+			});
+			table_1.getColumnModel().getColumn(3).setPreferredWidth(124);
 			DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+			if (btnNewButton_1 != null) {
+				btnNewButton_1.setEnabled(true);
+			}
 			if (res_obj.isNull("data")) {
-				model.addRow(new Vector<String>());
+				model.setRowCount(0);
 				return;
 			}
 			JSONObject userListObj = (JSONObject) res_obj.get("data");
-			
+
 			JSONArray jsonArr = ((JSONArray) userListObj.get("orderDBList"));
 
 			for (int i = 0; i < jsonArr.length(); i++) {
 				JSONObject obj = jsonArr.getJSONObject(i);
 				JSONArray jsonArr2 = ((JSONArray) obj.get("tickets"));
 				JSONObject tickets = jsonArr2.getJSONObject(0);
-				JSONObject stationTrainDTO = (JSONObject) tickets.get("stationTrainDTO");
-				JSONObject passengerDTO = (JSONObject) tickets.get("passengerDTO");
+				JSONObject stationTrainDTO = (JSONObject) tickets
+						.get("stationTrainDTO");
+				JSONObject passengerDTO = (JSONObject) tickets
+						.get("passengerDTO");
 
 				Vector<String> vector = new Vector<String>();
 				vector.add(obj.get("train_code_page").toString());
@@ -1181,10 +1408,11 @@ public class Home_Page {
 			e.printStackTrace();
 		}
 	}
-	
-	private void cancelOrder(String orderId){
+
+	private void cancelOrder(String orderId, JButton button_3) {
 		try {
-			VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/queryOrder/cancelNoCompleteMyOrder");
+			VHttpPost post = new VHttpPost(
+					"https://kyfw.12306.cn/otn/queryOrder/cancelNoCompleteMyOrder");
 			VParames parames = new VParames();
 			parames.clear();
 			parames.put("_json_att", "");
@@ -1197,10 +1425,53 @@ public class Home_Page {
 			JSONObject data_obj = (JSONObject) res_obj.get("data");
 			if ("N".equals(data_obj.get("existError"))) {
 				textArea.append(format.format(new Date()) + "：订单取消成功\r\n");
-				getOrderList();
 			}
+			if (button_3 != null) {
+				button_3.setEnabled(true);
+			}
+			getOrderList(null);
 		} catch (JSONException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 席别选择框方法
+	 * 当选中该席别时，列表中对应的列显示，否则隐藏
+	 * 当有隐藏列时，全部席别选择框设为未选中，否则选中
+	 * @param checkBox	点击的复选框
+	 * @param col_num	对应在列表是第几列
+	 * @param width		对应在列表的列原本的宽度
+	 * @param panel		该组复选框的父类容器
+	 * @param checkBox2	全部席别复选框
+	 */
+	private void CheckMethods(JCheckBox checkBox,int col_num,int width,JPanel panel,JCheckBox checkBox2){
+		if (!checkBox.isSelected()) {
+			table.getColumnModel().getColumn(col_num).setMinWidth(0);
+			table.getColumnModel().getColumn(col_num).setMaxWidth(0);
+			table.getColumnModel().getColumn(col_num).setPreferredWidth(0);
+		}else {
+			table.getColumnModel().getColumn(col_num).setMinWidth(width);
+			table.getColumnModel().getColumn(col_num).setMaxWidth(width);
+			table.getColumnModel().getColumn(col_num).setPreferredWidth(width);
+		}
+		boolean check = true;
+		Component[] comps = panel.getComponents();
+		for (int i = 0; i < comps.length; i++) {
+			Component comp = comps[i];
+			if (comp instanceof JCheckBox) {
+				JCheckBox box = (JCheckBox) comp;
+				if (!"全部席别".equals(box.getText())) {
+					if (!box.isSelected()) {
+						check = false;
+					}
+				}
+			}
+		}
+		if (check) {
+			checkBox2.setSelected(true);
+		}else {
+			checkBox2.setSelected(false);
 		}
 	}
 }
