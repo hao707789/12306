@@ -89,7 +89,7 @@ public class Home_Page {
 	private JTable table;
 	private int[] mouse_gis = new int[2];
 	private JLabel label;
-	private Map<String, String> map = (Map<String, String>) HttpUtils
+	private Map<String, String[]> map = (Map<String, String[]>) HttpUtils
 			.getCitiInfo();
 	private Map<String, JSONObject> userMap = new HashMap<String, JSONObject>();
 	private List<JSONObject> datalist = new ArrayList<JSONObject>();
@@ -103,6 +103,7 @@ public class Home_Page {
 	private String key_check_isChange = "";
 	private DefaultListModel<Object> model_train = new DefaultListModel<Object>();
 	private JTable table_1;
+	private int ticket_type = 0;
 
 	/**
 	 * Launch the application.
@@ -239,18 +240,32 @@ public class Home_Page {
 		btgroup.add(radioButton_2);
 		btgroup.add(radioButton_3);
 
-		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("刷票模式");
-		chckbxNewCheckBox_1.setBounds(886, 52, 75, 23);
-		frame.getContentPane().add(chckbxNewCheckBox_1);
+		
 
-		JButton btnNewButton = new JButton("手动查票");
+		final JButton btnNewButton = new JButton("手动查票");
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				brushVotes();
+				checkbrushVotesInfo();
 			}
 		});
 		btnNewButton.setBounds(964, 41, 80, 67);
+		
+		final JCheckBox chckbxNewCheckBox_1 = new JCheckBox("刷票模式");
+		chckbxNewCheckBox_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (chckbxNewCheckBox_1.isSelected()) {
+					btnNewButton.setText("自动刷票");
+					ticket_type = 1;
+				}else {
+					btnNewButton.setText("手动查票");
+					ticket_type = 0;
+				}
+			}
+		});
+		chckbxNewCheckBox_1.setBounds(886, 52, 75, 23);
+		frame.getContentPane().add(chckbxNewCheckBox_1);
 		frame.getContentPane().add(btnNewButton);
 
 		JLabel label_4 = new JLabel("车  型");
@@ -334,6 +349,8 @@ public class Home_Page {
 		p1.setLayout(null);
 
 		textArea = new JTextAreaExt();
+		textArea.setEnabled(false);
+		textArea.setEditable(false);
 		textArea.setLineWrap(true);
 		JScrollPane scroll = new JScrollPane(textArea);
 		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -387,7 +404,7 @@ public class Home_Page {
 				null, Calendar.MINUTE));
 		p1.add(spinner_1);
 
-		JLabel label_10 = new JLabel("深圳——咸宁，2016-10-26，成人票");
+		JLabel label_10 = new JLabel("深圳——广州，2016-10-26，成人票");
 		label_10.setBounds(495, 21, 198, 15);
 		p1.add(label_10);
 
@@ -849,8 +866,8 @@ public class Home_Page {
 		lblNewLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				String one=textField.getText();
-				String two=textField_3.getText();
+				String one = textField.getText();
+				String two = textField_3.getText();
 				textField.setText(two);
 				textField_3.setText(one);
 			}
@@ -870,37 +887,65 @@ public class Home_Page {
 			}
 		});
 	}
-
+	
 	/**
-	 * 刷票，点击查票按钮后，开始查询车票信息，并填入到表格中
+	 * 
+	 * 校验刷票信息是否填写完毕
+	 * 
 	 */
-	private void brushVotes() {
-		// 验证出发地、目的地、时间等是否填写，没有则不刷票
+	private void checkbrushVotesInfo(){
 		if ("".equals(textField)) {
-			textArea.append(format.format(new Date()) + "：请输入出发地\r\n");
+			textArea.append(format.format(new Date()) + "：请先输入出发地\r\n");
 			return;
 		}
 		if ("".equals(textField_3)) {
-			textArea.append(format.format(new Date()) + "：请输入目的地\r\n");
+			textArea.append(format.format(new Date()) + "：请先输入目的地\r\n");
 			return;
 		}
 		if ("".equals(textField_2)) {
-			textArea.append(format.format(new Date()) + "：请输入日期\r\n");
+			textArea.append(format.format(new Date()) + "：请先输入日期\r\n");
 			return;
 		}
 		if (list_3.getModel().getSize() <= 0) {
-			textArea.append(format.format(new Date()) + "：请选择乘车人\r\n");
+			textArea.append(format.format(new Date()) + "：请先选择乘车人\r\n");
 			return;
+		}
+		if (ticket_type==1) {
+			if (list_2.getModel().getSize() <= 0) {
+				textArea.append(format.format(new Date()) + "：请先选择席别\r\n");
+				return;
+			}
+			if (list_1.getModel().getSize() <= 0) {
+				textArea.append(format.format(new Date()) + "：请先切换到手动查票模式下，查询出车次后，并右键添加到车次列表后再切为自动刷票模式\r\n");
+				return;
+			}
 		}
 		StringBuffer sb = new StringBuffer();
 		sb.append("leftTicketDTO.train_date=");
 		sb.append(textField_2.getText() + "&");
 		sb.append("leftTicketDTO.from_station=");
-		sb.append(map.get(textField.getText()) + "&");
+		sb.append(map.get(textField.getText())[2] + "&");
 		sb.append("leftTicketDTO.to_station=");
-		sb.append(map.get(textField_3.getText()) + "&");
+		sb.append(map.get(textField_3.getText())[2] + "&");
 		sb.append("purpose_codes=ADULT");
+		
+		if (ticket_type==1) {
+			boolean result = true;
+			while (result) {
+				brushVotes(sb);
+			}
+		}else {
+			brushVotes(sb);
+		}
+	}
 
+	
+	/**
+	 * 刷票，点击查票按钮后，开始查询车票信息，并填入到表格中
+	 * 验证出发地、目的地、时间等是否填写，没有则不刷票
+	 * 
+	 */
+	private void brushVotes(StringBuffer sb) {
 		// 开始刷票
 		VHttpGet get = new VHttpGet(
 				"https://kyfw.12306.cn/otn/leftTicket/queryX?" + sb.toString());
@@ -930,11 +975,15 @@ public class Home_Page {
 				return false;
 			}
 		});
+		datalist.clear();
 		for (int i = 0; i < jsonArr.length(); i++) {
 			JSONObject obj = (JSONObject) jsonArr.get(i);
 			JSONObject obj2 = new JSONObject(obj.get("queryLeftNewDTO")
 					.toString());
 			obj2.put("secretStr", obj.get("secretStr").toString());
+			
+			
+			
 			datalist.add(obj2);
 			addRow(obj2);
 		}

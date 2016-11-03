@@ -31,6 +31,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import org.json.JSONObject;
+
 import test.t_12306.Home_Page;
 
 import com.vcode.http.client.VHttpClient;
@@ -191,7 +193,7 @@ public class HttpUtils {
 		final JFrame frame2 = new JFrame("验证码");
 		frame2.setSize(new Dimension(387, 455));
 		frame2.setLocationRelativeTo(null);
-		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame2.getContentPane().setLayout(null);
 
 		final JLabel label = new JLabel("");
@@ -451,8 +453,8 @@ public class HttpUtils {
 	 * 获取城市信息
 	 * @return
 	 */
-	public static Map<String, String> getCitiInfo() {
-		Map<String, String> map = new HashMap<String, String>();
+	public static Map<String, String[]> getCitiInfo() {
+		Map<String, String[]> map = new HashMap<String, String[]>();
 		VHttpClient client = new VHttpClientImpl();
 		VHttpGet get = new VHttpGet("https://kyfw.12306.cn/otn/resources/js/framework/station_name.js");
 		VHttpResponse res = client.execute(get);
@@ -462,7 +464,7 @@ public class HttpUtils {
 		for (String s : citiArr){
 			String[] citiInfo = s.split("\\|");
 			if (citiInfo.length>1){
-				map.put(citiInfo[1], citiInfo[2]);
+				map.put(citiInfo[1], citiInfo);
 			}
 		}
 		return map;
