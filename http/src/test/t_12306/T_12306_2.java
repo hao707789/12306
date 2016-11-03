@@ -34,7 +34,7 @@ public class T_12306_2 {
 	
 	private static String password = "loveXIAO707789";				//12306登录密码
 	
-	private static Map<String, String> citiMap = HttpUtils.getCitiInfo();	//城市列表
+	private static Map<String, String[]> citiMap = HttpUtils.getCitiInfo();	//城市列表
 
 	public static void main(String[] args) throws Exception{
 		VHttpClient client = new VHttpClientImpl();

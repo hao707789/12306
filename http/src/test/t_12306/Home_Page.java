@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,6 +48,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,15 +64,8 @@ import com.vcode.http.utils.HttpUtils;
 import com.vcode.http.utils.JTextAreaExt;
 import com.vcode.http.utils.PopList;
 
-import javax.swing.border.LineBorder;
-
-import java.awt.Color;
-
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import java.awt.event.MouseMotionAdapter;
 
@@ -92,7 +88,7 @@ public class Home_Page {
 	private JTable table;
 	private int[] mouse_gis = new int[2];
 	private JLabel label,label_10;
-	private Map<String, String> map = (Map<String, String>) HttpUtils
+	private Map<String, String[]> map = (Map<String, String[]>) HttpUtils
 			.getCitiInfo();
 	private Map<String, JSONObject> userMap = new HashMap<String, JSONObject>();
 	private List<JSONObject> datalist = new ArrayList<JSONObject>();
@@ -106,6 +102,7 @@ public class Home_Page {
 	private String key_check_isChange = "";
 	private DefaultListModel<Object> model_train = new DefaultListModel<Object>();
 	private JTable table_1;
+	private int ticket_type = 0;
 
 	/**
 	 * Launch the application.
@@ -188,7 +185,32 @@ public class Home_Page {
 
 		JLabel label_3 = new JLabel("发车时间");
 
-		JComboBox<Object> comboBox = new JComboBox<Object>();
+		final JComboBox<Object> comboBox = new JComboBox<Object>();
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DefaultTableModel model = (DefaultTableModel) table.getModel();
+				model.setRowCount(0);
+				String [] time_arr = comboBox.getSelectedItem().toString().split("—");
+				for (int i = 0; i < datalist.size(); i++) {
+					JSONObject obj = datalist.get(i);
+					String start_time;
+					try {
+						start_time = obj.get("start_time").toString();
+						DateFormat sdf = new SimpleDateFormat("HH:mm"); 
+						Date first_date = sdf.parse(time_arr[0]);
+						Date last_date = sdf.parse(time_arr[1]);
+						Date start_date = sdf.parse(start_time);
+						if (first_date.getTime()<=start_date.getTime()&&start_date.getTime()<last_date.getTime()) {
+							addRow(obj);
+						}
+					} catch (JSONException e1) {
+						e1.printStackTrace();
+					} catch (ParseException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
 		comboBox.setFont(new Font("微软雅黑", Font.PLAIN, 12));
 		comboBox.setModel(new DefaultComboBoxModel<Object>(new String[] {
 				"00:00—24:00", "00:00—08:00", "08:00—12:00", "12:00—20:00",
@@ -212,18 +234,37 @@ public class Home_Page {
 		btgroup.add(radioButton_2);
 		btgroup.add(radioButton_3);
 
-		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("刷票模式");
-
 		final JButton btnNewButton = new JButton("手动查票");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				brushVotes();
+				checkbrushVotesInfo();
 			}
 		});
+		btnNewButton.setBounds(964, 41, 80, 67);
+		
+		final JCheckBox chckbxNewCheckBox_1 = new JCheckBox("刷票模式");
+		chckbxNewCheckBox_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (chckbxNewCheckBox_1.isSelected()) {
+					btnNewButton.setText("自动刷票");
+					ticket_type = 1;
+				}else {
+					btnNewButton.setText("手动查票");
+					ticket_type = 0;
+				}
+			}
+		});
+		chckbxNewCheckBox_1.setBounds(886, 52, 75, 23);
+		frame.getContentPane().add(chckbxNewCheckBox_1);
+		frame.getContentPane().add(btnNewButton);
 
 		JLabel label_4 = new JLabel("车  型");
-
 		JLabel label_5 = new JLabel("席  别");
 
 		final JPanel panel_1 = new JPanel();
@@ -295,6 +336,8 @@ public class Home_Page {
 		p1.setLayout(null);
 
 		textArea = new JTextAreaExt();
+		textArea.setEnabled(false);
+		textArea.setEditable(false);
 		textArea.setLineWrap(true);
 		JScrollPane scroll = new JScrollPane(textArea);
 		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -354,12 +397,7 @@ public class Home_Page {
 				null, Calendar.MINUTE));
 		p1.add(spinner_1);
 
-		label_10 = new JLabel("");
-		label_10.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-			}
-		});
+		label_10 = new JLabel();
 		label_10.setBounds(495, 21, 453, 15);
 		p1.add(label_10);
 
@@ -593,6 +631,12 @@ public class Home_Page {
 							box.setSelected(true);
 						}
 					}
+					
+					//显示全部车次信息
+					for (int i=0;i<datalist.size();i++) {
+						JSONObject obj = datalist.get(i);
+						addRow(obj);
+					}
 				} else {
 					Component[] comps = panel_1.getComponents();
 					for (int i = 0; i < comps.length; i++) {
@@ -602,52 +646,113 @@ public class Home_Page {
 							box.setSelected(false);
 						}
 					}
+					//隐藏全部车次信息
+					DefaultTableModel model =  (DefaultTableModel) table.getModel();
+					model.setRowCount(0);
 				}
 			}
 		});
 		checkBox_22.setSelected(true);
 
-		JCheckBox chckbxg = new JCheckBox("高铁-G");
+		final JCheckBox chckbxg = new JCheckBox("高铁-G");
+		chckbxg.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				//
+				CheckMethods2(chckbxg,panel_1,checkBox_22,"G");
+				
+			}
+		});
 		chckbxg.setBounds(90, 5, 61, 23);
 		panel_1.add(chckbxg);
 		chckbxg.setSelected(true);
 
-		JCheckBox chckbxc = new JCheckBox("城铁-C");
+		final JCheckBox chckbxc = new JCheckBox("城铁-C");
+		chckbxc.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods2(chckbxc,panel_1,checkBox_22,"C");
+			}
+		});
+				
 		chckbxc.setBounds(153, 5, 61, 23);
 		panel_1.add(chckbxc);
 		chckbxc.setSelected(true);
 
-		JCheckBox chckbxd = new JCheckBox("动车-D");
+		final JCheckBox chckbxd = new JCheckBox("动车-D");
+		chckbxd.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods2(chckbxd,panel_1,checkBox_22,"D");
+			}
+		});
+		
 		chckbxd.setBounds(216, 5, 61, 23);
 		panel_1.add(chckbxd);
 		chckbxd.setSelected(true);
 
-		JCheckBox chckbxt = new JCheckBox("特快-T");
+		final JCheckBox chckbxt = new JCheckBox("特快-T");
+		chckbxt.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods2(chckbxt,panel_1,checkBox_22,"T");
+			}
+		});
 		chckbxt.setBounds(279, 5, 61, 23);
 		panel_1.add(chckbxt);
 		chckbxt.setSelected(true);
 
-		JCheckBox chckbxz = new JCheckBox("直达-Z");
+		final JCheckBox chckbxz = new JCheckBox("直达-Z");
+		chckbxz.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods2(chckbxz,panel_1,checkBox_22,"Z");
+			}
+		});
 		chckbxz.setBounds(342, 5, 61, 23);
 		panel_1.add(chckbxz);
 		chckbxz.setSelected(true);
 
-		JCheckBox chckbxk = new JCheckBox("快车-K");
+		final JCheckBox chckbxk = new JCheckBox("快车-K");
+		chckbxk.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods2(chckbxk,panel_1,checkBox_22,"K");
+			}
+		});
 		chckbxk.setBounds(405, 5, 61, 23);
 		panel_1.add(chckbxk);
 		chckbxk.setSelected(true);
 
-		JCheckBox checkBox_6 = new JCheckBox("普客");
+		final JCheckBox checkBox_6 = new JCheckBox("普客");
+		checkBox_6.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods2(checkBox_6,panel_1,checkBox_22,"*");
+			}
+		});
 		checkBox_6.setBounds(468, 5, 49, 23);
 		panel_1.add(checkBox_6);
 		checkBox_6.setSelected(true);
 
-		JCheckBox checkBox_7 = new JCheckBox("临客");
+		final JCheckBox checkBox_7 = new JCheckBox("临客");
+		checkBox_7.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods2(checkBox_7,panel_1,checkBox_22,"*");
+			}
+		});
 		checkBox_7.setBounds(519, 5, 49, 23);
 		panel_1.add(checkBox_7);
 		checkBox_7.setSelected(true);
 
-		JCheckBox checkBox_9 = new JCheckBox("其它");
+		final JCheckBox checkBox_9 = new JCheckBox("其它");
+		checkBox_9.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckMethods2(checkBox_9,panel_1,checkBox_22,"*");
+			}
+		});
 		checkBox_9.setBounds(570, 5, 49, 23);
 		panel_1.add(checkBox_9);
 		checkBox_9.setSelected(true);
@@ -746,7 +851,7 @@ public class Home_Page {
 		panel_2.add(checkBox_13);
 		checkBox_13.setSelected(true);
 
-		final JCheckBox checkBox_19 = new JCheckBox("硬卧");
+		final JCheckBox checkBox_19 = new JCheckBox("软卧");
 		checkBox_19.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -757,7 +862,7 @@ public class Home_Page {
 		panel_2.add(checkBox_19);
 		checkBox_19.setSelected(true);
 
-		final JCheckBox checkBox_15 = new JCheckBox("软卧");
+		final JCheckBox checkBox_15 = new JCheckBox("硬卧");
 		checkBox_15.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -816,8 +921,8 @@ public class Home_Page {
 		lblNewLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				String one=textField.getText();
-				String two=textField_3.getText();
+				String one = textField.getText();
+				String two = textField_3.getText();
 				textField.setText(two);
 				textField_3.setText(one);
 			}
@@ -951,11 +1056,13 @@ public class Home_Page {
 			}
 		});
 	}
-
+	
 	/**
-	 * 刷票，点击查票按钮后，开始查询车票信息，并填入到表格中
+	 * 
+	 * 校验刷票信息是否填写完毕
+	 * 
 	 */
-	private void brushVotes() {
+	private void checkbrushVotesInfo() {
 		// 验证出发地、目的地、时间等是否填写，没有则不刷票
 		if ("".equals(textField.getText())) {
 			textArea.append(format.format(new Date()) + "：请输入出发地\r\n");
@@ -976,14 +1083,24 @@ public class Home_Page {
 			textArea.append(format.format(new Date()) + "：请选择乘车人\r\n");
 			label_10.setText(null);
 			return;
-		}else{
+		}
+		if (ticket_type==1) {
+			if (list_2.getModel().getSize() <= 0) {
+				textArea.append(format.format(new Date()) + "：请先选择席别\r\n");
+				return;
+			}
+			if (list_1.getModel().getSize() <= 0) {
+				textArea.append(format.format(new Date()) + "：请先切换到手动查票模式下，查询出车次后，并右键添加到车次列表后再切为自动刷票模式\r\n");
+				return;
+			}
+		}
 		StringBuffer sb = new StringBuffer();
 		sb.append("leftTicketDTO.train_date=");
 		sb.append(textField_2.getText() + "&");
 		sb.append("leftTicketDTO.from_station=");
-		sb.append(map.get(textField.getText()) + "&");
+		sb.append(map.get(textField.getText())[2] + "&");
 		sb.append("leftTicketDTO.to_station=");
-		sb.append(map.get(textField_3.getText()) + "&");
+		sb.append(map.get(textField_3.getText())[2] + "&");
 		sb.append("purpose_codes=ADULT");
 		
 		ListModel<Object> model = list_3.getModel();
@@ -996,6 +1113,23 @@ public class Home_Page {
 		}
 		String content="    "+sb2.toString()+"     "+textField.getText() +"  →  "+textField_3.getText()+"     "+textField_2.getText();
 		label_10.setText(content);
+		if (ticket_type==1) {
+			boolean result = true;
+			while (result) {
+				brushVotes(sb);
+			}
+		}else {
+			brushVotes(sb);
+		}
+	}
+
+	
+	/**
+	 * 刷票，点击查票按钮后，开始查询车票信息，并填入到表格中
+	 * 验证出发地、目的地、时间等是否填写，没有则不刷票
+	 * 
+	 */
+	private void brushVotes(StringBuffer sb) {
 		// 开始刷票
 		VHttpGet get = new VHttpGet(
 				"https://kyfw.12306.cn/otn/leftTicket/queryX?" + sb.toString());
@@ -1005,7 +1139,6 @@ public class Home_Page {
 			disposeTicketInfo(body);
 		} catch (JSONException e) {
 			e.printStackTrace();
-		}
 		}
 	}
 
@@ -1026,11 +1159,15 @@ public class Home_Page {
 				return false;
 			}
 		});
+		datalist.clear();
 		for (int i = 0; i < jsonArr.length(); i++) {
 			JSONObject obj = (JSONObject) jsonArr.get(i);
 			JSONObject obj2 = new JSONObject(obj.get("queryLeftNewDTO")
 					.toString());
 			obj2.put("secretStr", obj.get("secretStr").toString());
+			
+			
+			
 			datalist.add(obj2);
 			addRow(obj2);
 		}
@@ -1579,4 +1716,66 @@ public class Home_Page {
 			checkBox2.setSelected(false);
 		}
 	}
+	
+	/**
+	 * 车次复选框方法
+	 * @param checkBox	复选框
+	 * @param panel_1	父类容器
+	 * @param checkBox_22	全部车次
+	 * @param num	车次编号开头字母
+	 */
+	private void CheckMethods2(JCheckBox checkBox, JPanel panel_1,
+			JCheckBox checkBox_22, String num) {
+		if (checkBox.isSelected()) {
+			// 遍历其它车次的值，全部都是true，则勾选全部车次，否则全部车次不勾选
+			Component[] comps = panel_1.getComponents();
+			boolean check = true;
+			for (int i = 0; i < comps.length; i++) {
+				Component comp = comps[i];
+				if (comp instanceof JCheckBox) {
+					JCheckBox box = (JCheckBox) comp;
+					if (!"全部车次".equals(box.getText())) {
+						if (!box.isSelected()) {
+							check = false;
+							break;
+						}
+					}
+				}
+			}
+			if (check) {
+				checkBox_22.setSelected(true);
+			} else {
+				checkBox_22.setSelected(false);
+			}
+			// 显示行
+			for (int i = 0; i < datalist.size(); i++) {
+				JSONObject obj = datalist.get(i);
+				String train_code;
+				try {
+					train_code = obj.get("station_train_code").toString();
+					if (train_code.toUpperCase().startsWith(num)) {
+						addRow(obj);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			// 全部车次的值改为false
+			checkBox_22.setSelected(false);
+			//隐藏行
+			DefaultTableModel model = (DefaultTableModel) table.getModel();
+			int row_num = table.getRowCount();
+			for (int i = row_num - 1; i >= 0; i--) {
+				String train_code = table.getValueAt(i, 0).toString();
+				if (train_code.toUpperCase().startsWith(num)) {
+					model.removeRow(i);
+				}
+			}
+		}
+		;
+	}
+	
+	
+	
 }
