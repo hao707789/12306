@@ -34,6 +34,7 @@ import javax.swing.JLabel;
 import org.json.JSONObject;
 
 import test.t_12306.Home_Page;
+import test.t_12306.Order_Page;
 
 import com.vcode.http.client.VHttpClient;
 import com.vcode.http.client.VHttpResponse;
@@ -186,7 +187,7 @@ public class HttpUtils {
 	 * @param x
 	 * @param y
 	 */
-	public static void getSubmitCodeBy12306(InputStream in,final Home_Page home) {
+	public static void getSubmitCodeBy12306(InputStream in,final Order_Page order_oage) {
 		incode.setLength(0);
 		byte[] data = InputStreamToByte(in);
 		
@@ -223,7 +224,7 @@ public class HttpUtils {
 						label_1.setForeground(Color.red);
 					} else {
 						frame2.dispose();
-						home.checkSubmitCode();
+						order_oage.checkSubmitCode();
 					}
 				}
 			}
@@ -240,7 +241,7 @@ public class HttpUtils {
 					label_1.setForeground(Color.red);
 				} else {
 					frame2.dispose();
-					home.checkSubmitCode();
+					order_oage.checkSubmitCode();
 				}
 			}
 		});

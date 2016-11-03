@@ -13,11 +13,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -39,13 +36,13 @@ import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -74,27 +71,29 @@ public class Home_Page {
 
 	private Home_Page window;
 	private JFrame frame;
-	private JTextField textField;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTable table;
+	public JTextField textField;
+	public JTextField textField_2;
+	public JTextField textField_3;
+	public JTable table;
 	private int[] mouse_gis = new int[2];
-	private JLabel label;
-	private Map<String, String[]> map = (Map<String, String[]>) HttpUtils
+	public JLabel label;
+	public Map<String, String[]> map = (Map<String, String[]>) HttpUtils
 			.getCitiInfo();
-	private Map<String, JSONObject> userMap = new HashMap<String, JSONObject>();
-	private List<JSONObject> datalist = new ArrayList<JSONObject>();
+	public Map<String, JSONObject> userMap = new HashMap<String, JSONObject>();
+	public List<JSONObject> datalist = new ArrayList<JSONObject>();
 	public JTextAreaExt textArea;
-	private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-	private SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
-	private JList<Object> list_1;
-	private JList<Object> list_2;
-	private JList<Object> list_3;
-	private String REPEAT_SUBMIT_TOKEN = "";
-	private String key_check_isChange = "";
-	private DefaultListModel<Object> model_train = new DefaultListModel<Object>();
-	private JTable table_1;
-	private int ticket_type = 0;
+	public SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+	public SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+	public JList<Object> list_1;
+	public JList<Object> list_2;
+	public JList<Object> list_3;
+	public String REPEAT_SUBMIT_TOKEN = "";
+	public String key_check_isChange = "";
+	public DefaultListModel<Object> model_train = new DefaultListModel<Object>();
+	public JTable table_1;
+	public int ticket_type = 0;
+	private boolean result = true;
+	private JSpinner spinner;
 
 	/**
 	 * Launch the application.
@@ -287,9 +286,8 @@ public class Home_Page {
 						}
 					}
 				}
-
 				if (e.getClickCount() == 2) {
-					SubmitOrder();
+					new Order_Page(window).start();
 				}
 			}
 		});
@@ -350,7 +348,7 @@ public class Home_Page {
 		textArea.setBorder(BorderFactory.createTitledBorder("信息输出: "));
 		p1.add(scroll);
 
-		JSpinner spinner = new JSpinner();
+		spinner = new JSpinner();
 		spinner.setBounds(496, 53, 53, 22);
 		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null,
 				new Integer(100)));
@@ -978,6 +976,8 @@ public class Home_Page {
 				return;
 			}
 		}
+		
+		//组装提交刷票信息
 		StringBuffer sb = new StringBuffer();
 		sb.append("leftTicketDTO.train_date=");
 		sb.append(textField_2.getText() + "&");
@@ -987,13 +987,50 @@ public class Home_Page {
 		sb.append(map.get(textField_3.getText())[2] + "&");
 		sb.append("purpose_codes=ADULT");
 		
+		//组装自动刷票判断
+		ListModel<Object> model = list_2.getModel();
+		String[] seatOther = new String[model.getSize()];
 		if (ticket_type==1) {
-			boolean result = true;
-			while (result) {
-				brushVotes(sb);
+			result = true;
+			for (int i=0;i<model.getSize();i++) {
+				if ("商务座".equalsIgnoreCase(model.getElementAt(i).toString().trim())) {
+					seatOther[i] = "swz_num";
+				}else if ("特等座".equalsIgnoreCase(model.getElementAt(i).toString().trim())) {
+					seatOther[i] = "tz_num";
+				}else if ("一等座".equalsIgnoreCase(model.getElementAt(i).toString().trim())){
+					seatOther[i] = "zy_num";
+				}else if ("二等座".equalsIgnoreCase(model.getElementAt(i).toString().trim())){
+					seatOther[i] = "ze_num";
+				}else if ("高级软卧".equalsIgnoreCase(model.getElementAt(i).toString().trim())){
+					seatOther[i] = "gr_num";
+				}else if ("软卧".equalsIgnoreCase(model.getElementAt(i).toString().trim())){
+					seatOther[i] = "rw_num";
+				}else if ("硬卧".equalsIgnoreCase(model.getElementAt(i).toString().trim())){
+					seatOther[i] = "yw_num";
+				}else if ("软座".equalsIgnoreCase(model.getElementAt(i).toString().trim())){
+					seatOther[i] = "rz_num";
+				}else if ("硬座".equalsIgnoreCase(model.getElementAt(i).toString().trim())){
+					seatOther[i] = "yz_num";
+				}else if ("无座".equalsIgnoreCase(model.getElementAt(i).toString().trim())){
+					seatOther[i] = "wz_num";
+				}else if ("其它".equalsIgnoreCase(model.getElementAt(i).toString().trim())){
+					seatOther[i] = "qt_num";
+				}
 			}
-		}else {
-			brushVotes(sb);
+		}
+		
+		int num = 0;
+		while (result) {
+			num+=1;
+			if (ticket_type==1) {
+				printLog("第"+num+"次查询");
+			}
+			brushVotes(sb,seatOther);
+			try {
+				Thread.sleep(Integer.parseInt(spinner.getValue().toString()));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			};
 		}
 	}
 
@@ -1003,14 +1040,14 @@ public class Home_Page {
 	 * 验证出发地、目的地、时间等是否填写，没有则不刷票
 	 * 
 	 */
-	private void brushVotes(StringBuffer sb) {
+	private void brushVotes(StringBuffer sb,String[] seatOther) {
 		// 开始刷票
 		VHttpGet get = new VHttpGet(
 				"https://kyfw.12306.cn/otn/leftTicket/queryX?" + sb.toString());
 		VHttpResponse res = Browser.execute(get);
 		String body = HttpUtils.outHtml(res.getBody());
 		try {
-			disposeTicketInfo(body);
+			disposeTicketInfo(body,seatOther);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -1019,7 +1056,8 @@ public class Home_Page {
 	/**
 	 * 处理刷票返回信息
 	 */
-	private void disposeTicketInfo(String body) throws JSONException {
+	private boolean disposeTicketInfo(String body,String[] seatOther) throws JSONException {
+		boolean Brush = true;
 		JSONObject json = new JSONObject(body);
 		JSONArray jsonArr = new JSONArray(json.get("data").toString());
 		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
@@ -1040,12 +1078,31 @@ public class Home_Page {
 					.toString());
 			obj2.put("secretStr", obj.get("secretStr").toString());
 			
-			
-			
+			flag:
+			if (ticket_type==1 && Brush) {
+				for (int j=0;j<model_train.getSize();j++) {
+					String train_no = model_train.get(j).toString();
+					if (obj2.get("station_train_code").toString().trim().equalsIgnoreCase(train_no.trim())) {
+						for (String seat : seatOther) {
+							if (!"--".equals(obj2.get(seat).toString().trim().toUpperCase())) {
+								Brush = false;		//结束刷票结果判定
+								result = false;		//结束循环刷票判定
+								new Order_Page(window,obj2).start();
+								break flag;
+							}
+						}
+					}
+				}
+				
+			}
+			if (ticket_type==0) {
+				result = false;
+			}
 			datalist.add(obj2);
 			addRow(obj2);
 		}
 		setTableSize();
+		return result;
 	}
 
 	/**
@@ -1105,312 +1162,6 @@ public class Home_Page {
 		table.getColumnModel().getColumn(15).setPreferredWidth(65);
 		table.getColumnModel().getColumn(16).setPreferredWidth(65);
 		table.setToolTipText("");
-	}
-
-	/**
-	 * 提交订单
-	 */
-	private void SubmitOrder() {
-		JSONObject obj = datalist.get(table.getSelectedRow());
-		try {
-			// 预订车票
-			textArea.append(format.format(new Date()) + "：开始提交订票信息\r\n");
-			VHttpPost post = new VHttpPost(
-					"https://kyfw.12306.cn/otn/leftTicket/submitOrderRequest");
-			VParames parames = new VParames();
-			parames.clear();
-			parames.put("secretStr", obj.get("secretStr").toString());
-			parames.put("train_date", textField_2.getText());
-			parames.put("back_train_date", textField_2.getText());
-			parames.put("tour_flag", "dc");
-			parames.put("purpose_codes", "ADULT");
-			parames.put("query_from_station_name", obj.get("from_station_name")
-					.toString());
-			parames.put("query_to_station_name", obj.get("to_station_name")
-					.toString());
-			parames.put("undefined", "");
-			post.setParames(parames);
-			VHttpResponse res = Browser.execute(post);
-			String body = HttpUtils.outHtml(res.getBody());
-			JSONObject res_obj = new JSONObject(body);
-			if ("true".equals(res_obj.get("status").toString())) {
-				textArea.append(format.format(new Date()) + "：订票信息提交成功\r\n");
-				res.getEntity().disconnect();
-				initDc();
-			} else {
-				textArea.append(format.format(new Date())
-						+ res_obj.get("messages").toString() + "\r\n");
-				res.getEntity().disconnect();
-			}
-		} catch (JSONException e) {
-			textArea.append(format.format(new Date())
-					+ "：提交订单失败，请联系作者QQ：3094759846\r\n");
-		}
-	}
-
-	/**
-	 * 预定界面
-	 */
-	private void initDc() {
-		VHttpPost post = new VHttpPost(
-				"https://kyfw.12306.cn/otn/confirmPassenger/initDc");
-		VParames parames = new VParames();
-		parames.clear();
-		parames.put("_json_att", "");
-		post.setParames(parames);
-		VHttpResponse res = Browser.execute(post);
-		String body = HttpUtils.outHtml(res.getBody());
-
-		Pattern pattern = Pattern
-				.compile("var globalRepeatSubmitToken = '[0-9 | a-z]{32}'");
-		Pattern pattern2 = Pattern
-				.compile("'key_check_isChange':'[0-9 | A-Z]{56}'");
-		Matcher matcher = pattern.matcher(body);
-		Matcher matcher2 = pattern2.matcher(body);
-		while (matcher.find()) {
-			REPEAT_SUBMIT_TOKEN = matcher.group(0)
-					.replace("var globalRepeatSubmitToken = '", "")
-					.replace("'", "");
-		}
-		while (matcher2.find()) {
-			key_check_isChange = matcher2.group(0)
-					.replace("'key_check_isChange':'", "").replace("'", "");
-		}
-		res.getEntity().disconnect();
-		textArea.append(format.format(new Date()) + "：开始拉取验证......\r\n");
-		getSubmitCode();
-	}
-
-	/**
-	 * 拉取提交订单验证码及校验，返回true表示校验成功，反之否
-	 * 
-	 * @return 校验是否成功
-	 */
-	public void getSubmitCode() {
-		// 拉取验证码
-		String url = "https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=passenger&rand=randp&"
-				+ Math.random();
-		VHttpGet get = new VHttpGet(url);
-		VHttpResponse res = Browser.execute(get); // 获取验证码
-		HttpUtils.getSubmitCodeBy12306(res.getBody(), window);
-		res.getEntity().disconnect(); // 耗尽资源
-	}
-
-	public void checkSubmitCode() {
-		String code = HttpUtils.incode.toString().substring(0,
-				HttpUtils.incode.toString().length() - 1);
-		textArea.append(format.format(new Date()) + "：当前验证码：" + code + "\r\n");
-		VHttpPost post = new VHttpPost(
-				"https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
-		VParames parames5 = new VParames();
-		parames5.put("randCode", code);
-		parames5.put("rand", "randp");
-		parames5.put("_json_att", "");
-		parames5.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
-
-		post.setParames(parames5);
-		VHttpResponse res = Browser.execute(post);
-		String body = HttpUtils.outHtml(res.getBody());
-		try {
-			JSONObject res_obj = new JSONObject(body);
-			JSONObject dataObj = (JSONObject) res_obj.get("data");
-			if ("1".equals(dataObj.get("result").toString())) {
-				textArea.append(format.format(new Date())
-						+ "：验证码正确，开始确认用户是否可以提交订单\r\n");
-				checkOrderInfo();
-			} else {
-				textArea.append(format.format(new Date()) + "：验证码错误，请重新验证\r\n");
-				getSubmitCode();
-			}
-		} catch (JSONException e) {
-			textArea.append(format.format(new Date())
-					+ "：解析验证码错误，请联系作者QQ：3094759846\r\n");
-		}
-	}
-
-	/**
-	 * 确认用户是否可以提交订单
-	 */
-	private void checkOrderInfo() {
-		String username = list_3.getModel().getElementAt(0).toString();
-		JSONObject userObj = userMap.get(username);
-		try {
-			VHttpPost post = new VHttpPost(
-					"https://kyfw.12306.cn/otn/confirmPassenger/checkOrderInfo");
-			VParames parames = new VParames();
-			parames.clear();
-			parames.put("cancel_flag", "2");
-			parames.put("bed_level_order_num", "000000000000000000000000000000");
-			parames.put("passengerTicketStr",
-					"1,0,1," + userObj.getString("passenger_name") + ",1,"
-							+ userObj.getString("passenger_id_no") + ","
-							+ userObj.getString("mobile_no") + ",N");
-			parames.put("oldPassengerStr", userObj.getString("passenger_name")
-					+ ",1," + userObj.getString("passenger_id_no") + ",1_");
-			parames.put("tour_flag", "dc");
-			parames.put(
-					"randCode",
-					HttpUtils.incode.toString().substring(0,
-							HttpUtils.incode.toString().length() - 1));
-			parames.put("_json_att", "");
-			parames.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
-			post.setParames(parames);
-			VHttpResponse res = Browser.execute(post);
-			String body = HttpUtils.outHtml(res.getBody());
-			JSONObject res_obj = new JSONObject(body);
-			JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
-			if ("true".equals(dataobj.get("submitStatus").toString())) {
-				textArea.append(format.format(new Date()) + "：当前用户可以提交订单\r\n");
-				getQueueCount();
-			} else {
-				textArea.append(format.format(new Date()) + "："
-						+ dataobj.get("errMsg").toString() + "\r\n");
-				return;
-			}
-			res.getEntity().disconnect();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 获取余票数量
-	 */
-	private void getQueueCount() {
-		JSONObject obj = datalist.get(table.getSelectedRow());
-		VHttpPost post = new VHttpPost(
-				"https://kyfw.12306.cn/otn/confirmPassenger/getQueueCount");
-		VParames parames4 = new VParames();
-		try {
-			parames4.put("train_date", format2.parse(textField_2.getText())
-					+ "");
-			parames4.put("train_no", obj.get("train_no").toString());
-			parames4.put("stationTrainCode", obj.get("station_train_code")
-					.toString());
-			parames4.put("seatType", "3");
-			parames4.put("fromStationTelecode", obj
-					.get("from_station_telecode").toString());
-			parames4.put("toStationTelecode", obj.get("to_station_telecode")
-					.toString());
-			parames4.put("leftTicket", obj.getString("yp_info"));
-			parames4.put("purpose_codes", "00");
-			parames4.put("train_location", obj.getString("location_code"));
-			parames4.put("_json_att", "");
-			parames4.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
-			post.setParames(parames4);
-			VHttpResponse res = Browser.execute(post);
-			String body = HttpUtils.outHtml(res.getBody());
-			JSONObject jsonBody = new JSONObject(body);
-			if ("true".equals(jsonBody.get("status").toString())) {
-				JSONObject dataObj = (JSONObject) jsonBody.get("data");
-				String[] counts = HttpUtils.getCountByJs(
-						dataObj.get("ticket").toString(), "1").split(",");
-				if (Integer.parseInt(counts[0]) > 0) {
-					textArea.append(format.format(new Date()) + "："
-							+ obj.get("station_train_code") + "：硬座剩余:"
-							+ counts[0] + "张" + "\r\n");
-				}
-				if (Integer.parseInt(counts[1]) > 0) {
-					textArea.append(format.format(new Date()) + "："
-							+ obj.get("station_train_code") + "：硬座剩余:"
-							+ counts[1] + "张" + "\r\n");
-				}
-				textArea.append(format.format(new Date()) + "：开始提交订单\r\n");
-			} else {
-				textArea.append(format.format(new Date()) + "："
-						+ jsonBody.get("messages").toString() + "\r\n");
-			}
-			res.getEntity().disconnect();
-		} catch (Exception e) {
-			textArea.append(format.format(new Date())
-					+ "：解析余票数量失败，请联系作者QQ：3094759846\r\n");
-		}
-		confirmSingleForQueue();
-	}
-
-	/**
-	 * 确认提交订单
-	 */
-	private void confirmSingleForQueue() {
-		String username = list_3.getModel().getElementAt(0).toString();
-		JSONObject userObj = userMap.get(username);
-		JSONObject obj = datalist.get(table.getSelectedRow());
-
-		try {
-			VHttpPost post = new VHttpPost(
-					"https://kyfw.12306.cn/otn/confirmPassenger/confirmSingleForQueue");
-			VParames parames = new VParames();
-			parames.clear();
-			parames.put("passengerTicketStr",
-					"1,0,1," + userObj.getString("passenger_name") + ",1,"
-							+ userObj.getString("passenger_id_no") + ","
-							+ userObj.getString("mobile_no") + ",N");
-			parames.put("oldPassengerStr", userObj.getString("passenger_name")
-					+ ",1," + userObj.getString("passenger_id_no") + ",1_");
-			parames.put(
-					"randCode",
-					HttpUtils.incode.toString().substring(0,
-							HttpUtils.incode.toString().length() - 1));
-			parames.put("purpose_codes", "00");
-			parames.put("key_check_isChange", key_check_isChange);
-			parames.put("leftTicketStr", obj.getString("yp_info"));
-			parames.put("train_location", obj.getString("location_code"));
-			parames.put("roomType", "00");
-			parames.put("dwAll", "N");
-			parames.put("_json_att", "");
-			parames.put("REPEAT_SUBMIT_TOKEN", REPEAT_SUBMIT_TOKEN);
-			post.setParames(parames);
-			VHttpResponse res = Browser.execute(post);
-			String body = HttpUtils.outHtml(res.getBody());
-			JSONObject res_obj = new JSONObject(body);
-			JSONObject dataobj = new JSONObject(res_obj.get("data").toString());
-			if ("true".equals(dataobj.get("submitStatus").toString())) {
-				textArea.append(format.format(new Date())
-						+ "：订单提交成功，正在查询订票结果\r\n");
-				queryOrderWaitTime();
-			} else {
-				textArea.append(format.format(new Date()) + "：" + body + "\r\n");
-			}
-			res.getEntity().disconnect();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 开始查询订单
-	 */
-	private void queryOrderWaitTime() {
-		JSONObject obj = datalist.get(table.getSelectedRow());
-		boolean order = true;
-		String orderId = "";
-		try {
-			while (order) {
-				Random ne = new Random();
-				int x = ne.nextInt(9999 - 1000 + 1) + 1000;
-				String query_url = "https://kyfw.12306.cn/otn/confirmPassenger/queryOrderWaitTime?";
-				query_url = query_url + "random=14772940" + x
-						+ "&tourFlag=dc&_json_att=&REPEAT_SUBMIT_TOKEN="
-						+ REPEAT_SUBMIT_TOKEN;
-				VHttpGet get = new VHttpGet(query_url);
-				VHttpResponse res = Browser.execute(get);
-				String body = HttpUtils.outHtml(res.getBody());
-				JSONObject res_obj = new JSONObject(body);
-				JSONObject dataobj = new JSONObject(res_obj.get("data")
-						.toString());
-				if (!"null".equals(dataobj.get("orderId").toString())) {
-					order = false;
-					orderId = dataobj.get("orderId").toString();
-				}
-			}
-			textArea.append(format.format(new Date()) + "：" + "恭喜你，成功订到一张"
-					+ obj.getString("from_station_name") + "至"
-					+ obj.getString("end_station_name") + "的硬座，订单号为：" + orderId
-					+ "，请尽快付款，以免耽误行程" + "\r\n");
-		} catch (JSONException e) {
-			textArea.append(format.format(new Date())
-					+ "：解析订票结果失败，请联系作者QQ：3094759846\r\n");
-		}
 	}
 
 	/**
@@ -1525,6 +1276,11 @@ public class Home_Page {
 		}
 	}
 
+	/**
+	 * 取消订单
+	 * @param orderId
+	 * @param button_3
+	 */
 	private void cancelOrder(String orderId, JButton button_3) {
 		try {
 			VHttpPost post = new VHttpPost(
@@ -1545,8 +1301,11 @@ public class Home_Page {
 			if (button_3 != null) {
 				button_3.setEnabled(true);
 			}
+			Thread.sleep(2000);
 			getOrderList(null);
 		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -1591,8 +1350,13 @@ public class Home_Page {
 		}
 	}
 	
-
-
+	/**
+	 * 车次复选框功能
+	 * @param checkBox		复选框
+	 * @param panel_1		车次复选框的父类容器
+	 * @param checkBox_22	全部车次按钮
+	 * @param num			车次编号的第一个字母
+	 */
 	private void CheckMethods2(JCheckBox checkBox, JPanel panel_1,
 			JCheckBox checkBox_22, String num) {
 		if (checkBox.isSelected()) {
@@ -1641,9 +1405,13 @@ public class Home_Page {
 				}
 			}
 		}
-		;
 	}
 	
-	
-	
+	/**
+	 * 打印信息
+	 * @param data
+	 */
+	public void printLog(String data){
+		textArea.append(format.format(new Date()) + "："+data+"\r\n");
+	}
 }
