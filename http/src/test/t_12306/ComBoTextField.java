@@ -181,7 +181,9 @@ public class ComBoTextField extends JTextField{
                     e.setSource(cbInput);
                     cbInput.dispatchEvent(e);
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        txtInput.setText(cbInput.getSelectedItem().toString());
+                    	if (cbInput.getSelectedItem()!=null) {
+                    		 txtInput.setText(cbInput.getSelectedItem().toString());
+                    	}
                         cbInput.setPopupVisible(false);
                     }
                 }

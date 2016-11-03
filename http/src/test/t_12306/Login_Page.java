@@ -79,7 +79,7 @@ public class Login_Page {
 		frame.getContentPane().setLayout(null);
 		
 		txtHao = new JTextField();
-		txtHao.setText("hao707789");
+		txtHao.setText("13068746506");
 		txtHao.setBounds(123, 23, 230, 33);
 		frame.getContentPane().add(txtHao);
 		txtHao.setColumns(10);
@@ -110,7 +110,7 @@ public class Login_Page {
 		button.setBounds(123, 110, 104, 23);
 		frame.getContentPane().add(button);
 		
-		passwordField = new JPasswordField("loveXIAO707789");
+		passwordField = new JPasswordField("dql13068746506");
 		passwordField.setEchoChar('♫');
 		passwordField.setToolTipText("");
 		passwordField.setBounds(123, 67, 230, 33);
