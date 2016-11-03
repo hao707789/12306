@@ -34,6 +34,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -66,7 +67,6 @@ import com.vcode.http.utils.PopList;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
 import java.awt.event.MouseMotionAdapter;
 
 /**
@@ -571,12 +571,16 @@ public class Home_Page {
 		button_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (table_1.getSelectedRows().length > 0) {
-					if (table_1.getValueAt(table_1.getSelectedRow(), 1) != null) {
-						button_3.setEnabled(false);
-						String OrderId = table_1.getValueAt(
+				int firm_cancle = JOptionPane.showConfirmDialog(null, "是否取消订单?", "确认框",JOptionPane.YES_NO_OPTION);
+				System.out.println(firm_cancle);
+				if(firm_cancle==0){
+					if (table_1.getSelectedRows().length > 0) {
+						if (table_1.getValueAt(table_1.getSelectedRow(), 1) != null) {
+							button_3.setEnabled(false);
+							String OrderId = table_1.getValueAt(
 								table_1.getSelectedRow(), 1).toString();
-						cancelOrder(OrderId, button_3);
+							cancelOrder(OrderId, button_3);
+						}
 					}
 				}
 			}
@@ -1671,8 +1675,11 @@ public class Home_Page {
 			if (button_3 != null) {
 				button_3.setEnabled(true);
 			}
+			Thread.sleep(2000);
 			getOrderList(null);
 		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
