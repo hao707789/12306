@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,6 +62,9 @@ import com.vcode.http.utils.Chooser;
 import com.vcode.http.utils.HttpUtils;
 import com.vcode.http.utils.JTextAreaExt;
 import com.vcode.http.utils.PopList;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * 刷票界面
@@ -197,7 +202,32 @@ public class Home_Page {
 		label_3.setBounds(497, 52, 60, 18);
 		frame.getContentPane().add(label_3);
 
-		JComboBox<Object> comboBox = new JComboBox<Object>();
+		final JComboBox<Object> comboBox = new JComboBox<Object>();
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DefaultTableModel model = (DefaultTableModel) table.getModel();
+				model.setRowCount(0);
+				String [] time_arr = comboBox.getSelectedItem().toString().split("—");
+				for (int i = 0; i < datalist.size(); i++) {
+					JSONObject obj = datalist.get(i);
+					String start_time;
+					try {
+						start_time = obj.get("start_time").toString();
+						DateFormat sdf = new SimpleDateFormat("HH:mm"); 
+						Date first_date = sdf.parse(time_arr[0]);
+						Date last_date = sdf.parse(time_arr[1]);
+						Date start_date = sdf.parse(start_time);
+						if (first_date.getTime()<=start_date.getTime()&&start_date.getTime()<last_date.getTime()) {
+							addRow(obj);
+						}
+					} catch (JSONException e1) {
+						e1.printStackTrace();
+					} catch (ParseException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
 		comboBox.setFont(new Font("微软雅黑", Font.PLAIN, 12));
 		comboBox.setModel(new DefaultComboBoxModel<Object>(new String[] {
 				"00:00—24:00", "00:00—08:00", "08:00—12:00", "12:00—20:00",
@@ -234,6 +264,10 @@ public class Home_Page {
 		
 
 		final JButton btnNewButton = new JButton("手动查票");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -1591,8 +1625,13 @@ public class Home_Page {
 		}
 	}
 	
-
-
+	/**
+	 * 车次复选框方法
+	 * @param checkBox	复选框
+	 * @param panel_1	父类容器
+	 * @param checkBox_22	全部车次
+	 * @param num	车次编号开头字母
+	 */
 	private void CheckMethods2(JCheckBox checkBox, JPanel panel_1,
 			JCheckBox checkBox_22, String num) {
 		if (checkBox.isSelected()) {
@@ -1632,6 +1671,7 @@ public class Home_Page {
 		} else {
 			// 全部车次的值改为false
 			checkBox_22.setSelected(false);
+			//隐藏行
 			DefaultTableModel model = (DefaultTableModel) table.getModel();
 			int row_num = table.getRowCount();
 			for (int i = row_num - 1; i >= 0; i--) {
