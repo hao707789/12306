@@ -144,7 +144,7 @@ public class ComBoTextField extends JTextField{
      * @param txtInput
      * @param items
      */
-    public static void setupAutoComplete2(final JTextField txtInput, final ArrayList<String> items,final Map<String, String> map) {
+    public static void setupAutoComplete2(final JTextField txtInput, final ArrayList<String> items,final Map<String, String[]> map) {
         final DefaultComboBoxModel model = new DefaultComboBoxModel();
         final JComboBox cbInput = new JComboBox(model) {
             public Dimension getPreferredSize() {
@@ -209,11 +209,12 @@ public class ComBoTextField extends JTextField{
                 model.removeAllElements();
                 String input = txtInput.getText();
                 if (!input.isEmpty()) {
-                	Set<Entry<String, String>> set = map.entrySet();
-                    Iterator<Entry<String, String>> it=set.iterator();
+                	Set<Entry<String, String[]>> set = map.entrySet();
+                    Iterator<Entry<String, String[]>> it=set.iterator();
                     while (it.hasNext()){
                     	Map.Entry entry=(Map.Entry)it.next();
-                    	if(entry.getValue().toString().toLowerCase().startsWith(input.toLowerCase())) {
+                    	String[] arr = (String[]) entry.getValue();
+                    	if(arr[4].toLowerCase().startsWith(input.toLowerCase())) {
                     		model.addElement(entry.getKey());        
     					}
                     }
