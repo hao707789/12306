@@ -69,7 +69,7 @@ public class Login_Page {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		frame = new JFrame();
+		frame = new JFrame("欢迎使用V代码抢票工具——Login");
 		frame.setBounds(100, 100, 440, 465);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
