@@ -1,9 +1,12 @@
 package com.vcode.ticket.methods;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +28,8 @@ import com.vcode.ticket.ui.Login_Page;
 public class LoginMethods {
 	
 	private Login_Page login_page;
+	
+	private String newCode = "";
 	
 	public LoginMethods(Login_Page login_page){
 		this.login_page = login_page;
@@ -64,7 +69,8 @@ public class LoginMethods {
 			login_page.lblNewLabel_2.setForeground(Color.red);
 			return false;
 		}
-		if (login_page.code.length()==0) {
+		JComponent p3 = (JComponent)login_page.frame.getLayeredPane();
+		if (p3.getComponents().length<=0) {
 			login_page.lblNewLabel_2.setText("✖请选择验证码");
 			login_page.lblNewLabel_2.setForeground(Color.red);
 			return false;
@@ -80,11 +86,17 @@ public class LoginMethods {
 		if (!IsChoiceCode()) {
 			return;
 		}
-		
-		String newCode = login_page.code.toString();
-		newCode = newCode.substring(0,newCode.length()-1);
-		login_page.code.setLength(0);
-		login_page.code.append(newCode);
+		JComponent p3 = (JComponent)login_page.frame.getLayeredPane();
+		Component[] cons = p3.getComponents();
+		for (int i=0;i<cons.length;i++) {
+			if (cons[i] instanceof JLabel) {
+				newCode += cons[i].getX()-64 + "," ;
+				newCode += cons[i].getY()-179 + "";
+				if (i<cons.length-1) {
+					newCode += ",";
+				}
+			}
+		}
 		login_page.lblNewLabel_2.setText("当前验证码是："+newCode);
 		
 		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");
@@ -105,8 +117,8 @@ public class LoginMethods {
 				login_page.lblNewLabel_2.setText("✖验证码错误");
 				login_page.lblNewLabel_2.setForeground(Color.red);
 				res.getEntity().disconnect();
-				login_page.code.setLength(0);
 				login_page.lblNewLabel_1.setIcon(new ImageIcon(getLoginCode()));
+				clearCode();
 			}
 		} catch (JSONException e1) {
 			e1.printStackTrace();
@@ -118,7 +130,7 @@ public class LoginMethods {
 		VHttpPost post = new VHttpPost("https://kyfw.12306.cn/otn/login/loginAysnSuggest");
 		VParames parames = new VParames();
 		parames.put("loginUserDTO.user_name", login_page.txtHao.getText());
-		parames.put("randCode", login_page.code.toString());
+		parames.put("randCode", newCode);
 		parames.put("userDTO.password", new String(login_page.passwordField.getPassword()));
 		
 		post.setParames(parames);
@@ -162,5 +174,22 @@ public class LoginMethods {
 			}
 			res.getEntity().disconnect();
 		}
+	}
+	
+	/**
+	 * 
+	 * 清空验证码
+	 * 
+	 */
+	public void clearCode(){
+		newCode = "";
+		JComponent p3 = (JComponent)login_page.frame.getLayeredPane();
+		Component[] cons1 = p3.getComponents();
+		for (Component con : cons1) {
+			if (con instanceof JLabel) {
+				p3.remove(con);
+			}
+		}
+		login_page.frame.repaint(); 
 	}
 }

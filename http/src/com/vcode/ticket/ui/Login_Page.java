@@ -1,7 +1,9 @@
 package com.vcode.ticket.ui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -10,6 +12,7 @@ import java.text.SimpleDateFormat;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
@@ -29,7 +32,6 @@ public class Login_Page {
 	public JFrame frame;
 	public JTextField txtHao;
 	public JPasswordField passwordField;
-	public StringBuffer code = new StringBuffer();
 	public JLabel lblNewLabel_1;
 	public JLabel lblNewLabel_2;
 	public SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
@@ -93,15 +95,41 @@ public class Login_Page {
 		label_1.setBounds(61, 114, 54, 15);
 		frame.getContentPane().add(label_1);
 		
+		final JComponent p3 = (JComponent) frame.getLayeredPane();
+		
 		lblNewLabel_1 = new JLabel(new ImageIcon(LoginMethods.getLoginCode()));
+		lblNewLabel_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				ImageIcon icon = new ImageIcon(Login_Page.class.getResource("../image/12306.jpg"));
+				final JLabel jb3 = new JLabel(icon);
+				jb3.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						p3.remove(jb3);
+						p3.repaint();
+					}
+				});
+				p3.add(jb3, new Integer(-3)); // 将按钮jb3，放置在内容面板之下
+				jb3.setSize(22, 22);
+				jb3.setLocation(e.getX()+60, e.getY()+139);
+			}
+		});
 		lblNewLabel_1.setBounds(60, 139, 293, 191);
 		frame.getContentPane().add(lblNewLabel_1);
 		
 		JButton button = new JButton("刷新");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				code.setLength(0);
 				lblNewLabel_1.setIcon(new ImageIcon(LoginMethods.getLoginCode()));
+				JComponent p3 = (JComponent)frame.getLayeredPane();
+				Component[] cons = p3.getComponents();
+				for (Component con : cons) {
+					if (con instanceof JLabel) {
+						p3.remove(con);
+					}
+				}
+				frame.repaint(); 
 			}
 		});
 		button.setBounds(123, 110, 104, 23);
@@ -113,19 +141,12 @@ public class Login_Page {
 		passwordField.setBounds(123, 67, 230, 33);
 		frame.getContentPane().add(passwordField);
 		
-		lblNewLabel_2 = new JLabel("鼠标当前点击位置的坐标是：");
+		lblNewLabel_2 = new JLabel("提示：选择完验证码后，右击同样可以提交哦");
 		lblNewLabel_2.setBounds(61, 340, 293, 29);
+		lblNewLabel_2.setForeground(Color.blue);
 		frame.getContentPane().add(lblNewLabel_2);
 		frame.addMouseListener(new MouseAdapter(){  
             public void mouseClicked(MouseEvent e){
-                if(e.getButton() == MouseEvent.BUTTON1){ //e.getButton就会返回点鼠标的那个键，左键还是右健，3代表右键
-                    int x = e.getX()-69;  
-                    int y = e.getY()-199;  
-                    String banner = x + "," + y + ",";
-                    code.append(banner);
-                    lblNewLabel_2.setText("鼠标当前点击位置的坐标是" + x + "," + y);
-                    lblNewLabel_2.setForeground(Color.black);
-                }
                 if(e.getButton() == MouseEvent.BUTTON3){
                 	loginMethods.CheckCode();
                 }
