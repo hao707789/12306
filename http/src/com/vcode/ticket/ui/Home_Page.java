@@ -1103,11 +1103,11 @@ public class Home_Page {
 			label_10.setText(null);
 			return;
 		}
+		if (list_2.getModel().getSize() <= 0) {
+			textArea.append(format.format(new Date()) + "：请先选择席别\r\n");
+			return;
+		}
 		if (ticket_type==1) {
-			if (list_2.getModel().getSize() <= 0) {
-				textArea.append(format.format(new Date()) + "：请先选择席别\r\n");
-				return;
-			}
 			if (list_1.getModel().getSize() <= 0) {
 				textArea.append(format.format(new Date()) + "：请先切换到手动查票模式下，查询出车次后，并右键添加到车次列表后再切为自动刷票模式\r\n");
 				return;
