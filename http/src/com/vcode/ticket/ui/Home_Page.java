@@ -1391,7 +1391,7 @@ public class Home_Page {
 				vector.add(obj.get("train_code_page").toString());
 				vector.add(obj.get("sequence_no").toString());
 				vector.add(passengerDTO.get("passenger_name").toString());
-				vector.add(stationTrainDTO.get("start_time").toString());
+				vector.add(obj.get("start_train_date_page").toString());
 				vector.add(stationTrainDTO.get("from_station_name").toString());
 				vector.add(stationTrainDTO.get("to_station_name").toString());
 				vector.add(tickets.get("ticket_type_name").toString());

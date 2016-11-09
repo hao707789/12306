@@ -19,6 +19,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.vcode.http.client.VHttpClient;
 import com.vcode.http.client.VHttpResponse;
@@ -279,4 +283,81 @@ public class HttpUtils {
 		}    
 		return rs;
   	}
+	
+	/**
+	 * 获取座位编号
+	 * @param userObj
+	 * @param seatTypes
+	 * @param station_train_code
+	 * @return
+	 */
+	public static String getPassengerTicketStr(JSONObject userObj,String[] seatTypes,String station_train_code){
+		String seatTypeCode = "";
+		String passengerTicketStr = "";
+		try {
+			if (station_train_code.toUpperCase().startsWith("G")) {
+				for (String seatType : seatTypes) {
+					if (seatType.contains("商务座")) {
+						seatTypeCode = "9";
+					}else if (seatType.contains("一等座")){
+						seatTypeCode = "M";
+					}else if (seatType.contains("二等座")){
+						seatTypeCode = "o";
+					}
+					if (!"".equals(seatType)) {
+						break;
+					}
+				}
+			}else if (station_train_code.toUpperCase().startsWith("C") || station_train_code.toUpperCase().startsWith("D")){
+				for (String seatType : seatTypes) {
+					if (seatType.contains("一等座")){
+						seatTypeCode = "M";
+					}else if (seatType.contains("二等座")){
+						seatTypeCode = "O";
+					}
+					if (!"".equals(seatType)) {
+						break;
+					}
+				}
+			}else if (station_train_code.toUpperCase().startsWith("Z") || station_train_code.toUpperCase().startsWith("T") 
+						|| station_train_code.toUpperCase().startsWith("K")) {
+				for (String seatType : seatTypes) {
+					if (seatType.contains("软卧")){
+						seatTypeCode = "4";
+					}else if (seatType.contains("硬卧")){
+						seatTypeCode = "3";
+					}else if (seatType.contains("硬座")){
+						seatTypeCode = "1";
+					}
+					if (!"".equals(seatType)) {
+						break;
+					}
+				}
+			}
+			passengerTicketStr = seatTypeCode+",0,1," + userObj.getString("passenger_name") + ",1,"
+					+ userObj.getString("passenger_id_no") + ","
+					+ userObj.getString("mobile_no") + ",N";
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return passengerTicketStr;
+	}
+	
+	public static String seatNumToseatType(String seatNum){
+		String seatType = "";
+		if ("1".equals(seatNum.toUpperCase())) {
+			seatType = "硬座";
+		}else if ("3".equals(seatNum.toUpperCase())) {
+			seatType =  "硬卧";
+		}else if ("4".equals(seatNum.toUpperCase())) {
+			seatType =  "软卧";
+		}else if ("O".equals(seatNum.toUpperCase())) {
+			seatType =  "二等座";
+		}else if ("M".equals(seatNum.toUpperCase())) {
+			seatType =  "一等座";
+		}else if ("9".equals(seatNum.toUpperCase())) {
+			seatType =  "商务座";
+		}
+		return seatType;
+	}
 }

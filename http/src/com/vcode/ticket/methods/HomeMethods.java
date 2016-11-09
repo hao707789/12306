@@ -4,6 +4,8 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.DefaultListModel;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +31,8 @@ public class HomeMethods extends Thread {
 	
 	private HomeMethods(){};
 	
+	private String passengerTicketStr;
+	
 	public HomeMethods(Home_Page home_page){
 		if (this.home_page==null) {
 			this.home_page = home_page;
@@ -53,6 +57,23 @@ public class HomeMethods extends Thread {
 	 * 提交订单
 	 */
 	private void SubmitOrder() {
+		String username = home_page.list_3.getModel().getElementAt(0).toString();
+		JSONObject userObj = home_page.userMap.get(username);
+		if (obj2==null) {
+			obj2 = home_page.datalist.get(home_page.table.getSelectedRow());
+		}
+		DefaultListModel<Object> model = (DefaultListModel<Object>)home_page.list_2.getModel();
+		String[] seatTypes = new String[model.getSize()];
+		for (int i=0;i<model.getSize();i++) {
+			seatTypes[i] = model.get(i).toString();
+		}
+		String station_train_code = "";
+		try {
+			station_train_code = obj2.get("station_train_code").toString();
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		}
+		passengerTicketStr = HttpUtils.getPassengerTicketStr(userObj, seatTypes, station_train_code);
 		if (obj2==null) {
 			obj2 = home_page.datalist.get(home_page.table.getSelectedRow());
 		}
@@ -186,10 +207,7 @@ public class HomeMethods extends Thread {
 			parames.clear();
 			parames.put("cancel_flag", "2");
 			parames.put("bed_level_order_num", "000000000000000000000000000000");
-			parames.put("passengerTicketStr",
-					"1,0,1," + userObj.getString("passenger_name") + ",1,"
-							+ userObj.getString("passenger_id_no") + ","
-							+ userObj.getString("mobile_no") + ",N");
+			parames.put("passengerTicketStr",passengerTicketStr);
 			parames.put("oldPassengerStr", userObj.getString("passenger_name")
 					+ ",1," + userObj.getString("passenger_id_no") + ",1_");
 			parames.put("tour_flag", "dc");
@@ -250,14 +268,10 @@ public class HomeMethods extends Thread {
 			if ("true".equals(jsonBody.get("status").toString())) {
 				JSONObject dataObj = (JSONObject) jsonBody.get("data");
 				String[] counts = HttpUtils.getCountByJs(
-						dataObj.get("ticket").toString(), "1").split(",");
+						dataObj.get("ticket").toString(), passengerTicketStr.substring(0, 1)).split(",");
 				if (Integer.parseInt(counts[0]) > 0) {
-					home_page.printLog(obj2.get("station_train_code") + "：硬座剩余:"
+					home_page.printLog(obj2.get("station_train_code") + "："+HttpUtils.seatNumToseatType(passengerTicketStr.substring(0, 1))+"剩余:"
 							+ counts[0] + "张");
-				}
-				if (Integer.parseInt(counts[1]) > 0) {
-					home_page.printLog(obj2.get("station_train_code") + "：硬座剩余:"
-							+ counts[1] + "张");
 				}
 				home_page.printLog("开始提交订单");
 			} else {
@@ -285,10 +299,7 @@ public class HomeMethods extends Thread {
 					"https://kyfw.12306.cn/otn/confirmPassenger/confirmSingleForQueue");
 			VParames parames = new VParames();
 			parames.clear();
-			parames.put("passengerTicketStr",
-					"1,0,1," + userObj.getString("passenger_name") + ",1,"
-							+ userObj.getString("passenger_id_no") + ","
-							+ userObj.getString("mobile_no") + ",N");
+			parames.put("passengerTicketStr",passengerTicketStr);
 			parames.put("oldPassengerStr", userObj.getString("passenger_name")
 					+ ",1," + userObj.getString("passenger_id_no") + ",1_");
 			parames.put(
@@ -350,7 +361,7 @@ public class HomeMethods extends Thread {
 			}
 			home_page.printLog("恭喜你，成功订到一张"
 					+ obj2.getString("from_station_name") + "至"
-					+ obj2.getString("end_station_name") + "的硬座，订单号为：" + orderId
+					+ obj2.getString("end_station_name") + "的"+HttpUtils.seatNumToseatType(passengerTicketStr.substring(0, 1))+"，订单号为：" + orderId
 					+ "，请尽快付款，以免耽误行程");
 		} catch (JSONException e) {
 			home_page.printLog("：解析订票结果失败，请联系作者QQ：3094759846");
