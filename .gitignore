@@ -1,3 +1,3 @@
-/http/
-
-*.class
+.settings/
+bin/
+.project
