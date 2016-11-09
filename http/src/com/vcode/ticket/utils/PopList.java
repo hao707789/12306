@@ -13,6 +13,7 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
+import java.awt.event.MouseMotionAdapter;
 
 public class PopList {
 	
@@ -49,22 +50,20 @@ public class PopList {
 	    list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(e.getClickCount()==2){
-					@SuppressWarnings("unchecked")
-					ListModel<Object> lmodel = ((JList<Object>)conn2).getModel();
-					if (lmodel.getSize()>=5) {
-						return;
-					}
-					
-					DefaultListModel<Object> model = new DefaultListModel<Object>();
-					for (int i =0;i<lmodel.getSize();i++) {
-						model.addElement(lmodel.getElementAt(i));
-					}
-					if (!model.contains(list.getSelectedValue().toString())){
-						model.addElement(list.getSelectedValue().toString());
-					}
-					((JList<Object>)conn2).setModel(model);
+				@SuppressWarnings("unchecked")
+				ListModel<Object> lmodel = ((JList<Object>)conn2).getModel();
+				if (lmodel.getSize()>=5) {
+					return;
 				}
+				
+				DefaultListModel<Object> model = new DefaultListModel<Object>();
+				for (int i =0;i<lmodel.getSize();i++) {
+					model.addElement(lmodel.getElementAt(i));
+				}
+				if (!model.contains(list.getSelectedValue().toString())){
+					model.addElement(list.getSelectedValue().toString());
+				}
+				((JList<Object>)conn2).setModel(model);
 			}
 			
 			public void mouseExited(MouseEvent e) {
@@ -73,20 +72,24 @@ public class PopList {
         				mypopup.hide();
             			isShow = false;
         			}
-        			
         		}
+			}
+		});
+	    list.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				list.setSelectedIndex(list.locationToIndex(e.getPoint()));
 			}
 		});
 	    
 	    conn.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent e) {
+			public void mouseClicked(MouseEvent e) {
 				if (isShow) {
         			if (mypopup!=null) {
         				mypopup.hide();
             			isShow = false;
         			}
-        			
         		}else {
         			if (mypopup != null) mypopup.hide();
         			Point point = conn.getLocationOnScreen();

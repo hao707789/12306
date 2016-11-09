@@ -55,12 +55,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.vcode.http.client.VHttpResponse;
-import com.vcode.http.client.methods.VHttpGet;
 import com.vcode.http.client.methods.VHttpPost;
-import com.vcode.http.client.parames.VParames;
 import com.vcode.http.utils.VBrowser;
 import com.vcode.http.utils.VHttpUtils;
+import com.vcode.ticket.methods.BrushTicketMethods;
 import com.vcode.ticket.methods.HomeMethods;
+import com.vcode.ticket.methods.OrderMethods;
 import com.vcode.ticket.utils.Chooser;
 import com.vcode.ticket.utils.ComBoTextField;
 import com.vcode.ticket.utils.HttpUtils;
@@ -78,15 +78,15 @@ import com.vcode.ticket.utils.PopList;
  */
 public class Home_Page {
 
-	private Home_Page window;
+	public Home_Page window;
 	private JFrame frame;
 	public JTextField textField;
 	public JTextField textField_2;
 	public JTextField textField_3;
 	public JTable table;
 	private int[] mouse_gis = new int[2];
-	private JLabel label,label_10;
-	private Map<String, String[]> map = (Map<String, String[]>) HttpUtils
+	public JLabel label,label_10;
+	public Map<String, String[]> map = (Map<String, String[]>) HttpUtils
 			.getCitiInfo();
 	public Map<String, JSONObject> userMap = new HashMap<String, JSONObject>();
 	public List<JSONObject> datalist = new ArrayList<JSONObject>();
@@ -101,8 +101,10 @@ public class Home_Page {
 	public DefaultListModel<Object> model_train = new DefaultListModel<Object>();
 	public JTable table_1;
 	public int ticket_type = 0;
-	private boolean result = true;
-	private JSpinner spinner;
+	public boolean result = true;
+	public JSpinner spinner;
+	public String sb;
+	public String[] seatOthers;
 
 	/**
 	 * Launch the application.
@@ -446,15 +448,17 @@ public class Home_Page {
 		list_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (list_2.getSelectedIndex() > -1) {
-					DefaultListModel<Object> model_Seats = new DefaultListModel<Object>();
-					for (int i = 0; i < list_2.getModel().getSize(); i++) {
-						if (i != list_2.getSelectedIndex()) {
-							model_Seats.addElement(list_2.getModel()
-									.getElementAt(i));
+				if (e.getClickCount()>=2) {
+					if (list_2.getSelectedIndex() > -1) {
+						DefaultListModel<Object> model_Seats = new DefaultListModel<Object>();
+						for (int i = 0; i < list_2.getModel().getSize(); i++) {
+							if (i != list_2.getSelectedIndex()) {
+								model_Seats.addElement(list_2.getModel()
+										.getElementAt(i));
+							}
 						}
+						list_2.setModel(model_Seats);
 					}
-					list_2.setModel(model_Seats);
 				}
 			}
 		});
@@ -468,15 +472,17 @@ public class Home_Page {
 		list_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				DefaultListModel<Object> model_Passenger = new DefaultListModel<Object>();
-				if (list_3.getSelectedIndex() > -1) {
-					for (int i = 0; i < list_3.getModel().getSize(); i++) {
-						if (i != list_3.getSelectedIndex()) {
-							model_Passenger.addElement(list_3.getModel()
-									.getElementAt(i) + " ");
+				if (e.getClickCount()>=2) {
+					DefaultListModel<Object> model_Passenger = new DefaultListModel<Object>();
+					if (list_3.getSelectedIndex() > -1) {
+						for (int i = 0; i < list_3.getModel().getSize(); i++) {
+							if (i != list_3.getSelectedIndex()) {
+								model_Passenger.addElement(list_3.getModel()
+										.getElementAt(i));
+							}
 						}
+						list_3.setModel(model_Passenger);
 					}
-					list_3.setModel(model_Passenger);
 				}
 			}
 		});
@@ -506,7 +512,13 @@ public class Home_Page {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				btnNewButton_1.setEnabled(false);
-				getOrderList(btnNewButton_1);
+				//启动线程，不影响UI
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						OrderMethods.getOrderList(btnNewButton_1, window);
+					}
+				});
 			}
 		});
 		btnNewButton_1.setBounds(20, 19, 105, 32);
@@ -575,9 +587,13 @@ public class Home_Page {
 					if (table_1.getSelectedRows().length > 0) {
 						if (table_1.getValueAt(table_1.getSelectedRow(), 1) != null) {
 							button_3.setEnabled(false);
-							String OrderId = table_1.getValueAt(
+							final String OrderId = table_1.getValueAt(
 								table_1.getSelectedRow(), 1).toString();
-							cancelOrder(OrderId, button_3);
+							new Thread(new Runnable() {
+								public void run() {
+									OrderMethods.cancelOrder(OrderId, button_3, window);
+								}
+							});
 						}
 					}
 				}
@@ -1059,6 +1075,7 @@ public class Home_Page {
 		});
 	}
 	
+	
 	/**
 	 * 
 	 * 校验刷票信息是否填写完毕
@@ -1097,16 +1114,6 @@ public class Home_Page {
 			}
 		}
 		
-		//组装提交刷票信息
-		StringBuffer sb = new StringBuffer();
-		sb.append("leftTicketDTO.train_date=");
-		sb.append(textField_2.getText() + "&");
-		sb.append("leftTicketDTO.from_station=");
-		sb.append(map.get(textField.getText())[2] + "&");
-		sb.append("leftTicketDTO.to_station=");
-		sb.append(map.get(textField_3.getText())[2] + "&");
-		sb.append("purpose_codes=ADULT");
-		
 		ListModel<Object> model = list_3.getModel();
 		StringBuffer sb2 = new StringBuffer();
 		for (int i =0;i<model.getSize();i++) {
@@ -1118,327 +1125,9 @@ public class Home_Page {
 		String content="    "+sb2.toString()+"     "+textField.getText() +"  →  "+textField_3.getText()+"     "+textField_2.getText();
 		label_10.setText(content);
 		
-		//组装自动刷票判断
-		ListModel<Object> model2 = list_2.getModel();
-		String[] seatOther = new String[model2.getSize()];
-		if (ticket_type==1) {
-			result = true;
-			for (int i=0;i<model2.getSize();i++) {
-				if ("商务座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())) {
-					seatOther[i] = "swz_num";
-				}else if ("特等座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())) {
-					seatOther[i] = "tz_num";
-				}else if ("一等座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "zy_num";
-				}else if ("二等座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "ze_num";
-				}else if ("高级软卧".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "gr_num";
-				}else if ("软卧".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "rw_num";
-				}else if ("硬卧".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "yw_num";
-				}else if ("软座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "rz_num";
-				}else if ("硬座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "yz_num";
-				}else if ("无座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "wz_num";
-				}else if ("其它".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "qt_num";
-				}
-			}
-		}
-		
-		int num = 0;
-		while (result) {
-			num+=1;
-			if (ticket_type==1) {
-				printLog("第"+num+"次查询");
-			}
-			brushVotes(sb,seatOther);
-			try {
-				Thread.sleep(Integer.parseInt(spinner.getValue().toString()));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			};
-		}
-	}
-
-	
-	/**
-	 * 刷票，点击查票按钮后，开始查询车票信息，并填入到表格中
-	 * 验证出发地、目的地、时间等是否填写，没有则不刷票
-	 * 
-	 */
-	private void brushVotes(StringBuffer sb,String[] seatOther) {
-		// 开始刷票
-		VHttpGet get = new VHttpGet(
-				"https://kyfw.12306.cn/otn/leftTicket/queryX?" + sb.toString());
-		VHttpResponse res = VBrowser.execute(get);
-		String body = VHttpUtils.outHtml(res.getBody());
-		try {
-			disposeTicketInfo(body,seatOther);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 处理刷票返回信息
-	 */
-	private boolean disposeTicketInfo(String body,String[] seatOther) throws JSONException {
-		boolean Brush = true;
-		JSONObject json = new JSONObject(body);
-		JSONArray jsonArr = new JSONArray(json.get("data").toString());
-		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
-				"\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730",
-				"\u5386\u65F6", "\u53D1\u8F66\u65F6\u95F4",
-				"\u5230\u8FBE\u65F6\u95F4", "\u5546\u52A1", "\u7279\u7B49",
-				"\u4E00\u7B49", "\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367",
-				"\u786C\u5367", "\u8F6F\u5EA7", "\u786C\u5EA7", "\u65E0\u5EA7",
-				"\u5176\u5B83", "\u5907\u6CE8" }) {
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		});
-		datalist.clear();
-		for (int i = 0; i < jsonArr.length(); i++) {
-			JSONObject obj = (JSONObject) jsonArr.get(i);
-			JSONObject obj2 = new JSONObject(obj.get("queryLeftNewDTO")
-					.toString());
-			obj2.put("secretStr", obj.get("secretStr").toString());
-			
-			flag:
-			if (ticket_type==1 && Brush) {
-				for (int j=0;j<model_train.getSize();j++) {
-					String train_no = model_train.get(j).toString();
-					if (obj2.get("station_train_code").toString().trim().equalsIgnoreCase(train_no.trim())) {
-						for (String seat : seatOther) {
-							if (!"--".equals(obj2.get(seat).toString().trim().toUpperCase())) {
-								Brush = false;		//结束刷票结果判定
-								result = false;		//结束循环刷票判定
-								new HomeMethods(window,obj2).start();
-								break flag;
-							}
-						}
-					}
-				}
-				
-			}
-			if (ticket_type==0) {
-				result = false;
-			}
-			datalist.add(obj2);
-			addRow(obj2);
-		}
-		setTableSize();
-		return result;
-	}
-
-	/**
-	 * 添加一行数据
-	 * 
-	 * @param obj
-	 */
-	private void addRow(JSONObject obj) {
-		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		Vector<String> vector = new Vector<String>();
-		try {
-			vector.add(obj.get("station_train_code").toString());
-			vector.add(obj.get("start_station_name").toString());
-			vector.add(obj.get("end_station_name").toString());
-			vector.add(obj.get("lishi").toString());
-			vector.add(obj.get("start_time").toString());
-			vector.add(obj.get("arrive_time").toString());
-			vector.add(obj.get("swz_num").toString());
-			vector.add(obj.get("tz_num").toString());
-			vector.add(obj.get("zy_num").toString());
-			vector.add(obj.get("ze_num").toString());
-			vector.add(obj.get("gr_num").toString());
-			vector.add(obj.get("rw_num").toString());
-			vector.add(obj.get("yw_num").toString());
-			vector.add(obj.get("rz_num").toString());
-			vector.add(obj.get("yz_num").toString());
-			vector.add(obj.get("wz_num").toString());
-			vector.add(obj.get("qt_num").toString());
-			if ("Y".equalsIgnoreCase(obj.get("canWebBuy").toString())) {
-				vector.add("可预订");
-			} else {
-				vector.add("不可预订");
-			}
-			model.addRow(vector);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 设置表格样式
-	 */
-	private void setTableSize() {
-		// 定义表格列宽
-		table.getColumnModel().getColumn(3).setPreferredWidth(68);
-		table.getColumnModel().getColumn(4).setPreferredWidth(90);
-		table.getColumnModel().getColumn(5).setPreferredWidth(90);
-		table.getColumnModel().getColumn(6).setPreferredWidth(65);
-		table.getColumnModel().getColumn(7).setPreferredWidth(65);
-		table.getColumnModel().getColumn(8).setPreferredWidth(65);
-		table.getColumnModel().getColumn(9).setPreferredWidth(65);
-		table.getColumnModel().getColumn(10).setPreferredWidth(65);
-		table.getColumnModel().getColumn(11).setPreferredWidth(65);
-		table.getColumnModel().getColumn(12).setPreferredWidth(65);
-		table.getColumnModel().getColumn(13).setPreferredWidth(65);
-		table.getColumnModel().getColumn(14).setPreferredWidth(65);
-		table.getColumnModel().getColumn(15).setPreferredWidth(65);
-		table.getColumnModel().getColumn(16).setPreferredWidth(65);
-		table.setToolTipText("");
-	}
-
-	/**
-	 * 获取乘客列表
-	 * 
-	 * @return
-	 */
-	private DefaultListModel<Object> getPassengerDTOs() {
-		DefaultListModel<Object> model_Seats = new DefaultListModel<Object>();
-		VHttpPost post = new VHttpPost(
-				"https://kyfw.12306.cn/otn/confirmPassenger/getPassengerDTOs");
-		VHttpResponse res = VBrowser.execute(post);
-		String body = VHttpUtils.outHtml(res.getBody());
-		try {
-			JSONObject res_obj = new JSONObject(body);
-			JSONObject userListObj = (JSONObject) res_obj.get("data");
-			if (userListObj.length() < 1) {
-				textArea.append(format.format(new Date()) + "："
-						+ new JSONObject(body).get("messages") + "\r\n");
-			} else {
-				JSONArray userArr = (JSONArray) (userListObj
-						.get("normal_passengers"));
-				for (int i = 0; i < userArr.length(); i++) {
-					JSONObject obj = (JSONObject) userArr.get(i);
-					model_Seats.addElement(obj.get("passenger_name"));
-					userMap.put(obj.get("passenger_name").toString(), obj);
-				}
-			}
-		} catch (JSONException e) {
-			textArea.append(format.format(new Date())
-					+ "：获取乘客列表失败，请联系作者QQ：3094759846\r\n");
-		}
-		return model_Seats;
-	}
-
-	/**
-	 * 查询订单列表
-	 */
-	private void getOrderList(JButton btnNewButton_1) {
-
-		try {
-			VHttpPost post = new VHttpPost(
-					"https://kyfw.12306.cn/otn/queryOrder/queryMyOrderNoComplete");
-			VParames parames = new VParames();
-			parames.clear();
-			parames.put("_json_att", "");
-			post.setParames(parames);
-			VHttpResponse res = VBrowser.execute(post);
-			String body = VHttpUtils.outHtml(res.getBody());
-			JSONObject res_obj = new JSONObject(body);
-			disposeOrder(res_obj, btnNewButton_1);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 处理订单列表
-	 */
-	private void disposeOrder(JSONObject res_obj, JButton btnNewButton_1) {
-		try {
-			table_1.setModel(new DefaultTableModel(new Object[][] {},
-					new String[] { "\u8F66\u6B21", "\u8BA2\u5355\u53F7",
-							"\u4E58\u5BA2\u59D3\u540D",
-							"\u53D1\u8F66\u65F6\u95F4", "\u51FA\u53D1\u5730",
-							"\u76EE\u7684\u5730", "\u7968\u79CD",
-							"\u5E2D\u522B", "\u8F66\u53A2", "\u5EA7\u4F4D",
-							"\u7968\u4EF7", "\u72B6\u6001" }) {
-				public boolean isCellEditable(int row, int column) {
-					return false;
-				}
-			});
-			table_1.getColumnModel().getColumn(3).setPreferredWidth(124);
-			DefaultTableModel model = (DefaultTableModel) table_1.getModel();
-			if (btnNewButton_1 != null) {
-				btnNewButton_1.setEnabled(true);
-			}
-			if (res_obj.isNull("data")) {
-				model.setRowCount(0);
-				return;
-			}
-			JSONObject userListObj = (JSONObject) res_obj.get("data");
-
-			JSONArray jsonArr = ((JSONArray) userListObj.get("orderDBList"));
-
-			for (int i = 0; i < jsonArr.length(); i++) {
-				JSONObject obj = jsonArr.getJSONObject(i);
-				JSONArray jsonArr2 = ((JSONArray) obj.get("tickets"));
-				JSONObject tickets = jsonArr2.getJSONObject(0);
-				JSONObject stationTrainDTO = (JSONObject) tickets
-						.get("stationTrainDTO");
-				JSONObject passengerDTO = (JSONObject) tickets
-						.get("passengerDTO");
-
-				Vector<String> vector = new Vector<String>();
-				vector.add(obj.get("train_code_page").toString());
-				vector.add(obj.get("sequence_no").toString());
-				vector.add(passengerDTO.get("passenger_name").toString());
-				vector.add(obj.get("start_train_date_page").toString());
-				vector.add(stationTrainDTO.get("from_station_name").toString());
-				vector.add(stationTrainDTO.get("to_station_name").toString());
-				vector.add(tickets.get("ticket_type_name").toString());
-				vector.add(tickets.get("seat_type_name").toString());
-				vector.add(tickets.get("coach_name").toString());
-				vector.add(tickets.get("seat_name").toString());
-				vector.add(tickets.get("str_ticket_price_page").toString());
-				vector.add(tickets.get("ticket_status_name").toString());
-				model.addRow(vector);
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 取消订单
-	 * @param orderId
-	 * @param button_3
-	 */
-	private void cancelOrder(String orderId, JButton button_3) {
-		try {
-			VHttpPost post = new VHttpPost(
-					"https://kyfw.12306.cn/otn/queryOrder/cancelNoCompleteMyOrder");
-			VParames parames = new VParames();
-			parames.clear();
-			parames.put("_json_att", "");
-			parames.put("cancel_flag", "cancel_order");
-			parames.put("sequence_no", orderId);
-			post.setParames(parames);
-			VHttpResponse res = VBrowser.execute(post);
-			String body = VHttpUtils.outHtml(res.getBody());
-			JSONObject res_obj = new JSONObject(body);
-			JSONObject data_obj = (JSONObject) res_obj.get("data");
-			if ("N".equals(data_obj.get("existError"))) {
-				textArea.append(format.format(new Date()) + "：订单取消成功\r\n");
-			}
-			if (button_3 != null) {
-				button_3.setEnabled(true);
-			}
-			Thread.sleep(2000);
-			getOrderList(null);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		sb = packagingBrushTicketInfo();
+		seatOthers = packagingseatOther();
+		new BrushTicketMethods(window).start();//刷票
 	}
 	
 	/**
@@ -1545,5 +1234,153 @@ public class Home_Page {
 	 */
 	public void printLog(String data){
 		textArea.append(format.format(new Date()) + "："+data+"\r\n");
+	}
+	
+	/**
+	 * 
+	 * 组装刷票信息
+	 * 
+	 */
+	private String packagingBrushTicketInfo(){
+		StringBuffer sb = new StringBuffer();
+		sb.append("leftTicketDTO.train_date=");
+		sb.append(textField_2.getText() + "&");
+		sb.append("leftTicketDTO.from_station=");
+		sb.append(map.get(textField.getText())[2] + "&");
+		sb.append("leftTicketDTO.to_station=");
+		sb.append(map.get(textField_3.getText())[2] + "&");
+		sb.append("purpose_codes=ADULT");
+		return sb.toString();
+	}
+	
+	/**
+	 * 
+	 * 组装票类型参数，用于自动刷票使用
+	 * 
+	 */
+	public String[] packagingseatOther(){
+		//组装自动刷票判断
+		ListModel<Object> model2 = list_2.getModel();
+		String[] seatOther = new String[model2.getSize()];
+		if (ticket_type==1) {
+			result = true;
+			for (int i=0;i<model2.getSize();i++) {
+				if ("商务座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())) {
+					seatOther[i] = "swz_num";
+				}else if ("特等座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())) {
+					seatOther[i] = "tz_num";
+				}else if ("一等座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+					seatOther[i] = "zy_num";
+				}else if ("二等座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+					seatOther[i] = "ze_num";
+				}else if ("高级软卧".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+					seatOther[i] = "gr_num";
+				}else if ("软卧".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+					seatOther[i] = "rw_num";
+				}else if ("硬卧".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+					seatOther[i] = "yw_num";
+				}else if ("软座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+					seatOther[i] = "rz_num";
+				}else if ("硬座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+					seatOther[i] = "yz_num";
+				}else if ("无座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+					seatOther[i] = "wz_num";
+				}else if ("其它".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+					seatOther[i] = "qt_num";
+				}
+			}
+		}
+		return seatOther;
+	}
+	
+	/**
+	 * 设置表格样式
+	 */
+	public void setTableSize() {
+		// 定义表格列宽
+		table.getColumnModel().getColumn(3).setPreferredWidth(68);
+		table.getColumnModel().getColumn(4).setPreferredWidth(90);
+		table.getColumnModel().getColumn(5).setPreferredWidth(90);
+		table.getColumnModel().getColumn(6).setPreferredWidth(65);
+		table.getColumnModel().getColumn(7).setPreferredWidth(65);
+		table.getColumnModel().getColumn(8).setPreferredWidth(65);
+		table.getColumnModel().getColumn(9).setPreferredWidth(65);
+		table.getColumnModel().getColumn(10).setPreferredWidth(65);
+		table.getColumnModel().getColumn(11).setPreferredWidth(65);
+		table.getColumnModel().getColumn(12).setPreferredWidth(65);
+		table.getColumnModel().getColumn(13).setPreferredWidth(65);
+		table.getColumnModel().getColumn(14).setPreferredWidth(65);
+		table.getColumnModel().getColumn(15).setPreferredWidth(65);
+		table.getColumnModel().getColumn(16).setPreferredWidth(65);
+		table.setToolTipText("");
+	}
+	
+	/**
+	 * 获取乘客列表
+	 * 
+	 * @return
+	 */
+	private DefaultListModel<Object> getPassengerDTOs() {
+		DefaultListModel<Object> model_Seats = new DefaultListModel<Object>();
+		VHttpPost post = new VHttpPost(
+				"https://kyfw.12306.cn/otn/confirmPassenger/getPassengerDTOs");
+		VHttpResponse res = VBrowser.execute(post);
+		String body = VHttpUtils.outHtml(res.getBody());
+		try {
+			JSONObject res_obj = new JSONObject(body);
+			JSONObject userListObj = (JSONObject) res_obj.get("data");
+			if (userListObj.length() < 1) {
+				textArea.append(format.format(new Date()) + "："
+						+ new JSONObject(body).get("messages") + "\r\n");
+			} else {
+				JSONArray userArr = (JSONArray) (userListObj
+						.get("normal_passengers"));
+				for (int i = 0; i < userArr.length(); i++) {
+					JSONObject obj = (JSONObject) userArr.get(i);
+					model_Seats.addElement(obj.get("passenger_name"));
+					userMap.put(obj.get("passenger_name").toString(), obj);
+				}
+			}
+		} catch (JSONException e) {
+			textArea.append(format.format(new Date())
+					+ "：获取乘客列表失败，请联系作者QQ：3094759846\r\n");
+		}
+		return model_Seats;
+	}
+	
+	/**
+	 * 添加一行数据
+	 * @param obj
+	 */
+	public void addRow(JSONObject obj) {
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		Vector<String> vector = new Vector<String>();
+		try {
+			vector.add(obj.get("station_train_code").toString());
+			vector.add(obj.get("start_station_name").toString());
+			vector.add(obj.get("end_station_name").toString());
+			vector.add(obj.get("lishi").toString());
+			vector.add(obj.get("start_time").toString());
+			vector.add(obj.get("arrive_time").toString());
+			vector.add(obj.get("swz_num").toString());
+			vector.add(obj.get("tz_num").toString());
+			vector.add(obj.get("zy_num").toString());
+			vector.add(obj.get("ze_num").toString());
+			vector.add(obj.get("gr_num").toString());
+			vector.add(obj.get("rw_num").toString());
+			vector.add(obj.get("yw_num").toString());
+			vector.add(obj.get("rz_num").toString());
+			vector.add(obj.get("yz_num").toString());
+			vector.add(obj.get("wz_num").toString());
+			vector.add(obj.get("qt_num").toString());
+			if ("Y".equalsIgnoreCase(obj.get("canWebBuy").toString())) {
+				vector.add("可预订");
+			} else {
+				vector.add("不可预订");
+			}
+			model.addRow(vector);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 }

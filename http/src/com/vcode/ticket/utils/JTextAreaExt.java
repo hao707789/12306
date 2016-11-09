@@ -9,7 +9,8 @@ public class JTextAreaExt extends JTextArea {
 	public void append(String str) {
 		super.append(str);
 		super.paintImmediately(super.getBounds());
+		super.setCaretPosition(super.getDocument().getLength());
 	}
-
+	
 	
 }
