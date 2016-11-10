@@ -162,7 +162,12 @@ public class HttpUtils {
 		order_name.setFont(new Font("微软雅黑", Font.BOLD, 15));
 		frame2.getContentPane().add(order_name);
 
-		JLabel order_train_no = new JLabel("T96");
+		JLabel order_train_no = null;
+		try {
+			order_train_no = new JLabel(order_oage.obj2.get("station_train_code").toString());
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		}
 		order_train_no.setBounds(107, 43, 42, 15);
 		order_train_no.setFont(new Font("微软雅黑", Font.BOLD, 15));
 		frame2.getContentPane().add(order_train_no);

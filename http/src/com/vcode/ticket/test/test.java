@@ -1,29 +1,25 @@
 package com.vcode.ticket.test;
 
-import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 
 public class test {
 
 	public static void main(String[] args) throws Exception {
 		JFrame frame = new JFrame();
-		ImageIcon bg = new ImageIcon("d:/Desert.jpg");
-		JLabel label = new JLabel(bg);
-		label.setBounds(0, 0, bg.getIconWidth(), bg.getIconHeight());
-		frame.getLayeredPane().add(label);
-		frame.setSize(new Dimension(bg.getIconWidth(), bg.getIconHeight()));
+		frame.setSize(300, 200);
+		frame.setLocationRelativeTo(null);
 		
-		JPanel jp = (JPanel) frame.getContentPane();
-		jp.setOpaque(true);
-		frame.getContentPane().setLayout(null);
-		JLabel label_1 = new JLabel("1111");
-		label_1.setBounds(279, 196, 100, 100);
-		jp.add(label_1);
+		SystemTray tray = SystemTray.getSystemTray();
+		Image image=Toolkit.getDefaultToolkit().getImage(test.class.getResource("t.jpg"));
+		TrayIcon trayIcon = new TrayIcon(image,"V代码抢票工具",null);
+		trayIcon.displayMessage("提示", "欢迎使用V代码抢票工具", MessageType.INFO);
 		frame.setVisible(true);
 	}
 }

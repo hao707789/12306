@@ -31,7 +31,7 @@ public class HomeMethods extends Thread {
 	
 	private String submitCode = "";
 	
-	private JSONObject obj2;
+	public JSONObject obj2;
 	
 	private HomeMethods(){};
 	
@@ -57,39 +57,6 @@ public class HomeMethods extends Thread {
 		SubmitOrder();
 	}
 
-	/**
-	 * 获取乘客列表
-	 * 
-	 * @return
-	 */
-	private DefaultListModel<Object> getPassengerDTOs() {
-		DefaultListModel<Object> model_Seats = new DefaultListModel<Object>();
-		VHttpPost post = new VHttpPost(
-				"https://kyfw.12306.cn/otn/confirmPassenger/getPassengerDTOs");
-		VHttpResponse res = VBrowser.execute(post);
-		String body = VHttpUtils.outHtml(res.getBody());
-		try {
-			JSONObject res_obj = new JSONObject(body);
-			JSONObject userListObj = (JSONObject) res_obj.get("data");
-			if (userListObj.length() < 1) {
-				home_page.textArea.append(home_page.format.format(new Date()) + "："
-						+ new JSONObject(body).get("messages") + "\r\n");
-			} else {
-				JSONArray userArr = (JSONArray) (userListObj
-						.get("normal_passengers"));
-				for (int i = 0; i < userArr.length(); i++) {
-					JSONObject obj = (JSONObject) userArr.get(i);
-					model_Seats.addElement(obj.get("passenger_name"));
-					home_page.userMap.put(obj.get("passenger_name").toString(), obj);
-				}
-			}
-		} catch (JSONException e) {
-			home_page.textArea.append(home_page.format.format(new Date())
-					+ "：获取乘客列表失败，请联系作者QQ：3094759846\r\n");
-		}
-		return model_Seats;
-	}
-	
 	/**
 	 * 提交订单
 	 */
