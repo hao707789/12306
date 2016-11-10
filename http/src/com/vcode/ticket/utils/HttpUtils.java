@@ -157,9 +157,10 @@ public class HttpUtils {
 		lblt.setFont(new Font("微软雅黑", Font.BOLD, 15));
 		frame2.getContentPane().add(lblt);
 
-		JLabel order_name = new JLabel("华浩");
-		order_name.setBounds(43, 43, 42, 15);
-		order_name.setFont(new Font("微软雅黑", Font.BOLD, 15));
+		String userName = order_oage.home_page.list_3.getModel().getElementAt(0).toString();
+		JLabel order_name = new JLabel(userName);
+		order_name.setBounds(43, 43, 50, 15);
+		order_name.setFont(new Font("微软雅黑", Font.BOLD, 12));
 		frame2.getContentPane().add(order_name);
 
 		JLabel order_train_no = null;
@@ -168,18 +169,19 @@ public class HttpUtils {
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		}
-		order_train_no.setBounds(107, 43, 42, 15);
-		order_train_no.setFont(new Font("微软雅黑", Font.BOLD, 15));
+		order_train_no.setBounds(108, 43, 50, 15);
+		order_train_no.setFont(new Font("微软雅黑", Font.BOLD, 12));
 		frame2.getContentPane().add(order_train_no);
 
-		JLabel order_citi = new JLabel("深圳—>咸宁");
-		order_citi.setBounds(169, 43, 88, 15);
-		order_citi.setFont(new Font("微软雅黑", Font.BOLD, 15));
+		JLabel order_citi = new JLabel(order_oage.home_page.textField.getText()+"—>"+order_oage.home_page.textField_3.getText());
+		order_citi.setBounds(168, 43, 88, 15);
+		order_citi.setFont(new Font("微软雅黑", Font.BOLD, 12));
 		frame2.getContentPane().add(order_citi);
 
-		JLabel order_seat = new JLabel("硬座");
-		order_seat.setBounds(285, 43, 42, 15);
-		order_seat.setFont(new Font("微软雅黑", Font.BOLD, 15));
+		String seatType = order_oage.home_page.list_2.getModel().getElementAt(0).toString();
+		JLabel order_seat = new JLabel(seatType);
+		order_seat.setBounds(260, 43, 50, 15);
+		order_seat.setFont(new Font("微软雅黑", Font.BOLD, 12));
 		frame2.getContentPane().add(order_seat);
 
 		JLabel label_5 = new JLabel("选择完验证码后试试右键即可完成提交");
