@@ -90,8 +90,9 @@ public class LoginMethods {
 		Component[] cons = p3.getComponents();
 		for (int i=0;i<cons.length;i++) {
 			if (cons[i] instanceof JLabel) {
-				newCode += cons[i].getX()-64 + "," ;
-				newCode += cons[i].getY()-179 + "";
+				JLabel lb = (JLabel)cons[i];
+				newCode += lb.getX()-64+(lb.getIcon().getIconWidth()/2) + "," ;
+				newCode += lb.getY()-179+(lb.getIcon().getIconHeight()/2) + "";
 				if (i<cons.length-1) {
 					newCode += ",";
 				}

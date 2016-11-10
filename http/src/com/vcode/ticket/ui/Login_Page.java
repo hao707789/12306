@@ -3,7 +3,6 @@ package com.vcode.ticket.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -112,8 +111,8 @@ public class Login_Page {
 						}
 					});
 					p3.add(jb3, new Integer(-3)); // 将按钮jb3，放置在内容面板之下
-					jb3.setSize(22, 22);
-					jb3.setLocation(e.getX()+60, e.getY()+139);
+					jb3.setSize(icon.getIconWidth(), icon.getIconHeight());
+					jb3.setLocation(e.getX()+60-(icon.getIconWidth()/2), e.getY()+139-(icon.getIconHeight()/2));
 				}else if(e.getButton() == MouseEvent.BUTTON3){
                 	loginMethods.CheckCode();
                 }

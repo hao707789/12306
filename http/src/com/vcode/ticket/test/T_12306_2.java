@@ -51,7 +51,7 @@ public class T_12306_2 {
 			res = client.execute(get);								//获取验证码
 			System.out.println(res.getEntity().getStaus());			//打印状态码
 			VHttpUtils.PrintCookies(res);							//打印Cookies
-			newCode = HttpUtils.outCodeBy12306(res.getBody());	//定义窗口大小
+//			newCode = HttpUtils.outCodeBy12306(res.getBody());	//定义窗口大小
 			res.getEntity().disconnect();							//耗尽资源
 			
 			//开始校验验证码是否正确
@@ -313,7 +313,7 @@ public class T_12306_2 {
 			//拉取验证码
 			get = new VHttpGet("https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=passenger&rand=randp&"+Math.random());
 			res = client.execute(get);								//获取验证码
-			newCode = HttpUtils.outCodeBy12306(res.getBody());	//定义窗口大小
+//			newCode = HttpUtils.outCodeBy12306(res.getBody());	//定义窗口大小
 			res.getEntity().disconnect();							//耗尽资源
 			
 			post = new VHttpPost("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn");

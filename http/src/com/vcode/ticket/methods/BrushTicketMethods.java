@@ -23,15 +23,17 @@ public class BrushTicketMethods extends Thread{
 	@Override
 	public void run() {
 		int num = 0;
+		Thread.currentThread().setName("3");
 		while (home_page.result) {
 			num+=1;
 			if (home_page.ticket_type==1) {
-				home_page.printLog("第"+num+"次查询");
+				home_page.printLog("线程"+Thread.currentThread().getName()+"正在开始第"+num+"次查询");
 			}
 			brushVotes();
 			try {
 				Thread.sleep(Integer.parseInt(home_page.spinner.getValue().toString()));
 			} catch (InterruptedException e) {
+				Thread.interrupted();
 				e.printStackTrace();
 			};
 		}
@@ -89,6 +91,8 @@ public class BrushTicketMethods extends Thread{
 							if (!"--".equals(obj2.get(seat).toString().trim().toUpperCase())) {
 								Brush = false;		//结束刷票结果判定
 								home_page.result = false;		//结束循环刷票判定
+								home_page.isRun = false;		//结束运行判断
+								home_page.btnNewButton.setText("自动刷票");
 								new HomeMethods(home_page.window,obj2).start();
 								break flag;
 							}

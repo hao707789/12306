@@ -23,7 +23,6 @@ public class OrderMethods {
 	 * 查询订单列表
 	 */
 	public static void getOrderList(JButton btnNewButton_1,Home_Page home_page) {
-
 		try {
 			VHttpPost post = new VHttpPost(
 					"https://kyfw.12306.cn/otn/queryOrder/queryMyOrderNoComplete");
@@ -37,6 +36,8 @@ public class OrderMethods {
 			disposeOrder(res_obj, btnNewButton_1,home_page);
 		} catch (JSONException e) {
 			e.printStackTrace();
+		}finally{
+			btnNewButton_1.setEnabled(true);
 		}
 	}
 	
@@ -58,11 +59,8 @@ public class OrderMethods {
 			});
 			home_page.table_1.getColumnModel().getColumn(3).setPreferredWidth(124);
 			DefaultTableModel model = (DefaultTableModel) home_page.table_1.getModel();
-			if (btnNewButton_1 != null) {
-				btnNewButton_1.setEnabled(true);
-			}
+			model.setRowCount(0);
 			if (res_obj.isNull("data")) {
-				model.setRowCount(0);
 				return;
 			}
 			JSONObject userListObj = (JSONObject) res_obj.get("data");
@@ -93,6 +91,7 @@ public class OrderMethods {
 				vector.add(tickets.get("ticket_status_name").toString());
 				model.addRow(vector);
 			}
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

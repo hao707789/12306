@@ -105,7 +105,11 @@ public class Home_Page {
 	public JSpinner spinner;
 	public String sb;
 	public String[] seatOthers;
-
+	public JPanel panel_1;
+	public JPanel panel_2;
+	public boolean isRun = false;
+	public JButton btnNewButton;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -236,15 +240,25 @@ public class Home_Page {
 		btgroup.add(radioButton_2);
 		btgroup.add(radioButton_3);
 
-		final JButton btnNewButton = new JButton("手动查票");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
+		btnNewButton = new JButton("手动查票");
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				checkbrushVotesInfo();
+				if (ticket_type==1) {
+					if (isRun) {
+						isRun = false;
+						result = false;
+						printLog("已停止刷票");
+						btnNewButton.setText("自动刷票");
+					}else {
+						isRun = true;
+						btnNewButton.setText("停止刷票");
+						checkAllColRow();
+						checkbrushVotesInfo();
+					}
+				}else {
+					checkbrushVotesInfo();
+				}
 			}
 		});
 		btnNewButton.setBounds(964, 41, 80, 67);
@@ -257,8 +271,14 @@ public class Home_Page {
 					btnNewButton.setText("自动刷票");
 					ticket_type = 1;
 				}else {
-					btnNewButton.setText("手动查票");
-					ticket_type = 0;
+					if (!isRun) {
+						btnNewButton.setText("手动查票");
+						ticket_type = 0;
+					}else {
+						printLog("请先停止刷票");
+						chckbxNewCheckBox_1.setSelected(true);
+						return;
+					}
 				}
 			}
 		});
@@ -269,8 +289,8 @@ public class Home_Page {
 		JLabel label_4 = new JLabel("车  型");
 		JLabel label_5 = new JLabel("席  别");
 
-		final JPanel panel_1 = new JPanel();
-		final JPanel panel_2 = new JPanel();
+		panel_1 = new JPanel();
+		panel_2 = new JPanel();
 
 		JScrollPane scrollPane = new JScrollPane();
 		table = new JTable();
@@ -518,41 +538,22 @@ public class Home_Page {
 					public void run() {
 						OrderMethods.getOrderList(btnNewButton_1, window);
 					}
-				});
+				}).start();
 			}
 		});
 		btnNewButton_1.setBounds(20, 19, 105, 32);
 		p2.add(btnNewButton_1);
 
 		table_1 = new JTable();
-		table_1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println("列表点击事件");
-			}
-		});
 		table_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table_1.setFillsViewportHeight(true);
-		table_1.setModel(new DefaultTableModel(new Object[][] {
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null }, },
-				new String[] { "\u8F66\u6B21", "\u8BA2\u5355\u53F7",
-						"\u4E58\u5BA2\u59D3\u540D", "\u53D1\u8F66\u65F6\u95F4",
-						"\u51FA\u53D1\u5730", "\u76EE\u7684\u5730",
-						"\u7968\u79CD", "\u5E2D\u522B", "\u8F66\u53A2",
-						"\u5EA7\u4F4D", "\u7968\u4EF7", "\u72B6\u6001" }));
+		table_1.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"\u8F66\u6B21", "\u8BA2\u5355\u53F7", "\u4E58\u5BA2\u59D3\u540D", "\u53D1\u8F66\u65F6\u95F4", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u7968\u79CD", "\u5E2D\u522B", "\u8F66\u53A2", "\u5EA7\u4F4D", "\u7968\u4EF7", "\u72B6\u6001"
+			}
+		));
 		table_1.getColumnModel().getColumn(3).setPreferredWidth(124);
 
 		JScrollPane scrollPane_1 = new JScrollPane(table_1);
@@ -582,10 +583,10 @@ public class Home_Page {
 		button_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int firm_cancle = JOptionPane.showConfirmDialog(null, "是否取消订单?", "确认框",JOptionPane.YES_NO_OPTION);
-				if(firm_cancle==0){
-					if (table_1.getSelectedRows().length > 0) {
-						if (table_1.getValueAt(table_1.getSelectedRow(), 1) != null) {
+				if (table_1.getSelectedRows().length > 0) {
+					if (table_1.getValueAt(table_1.getSelectedRow(), 1) != null) {
+						int firm_cancle = JOptionPane.showConfirmDialog(null, "是否取消订单?", "确认框",JOptionPane.YES_NO_OPTION);
+						if(firm_cancle==0){
 							button_3.setEnabled(false);
 							final String OrderId = table_1.getValueAt(
 								table_1.getSelectedRow(), 1).toString();
@@ -593,7 +594,7 @@ public class Home_Page {
 								public void run() {
 									OrderMethods.cancelOrder(OrderId, button_3, window);
 								}
-							});
+							}).start();
 						}
 					}
 				}
@@ -1229,6 +1230,52 @@ public class Home_Page {
 	}
 	
 	/**
+	 * 选中所有行和列
+	 */
+	public void checkAllColRow(){
+		//处理行
+		Component[] comps = panel_1.getComponents();
+		for (int i = 0; i < comps.length; i++) {
+			Component comp = comps[i];
+			if (comp instanceof JCheckBox) {
+				JCheckBox box = (JCheckBox) comp;
+				box.setSelected(true);
+			}
+		}
+		for (int i=0;i<datalist.size();i++) {
+			JSONObject obj = datalist.get(i);
+			addRow(obj);
+		}
+		
+		//处理列
+		Component[] comps2 = panel_2.getComponents();
+		for (int i = 0; i < comps2.length; i++) {
+			Component comp = comps2[i];
+			if (comp instanceof JCheckBox) {
+				JCheckBox box = (JCheckBox) comp;
+				box.setSelected(true);
+			}
+		}
+		for (int i = 0; i < comps2.length; i++) {
+			Component comp = comps2[i];
+			if (comp instanceof JCheckBox) {
+				JCheckBox box = (JCheckBox) comp;
+				if (!"全部席别".equals(box.getText())) {
+					int col_size = table.getColumnModel().getColumnCount();
+					int col_num = 0;
+					for (int j=0;j<col_size;j++) {
+						if (box.getText().equals(table.getColumnModel().getColumn(j).getHeaderValue())) {
+							col_num = j;
+						}
+					}
+					CheckMethods(box, col_num, box.getWidth(), panel_2, (JCheckBox)comps2[0]);
+				}
+			}
+		}
+	}
+	
+	
+	/**
 	 * 打印信息
 	 * @param data
 	 */
@@ -1262,8 +1309,8 @@ public class Home_Page {
 		//组装自动刷票判断
 		ListModel<Object> model2 = list_2.getModel();
 		String[] seatOther = new String[model2.getSize()];
+		result = true;
 		if (ticket_type==1) {
-			result = true;
 			for (int i=0;i<model2.getSize();i++) {
 				if ("商务座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())) {
 					seatOther[i] = "swz_num";

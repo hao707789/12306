@@ -1,6 +1,7 @@
 package com.vcode.ticket.utils;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
@@ -17,6 +18,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -31,6 +33,7 @@ import com.vcode.http.impl.VHttpClientImpl;
 import com.vcode.http.utils.VBrowser;
 import com.vcode.http.utils.VHttpUtils;
 import com.vcode.ticket.methods.HomeMethods;
+import com.vcode.ticket.ui.Login_Page;
 
 /**
  * 
@@ -39,17 +42,6 @@ import com.vcode.ticket.methods.HomeMethods;
  */
 public class HttpUtils {
 	
-	public static StringBuffer incode = new StringBuffer();
-	
-	/**
-	 * 12306专用验证码(登录用)
-	 * @param in
-	 * @return
-	 */
-	public static String outCodeBy12306(InputStream in){
-		return getCodeBy12306(in, 0, 0);
-	}
-	
 	/**
 	 * 12306专用验证码(提交订单用)
 	 * @param in
@@ -57,7 +49,6 @@ public class HttpUtils {
 	 * @param y
 	 */
 	public static void getSubmitCodeBy12306(InputStream in,final HomeMethods order_oage) {
-		incode.setLength(0);
 		byte[] data = VHttpUtils.InputStreamToByte(in);
 		
 		final JFrame frame2 = new JFrame("验证码");
@@ -66,38 +57,56 @@ public class HttpUtils {
 		frame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame2.getContentPane().setLayout(null);
 
-		final JLabel label = new JLabel("");
-		label.setBounds(43, 68, 284, 196);
-		label.setIcon(new ImageIcon(data));
-		frame2.getContentPane().add(label);
-
 		final JLabel label_1 = new JLabel("当前点击坐标是：");
 		label_1.setBounds(43, 266, 284, 23);
 		frame2.getContentPane().add(label_1);
-
+		
+		final JLabel label = new JLabel("");
+		label.setBounds(43, 68, 284, 196);
+		label.setIcon(new ImageIcon(data));
+		
+		final JComponent p3 = (JComponent) frame2.getLayeredPane();
 		label.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1) { // e.getButton就会返回点鼠标的那个键，左键还是右健，3代表右键
-					int x = e.getX(); // 得到鼠标x坐标
-					int y = e.getY(); // 得到鼠标y坐标
-					String banner = x + "," + (y - 33) + ",";
-					incode.append(banner);
-					label_1.setText("当前点击坐标是：" + x + "," + (y - 33));
-					label_1.setForeground(Color.black);
-				}
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					// 回调方法
-					if ("".equals(incode.toString())) {
+				if (e.getButton()==e.BUTTON1) {
+					ImageIcon icon = new ImageIcon(Login_Page.class.getResource("../image/12306.jpg"));
+					final JLabel jb3 = new JLabel(icon);
+					jb3.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							p3.remove(jb3);
+							p3.repaint();
+						}
+					});
+					p3.add(jb3, new Integer(-3)); // 将按钮jb3，放置在内容面板之下
+					jb3.setSize(icon.getIconWidth(), icon.getIconHeight());
+					jb3.setLocation(e.getX()+43-(icon.getIconWidth()/2), e.getY()+86-(icon.getIconHeight()));
+				}else if(e.getButton() == MouseEvent.BUTTON3){
+					Component[] coms = p3.getComponents();
+					if (coms.length<=0) {
 						label_1.setText("未选择任何验证码，不进行提交");
 						label_1.setForeground(Color.red);
 					} else {
 						frame2.dispose();
-						order_oage.checkSubmitCode();
+						String code = "";
+						for (int i=0;i<coms.length;i++) {
+							if (coms[i] instanceof JLabel) {
+								JLabel lb = (JLabel)coms[i];
+								code += lb.getX()-64+(lb.getIcon().getIconWidth()/2) + "," ;
+								code += lb.getY()-179+(lb.getIcon().getIconHeight()/2) + "";
+								if (i<coms.length-1) {
+									code += ",";
+								}
+							}
+						}
+						order_oage.checkSubmitCode(code);
 					}
-				}
+                }
 			}
 		});
+		
+		frame2.getContentPane().add(label);
 
 		JButton button = new JButton("提交");
 		button.setBounds(43, 354, 284, 53);
@@ -105,12 +114,24 @@ public class HttpUtils {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// 回调方法
-				if ("".equals(incode.toString())) {
+				Component[] coms = p3.getComponents();
+				if (coms.length<=0) {
 					label_1.setText("未选择任何验证码，不进行提交");
 					label_1.setForeground(Color.red);
 				} else {
 					frame2.dispose();
-					order_oage.checkSubmitCode();
+					String code = "";
+					for (int i=0;i<coms.length;i++) {
+						if (coms[i] instanceof JLabel) {
+							JLabel lb = (JLabel)coms[i];
+							code += lb.getX()-48+(lb.getIcon().getIconWidth()/2) + "," ;
+							code += lb.getY()-113+(lb.getIcon().getIconHeight()/2) + "";
+							if (i<coms.length-1) {
+								code += ",";
+							}
+						}
+					}
+					order_oage.checkSubmitCode(code);
 				}
 			}
 		});
@@ -161,81 +182,6 @@ public class HttpUtils {
 		label_5.setForeground(Color.RED);
 		frame2.getContentPane().add(label_5);
 		frame2.setVisible(true);
-	}
-	
-	/**
-	 * 12306登录使用
-	 * @param in
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	public static String getCodeBy12306(InputStream in, int x,int y) {
-		StringBuffer sb = new StringBuffer("true");
-		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		byte[] buffer = new byte[1024];
-		int len = 0;
-		byte[] data = null;
-		try {
-			while ((len = in.read(buffer)) != -1) {
-				// 用输出流往buffer里写入数据，中间参数代表从哪个位置开始读，len代表读取的长度
-				outStream.write(buffer, 0, len);
-			}
-			in.close();
-			data = outStream.toByteArray();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		final JFrame frame2 = new JFrame("验证码");
-		frame2.setSize(new Dimension(302, 268));
-		frame2.setLocationRelativeTo(null);
-		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame2.getContentPane().setLayout(null);
-		
-		JLabel label = new JLabel("");
-		label.setIcon(new ImageIcon("d:/123.png"));
-		label.setSize(new Dimension(284, 196));
-		frame2.getContentPane().add(label);
-		
-		final JLabel label_1 = new JLabel("当前点击坐标是：");
-		label_1.setBounds(10, 195, 184, 35);
-		frame2.getContentPane().add(label_1);
-		
-		label.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if(e.getButton() == MouseEvent.BUTTON1){ //e.getButton就会返回点鼠标的那个键，左键还是右健，3代表右键
-                  int x = e.getX();  //得到鼠标x坐标
-                  int y = e.getY();  //得到鼠标y坐标
-                  String banner = x + "," + (y-65) + ",";
-                  incode.append(banner);
-                  label_1.setText("当前点击坐标是：" + x + "," + (y-65));
-              }
-			}
-		});
-		
-		JButton button = new JButton("提交");
-		button.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				//回调方法
-				
-				frame2.dispose();
-			}
-		});
-		button.setBounds(214, 200, 62, 25);
-		frame2.getContentPane().add(button);
-		frame2.setVisible(true);
-		
-		while ("true".equals(sb.toString())){
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
-		}
-		return sb.substring(0, sb.length()-1);
 	}
 	
 	/**
