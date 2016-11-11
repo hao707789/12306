@@ -166,7 +166,8 @@ public class LoginMethods {
 			if (VHttpUtils.outHtml(res.getBody()).contains("欢迎您登录中国铁路客户服务中心网站")){		//验证是否登录成功
 				login_page.lblNewLabel_2.setText("登录成功");
 				Home_Page window = new Home_Page();
-				window.textArea.append(login_page.format.format(new Date())+"：登录成功,欢迎使用V代码抢票工具\r\n");
+				window.printLog("登录成功,欢迎使用V代码抢票工具");
+				window.printLog("双击车次即可提交订单哦,右击可将车次加入自动刷票的预选车次中,更多隐藏功能等你发现！");
 				login_page.frame.dispose();
 				window.show(window);
 			}else {
