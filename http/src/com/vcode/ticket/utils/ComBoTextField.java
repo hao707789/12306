@@ -216,7 +216,8 @@ public class ComBoTextField extends JTextField{
                     while (it.hasNext()){
                     	Map.Entry entry=(Map.Entry)it.next();
                     	String[] arr = (String[]) entry.getValue();
-                    	if(arr[4].toLowerCase().startsWith(input.toLowerCase())) {
+                    	if(arr[4].toLowerCase().startsWith(input.toLowerCase()) ||
+                    			entry.getKey().toString().startsWith(input.toLowerCase())) {
                     		model.addElement(entry.getKey());        
     					}
                     }

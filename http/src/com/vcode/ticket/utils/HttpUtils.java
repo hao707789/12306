@@ -6,11 +6,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.script.Invocable;
@@ -21,10 +19,15 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.vcode.http.client.VHttpClient;
 import com.vcode.http.client.VHttpResponse;
@@ -196,7 +199,7 @@ public class HttpUtils {
 	 * @return
 	 */
 	public static Map<String, String[]> getCitiInfo() {
-		Map<String, String[]> map = new HashMap<String, String[]>();
+		Map<String, String[]> map = new LinkedHashMap<String, String[]>();
 		VHttpClient client = new VHttpClientImpl();
 		VHttpGet get = new VHttpGet("https://kyfw.12306.cn/otn/resources/js/framework/station_name.js");
 		VHttpResponse res = client.execute(get);
@@ -296,6 +299,11 @@ public class HttpUtils {
 		return passengerTicketStr;
 	}
 	
+	/**
+	 * 转换座位编码
+	 * @param seatNum
+	 * @return
+	 */
 	public static String seatNumToseatType(String seatNum){
 		String seatType = "";
 		if ("1".equals(seatNum.toUpperCase())) {
@@ -312,5 +320,55 @@ public class HttpUtils {
 			seatType =  "商务座";
 		}
 		return seatType;
+	}
+	
+	/**
+	 * 读取conf文件
+	 * @param note
+	 */
+	public static void readConf(String note){
+		
+	}
+	
+	/**
+	 * 删除某节点
+	 * @param note
+	 */
+	public static void delConfNote(String note){
+		
+	}
+	
+	/**
+	 * 修改节点内容
+	 * @param note
+	 */
+	public static void updateNote(String note){
+		
+	}
+	
+	/**
+	 * 增加节点内容
+	 * @param note
+	 */
+	public static void addConfNote(String note){
+		
+	}
+	
+	public static void main(String[] args) throws Exception {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		Document document = builder.parse(HttpUtils.class.getResource("../conf/xconf.xml").toString());
+		Element root = document.getDocumentElement();
+		NodeList nodelist = root.getElementsByTagName("citys");
+		for (int i=0;i<nodelist.getLength();i++) {
+			Node node = nodelist.item(i);
+			NodeList citylist = node.getChildNodes();
+			for (int j=0;j<citylist.getLength();j++) {
+				Node cityNode = citylist.item(j);
+				System.out.println(cityNode.getNodeName());
+				System.out.println(cityNode.getTextContent());
+			}
+		}
+		System.out.println(root.getTagName());
 	}
 }

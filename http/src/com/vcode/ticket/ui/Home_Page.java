@@ -315,40 +315,27 @@ public class Home_Page {
 		table.setFont(new Font("宋体", Font.PLAIN, 12));
 		scrollPane.setViewportView(table);
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		table.setModel(new DefaultTableModel(new Object[][] {
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null },
-				{ null, null, null, null, null, null, null, null, null, null,
-						null, null, null, null, null, null, null, null }, },
-				new String[] { "\u8F66\u6B21", "\u51FA\u53D1\u5730",
-						"\u76EE\u7684\u5730", "\u5386\u65F6",
-						"\u53D1\u8F66\u65F6\u95F4", "\u5230\u8FBE\u65F6\u95F4",
-						"\u5546\u52A1", "\u7279\u7B49", "\u4E00\u7B49",
-						"\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367",
-						"\u786C\u5367", "\u8F6F\u5EA7", "\u786C\u5EA7",
-						"\u65E0\u5EA7", "\u5176\u5B83", "\u5907\u6CE8" }));
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u5386\u65F6", "\u53D1\u8F66\u65F6\u95F4", "\u5230\u8FBE\u65F6\u95F4", "\u5546\u52A1", "\u7279\u7B49", "\u4E00\u7B49", "\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367", "\u786C\u5367", "\u8F6F\u5EA7", "\u786C\u5EA7", "\u65E0\u5EA7", "\u5176\u5B83", "\u5907\u6CE8"
+			}
+		));
+		table.getColumnModel().getColumn(3).setPreferredWidth(68);
+		table.getColumnModel().getColumn(4).setPreferredWidth(90);
+		table.getColumnModel().getColumn(5).setPreferredWidth(90);
+		table.getColumnModel().getColumn(6).setPreferredWidth(65);
+		table.getColumnModel().getColumn(7).setPreferredWidth(65);
+		table.getColumnModel().getColumn(8).setPreferredWidth(65);
+		table.getColumnModel().getColumn(9).setPreferredWidth(65);
+		table.getColumnModel().getColumn(10).setPreferredWidth(65);
+		table.getColumnModel().getColumn(11).setPreferredWidth(65);
+		table.getColumnModel().getColumn(12).setPreferredWidth(65);
+		table.getColumnModel().getColumn(13).setPreferredWidth(65);
+		table.getColumnModel().getColumn(14).setPreferredWidth(65);
+		table.getColumnModel().getColumn(15).setPreferredWidth(65);
+		table.getColumnModel().getColumn(16).setPreferredWidth(65);
 		setTableSize();
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -357,6 +344,15 @@ public class Home_Page {
 		p1.setLayout(null);
 
 		textArea = new JTextAreaExt();
+		textArea.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getButton()==e.BUTTON3) {
+					textArea.setText("");
+					printLog("信息输出区清空完毕");
+				}
+			}
+		});
 		textArea.setEnabled(false);
 		textArea.setEditable(false);
 		textArea.setLineWrap(true);
@@ -1344,21 +1340,6 @@ public class Home_Page {
 	 * 设置表格样式
 	 */
 	public void setTableSize() {
-		// 定义表格列宽
-		table.getColumnModel().getColumn(3).setPreferredWidth(68);
-		table.getColumnModel().getColumn(4).setPreferredWidth(90);
-		table.getColumnModel().getColumn(5).setPreferredWidth(90);
-		table.getColumnModel().getColumn(6).setPreferredWidth(65);
-		table.getColumnModel().getColumn(7).setPreferredWidth(65);
-		table.getColumnModel().getColumn(8).setPreferredWidth(65);
-		table.getColumnModel().getColumn(9).setPreferredWidth(65);
-		table.getColumnModel().getColumn(10).setPreferredWidth(65);
-		table.getColumnModel().getColumn(11).setPreferredWidth(65);
-		table.getColumnModel().getColumn(12).setPreferredWidth(65);
-		table.getColumnModel().getColumn(13).setPreferredWidth(65);
-		table.getColumnModel().getColumn(14).setPreferredWidth(65);
-		table.getColumnModel().getColumn(15).setPreferredWidth(65);
-		table.getColumnModel().getColumn(16).setPreferredWidth(65);
 		table.setToolTipText("");
 	}
 	
