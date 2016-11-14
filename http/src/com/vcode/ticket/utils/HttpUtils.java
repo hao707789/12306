@@ -215,6 +215,29 @@ public class HttpUtils {
 		return map;
 	}
 	
+	
+	/**
+	 * 获取热门城市信息
+	 * @return
+	 */
+	public static Map<String, String[]> getHotCitiInfo() {
+		Map<String, String[]> map = new LinkedHashMap<String, String[]>();
+		VHttpClient client = new VHttpClientImpl();
+		VHttpGet get = new VHttpGet("https://kyfw.12306.cn/otn/resources/js/framework/favorite_name.js");
+		VHttpResponse res = client.execute(get);
+		String data = VHttpUtils.outHtml(res.getBody()).split("=")[1];
+		res.getEntity().disconnect();
+		String[] citiArr = data.replace("'", "").split("@");
+		for (String s : citiArr){
+			String[] citiInfo = s.split("\\|");
+			if (citiInfo.length>1){
+				map.put(citiInfo[1], citiInfo);
+			}
+		}
+		return map;
+	}
+	
+	
 	/**
 	 * 得到余票数量
 	 * @param ticket
