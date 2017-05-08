@@ -15,14 +15,14 @@ import com.vcode.http.client.methods.VHttpPost;
 import com.vcode.http.client.parames.VParames;
 import com.vcode.http.utils.VBrowser;
 import com.vcode.http.utils.VHttpUtils;
-import com.vcode.ticket.ui.Home_Page;
+import com.vcode.ticket.ui.HomePage;
 
 public class OrderMethods {
 
 	/**
 	 * 查询订单列表
 	 */
-	public static void getOrderList(JButton btnNewButton_1,Home_Page home_page) {
+	public static void getOrderList(JButton btnNewButton_1,HomePage home_page) {
 		try {
 			VHttpPost post = new VHttpPost(
 					"https://kyfw.12306.cn/otn/queryOrder/queryMyOrderNoComplete");
@@ -44,7 +44,7 @@ public class OrderMethods {
 	/**
 	 * 处理订单列表
 	 */
-	public static void disposeOrder(JSONObject res_obj, JButton btnNewButton_1,Home_Page home_page) {
+	public static void disposeOrder(JSONObject res_obj, JButton btnNewButton_1,HomePage home_page) {
 		try {
 			home_page.table_1.setModel(new DefaultTableModel(new Object[][] {},
 					new String[] { "\u8F66\u6B21", "\u8BA2\u5355\u53F7",
@@ -102,7 +102,7 @@ public class OrderMethods {
 	 * @param orderId
 	 * @param button_3
 	 */
-	public static void cancelOrder(String orderId, JButton button_3,Home_Page home_page) {
+	public static void cancelOrder(String orderId, JButton button_3,HomePage home_page) {
 		try {
 			VHttpPost post = new VHttpPost(
 					"https://kyfw.12306.cn/otn/queryOrder/cancelNoCompleteMyOrder");

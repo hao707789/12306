@@ -6,8 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -16,6 +19,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
@@ -42,7 +46,7 @@ public class ComBoTextField extends JTextField{
             items.add(item);
         }
         JTextField txtInput = new JTextField();
-        setupAutoComplete(txtInput, items);
+        setupAutoComplete(txtInput, new JPasswordField(), items);
         txtInput.setColumns(30);
         frame.getContentPane().setLayout(new FlowLayout());
         frame.getContentPane().add(txtInput, BorderLayout.NORTH);
@@ -60,7 +64,7 @@ public class ComBoTextField extends JTextField{
         cbInput.putClientProperty("is_adjusting", adjusting);
     }
 
-    public static void setupAutoComplete(final JTextField txtInput, final ArrayList<String> items) {
+    public static void setupAutoComplete(final JTextField txtInput,JPasswordField passInput, final List<String> items) {
         final DefaultComboBoxModel model = new DefaultComboBoxModel();
         final JComboBox cbInput = new JComboBox(model) {
             public Dimension getPreferredSize() {
@@ -78,11 +82,34 @@ public class ComBoTextField extends JTextField{
                 if (!isAdjusting(cbInput)) {
                     if (cbInput.getSelectedItem() != null) {
                         txtInput.setText(cbInput.getSelectedItem().toString());
+                        try {
+							String pass = ConfigUtils.getInstace().map.get(cbInput.getSelectedItem().toString());
+							passInput.setText(pass);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
                     }
                 }
             }
         });
 
+        txtInput.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				updateList();
+			}
+			
+			private void updateList() {
+                setAdjusting(cbInput, true);
+                model.removeAllElements();
+                for (String item : items) {
+                	model.addElement(item);
+                }
+                cbInput.setPopupVisible(model.getSize() > 0);
+                setAdjusting(cbInput, false);
+            }
+		});
+        
         txtInput.addKeyListener(new KeyAdapter() {
 
             @Override

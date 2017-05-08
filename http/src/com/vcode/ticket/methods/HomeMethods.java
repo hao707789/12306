@@ -17,7 +17,7 @@ import com.vcode.http.client.methods.VHttpPost;
 import com.vcode.http.client.parames.VParames;
 import com.vcode.http.utils.VBrowser;
 import com.vcode.http.utils.VHttpUtils;
-import com.vcode.ticket.ui.Home_Page;
+import com.vcode.ticket.ui.HomePage;
 import com.vcode.ticket.utils.HttpUtils;
 
 /**
@@ -27,7 +27,7 @@ import com.vcode.ticket.utils.HttpUtils;
  */
 public class HomeMethods extends Thread {
 	
-	public Home_Page home_page;
+	public HomePage home_page;
 	
 	private String submitCode = "";
 	
@@ -37,13 +37,13 @@ public class HomeMethods extends Thread {
 	
 	private String passengerTicketStr;
 	
-	public HomeMethods(Home_Page home_page){
+	public HomeMethods(HomePage home_page){
 		if (this.home_page==null) {
 			this.home_page = home_page;
 		}
 	};
 	
-	public HomeMethods(Home_Page home_page,JSONObject obj){
+	public HomeMethods(HomePage home_page,JSONObject obj){
 		if (this.home_page==null) {
 			this.home_page = home_page;
 		}

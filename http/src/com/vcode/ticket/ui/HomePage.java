@@ -76,9 +76,9 @@ import com.vcode.ticket.utils.PopList;
  * @author huahao
  *
  */
-public class Home_Page {
+public class HomePage {
 
-	public Home_Page window;
+	public HomePage window;
 	private JFrame frame;
 	public JTextField textField;
 	public JTextField textField_2;
@@ -117,7 +117,7 @@ public class Home_Page {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Home_Page window = new Home_Page();
+					HomePage window = new HomePage();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -126,7 +126,7 @@ public class Home_Page {
 		});
 	}
 
-	public void show(Home_Page window) {
+	public void show(HomePage window) {
 		this.window = window;
 		window.frame.setVisible(true);
 	}
@@ -134,7 +134,7 @@ public class Home_Page {
 	/**
 	 * Create the application.
 	 */
-	public Home_Page() {
+	public HomePage() {
 		VBrowser.getInstance();
 		initialize();
 	}
@@ -144,8 +144,7 @@ public class Home_Page {
 	 */
 	private void initialize() {
 		try {
-			UIManager
-					.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -339,92 +338,6 @@ public class Home_Page {
 		setTableSize();
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		JPanel p1 = new JPanel();
-		tabbedPane.add(p1, "刷票界面");
-		p1.setLayout(null);
-
-		textArea = new JTextAreaExt();
-		textArea.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getButton()==e.BUTTON3) {
-					textArea.setText("");
-					printLog("信息输出区清空完毕");
-				}
-			}
-		});
-		textArea.setEnabled(false);
-		textArea.setEditable(false);
-		textArea.setLineWrap(true);
-		JScrollPane scroll = new JScrollPane(textArea);
-		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-		scroll.setBounds(0, 0, 368, 205);
-		textArea.setBorder(BorderFactory.createTitledBorder("信息输出: "));
-		p1.add(scroll);
-
-		spinner = new JSpinner();
-		spinner.setBounds(496, 53, 53, 22);
-		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null,
-				new Integer(100)));
-		p1.add(spinner);
-
-		JLabel label_6 = new JLabel("刷票频率：");
-		label_6.setBounds(435, 57, 62, 15);
-		p1.add(label_6);
-
-		JLabel label_7 = new JLabel("乘    客：");
-		label_7.setBounds(436, 171, 62, 15);
-		p1.add(label_7);
-
-		JLabel label_8 = new JLabel("优先席别：");
-		label_8.setBounds(436, 134, 62, 15);
-		p1.add(label_8);
-
-		JList<Object> list = new JList<Object>();
-		list.setBounds(950, 73, 25, -19);
-		p1.add(list);
-
-		JCheckBox chckbxNewCheckBox_2 = new JCheckBox("部分提交");
-		chckbxNewCheckBox_2.setBounds(572, 53, 81, 23);
-		p1.add(chckbxNewCheckBox_2);
-
-		JCheckBox checkBox_20 = new JCheckBox("无座不提交");
-		checkBox_20.setBounds(662, 53, 91, 23);
-		checkBox_20.setSelected(true);
-		p1.add(checkBox_20);
-
-		JCheckBox checkBox_21 = new JCheckBox("定时启动");
-		checkBox_21.setBounds(763, 53, 81, 23);
-		p1.add(checkBox_21);
-
-		JLabel label_9 = new JLabel("乘车信息：");
-		label_9.addMouseMotionListener(new MouseMotionAdapter() {
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				
-			}
-		});
-		label_9.setBounds(435, 21, 69, 15);
-		p1.add(label_9);
-
-		JSpinner spinner_1 = new JSpinner();
-		spinner_1.setBounds(844, 53, 130, 22);
-		spinner_1.setModel(new SpinnerDateModel(new Date(1477411200000L), null,
-				null, Calendar.MINUTE));
-		p1.add(spinner_1);
-
-		label_10 = new JLabel();
-		label_10.setBounds(495, 21, 453, 15);
-		p1.add(label_10);
-
-		JLabel label_11 = new JLabel("车    次：");
-		label_11.setBounds(436, 96, 62, 15);
-		p1.add(label_11);
-
-		JButton button = new JButton("席别");
-		button.setBounds(911, 130, 73, 23);
-		p1.add(button);
 
 		DefaultListModel<Object> pupModel = new DefaultListModel<Object>();
 		pupModel.addElement("商务座");
@@ -439,86 +352,172 @@ public class Home_Page {
 		pupModel.addElement("无座");
 		pupModel.addElement("其它");
 		DefaultListModel<Object> pupModel2 = getPassengerDTOs();
-
-		JButton button_1 = new JButton("乘车人");
-		button_1.setBounds(911, 167, 73, 23);
-		p1.add(button_1);
-
-		list_1 = new JList<Object>(model_train);
-		list_1.setBounds(496, 87, 404, 32);
-		list_1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (list_1.getSelectedIndex() > -1) {
-					model_train.remove(list_1.getSelectedIndex());
-				}
-			}
-		});
-		list_1.setVisibleRowCount(2);
-		list_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list_1.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		p1.add(list_1);
-
-		list_2 = new JList<Object>();
-		list_2.setBounds(496, 125, 404, 32);
-		list_2.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount()>=2) {
-					if (list_2.getSelectedIndex() > -1) {
-						DefaultListModel<Object> model_Seats = new DefaultListModel<Object>();
-						for (int i = 0; i < list_2.getModel().getSize(); i++) {
-							if (i != list_2.getSelectedIndex()) {
-								model_Seats.addElement(list_2.getModel()
-										.getElementAt(i));
-							}
+		JPanel p1 = new JPanel();
+		tabbedPane.add(p1, "刷票界面");
+		p1.setLayout(null);
+		
+				textArea = new JTextAreaExt();
+				textArea.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						if (e.getButton()==e.BUTTON3) {
+							textArea.setText("");
+							printLog("信息输出区清空完毕");
 						}
-						list_2.setModel(model_Seats);
 					}
-				}
-			}
-		});
-		list_2.setVisibleRowCount(2);
-		list_2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list_2.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		p1.add(list_2);
-
-		list_3 = new JList<Object>();
-		list_3.setBounds(496, 162, 404, 32);
-		list_3.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount()>=2) {
-					DefaultListModel<Object> model_Passenger = new DefaultListModel<Object>();
-					if (list_3.getSelectedIndex() > -1) {
-						for (int i = 0; i < list_3.getModel().getSize(); i++) {
-							if (i != list_3.getSelectedIndex()) {
-								model_Passenger.addElement(list_3.getModel()
-										.getElementAt(i));
-							}
-						}
-						list_3.setModel(model_Passenger);
-					}
-				}
-			}
-		});
-		list_3.setVisibleRowCount(2);
-		list_3.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list_3.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		p1.add(list_3);
-
-		PopList.initPopup(button, list_2, pupModel);
-		PopList.initPopup(button_1, list_3, pupModel2);
-
-		JButton button_2 = new JButton("清空");
-		button_2.setBounds(911, 92, 73, 23);
-		button_2.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				model_train.removeAllElements();
-			}
-		});
-		p1.add(button_2);
+				});
+				textArea.setEnabled(false);
+				textArea.setEditable(false);
+				textArea.setLineWrap(true);
+				JScrollPane scroll = new JScrollPane(textArea);
+				scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				
+						scroll.setBounds(0, 0, 368, 205);
+						textArea.setBorder(BorderFactory.createTitledBorder("信息输出: "));
+						p1.add(scroll);
+						
+								spinner = new JSpinner();
+								spinner.setBounds(505, 54, 53, 22);
+								spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null,
+										new Integer(100)));
+								p1.add(spinner);
+								
+										JLabel label_6 = new JLabel("刷票频率：");
+										label_6.setBounds(434, 57, 81, 15);
+										p1.add(label_6);
+										
+												JLabel label_7 = new JLabel("乘    客：");
+												label_7.setBounds(434, 171, 69, 15);
+												p1.add(label_7);
+												
+														JLabel label_8 = new JLabel("优先席别：");
+														label_8.setBounds(434, 134, 81, 15);
+														p1.add(label_8);
+														
+																JList<Object> list = new JList<Object>();
+																list.setBounds(950, 73, 25, -19);
+																p1.add(list);
+																
+																		JCheckBox chckbxNewCheckBox_2 = new JCheckBox("部分提交");
+																		chckbxNewCheckBox_2.setBounds(572, 53, 81, 23);
+																		p1.add(chckbxNewCheckBox_2);
+																		
+																				JCheckBox checkBox_20 = new JCheckBox("无座不提交");
+																				checkBox_20.setBounds(662, 53, 91, 23);
+																				checkBox_20.setSelected(true);
+																				p1.add(checkBox_20);
+																				
+																						JCheckBox checkBox_21 = new JCheckBox("定时启动");
+																						checkBox_21.setBounds(763, 53, 81, 23);
+																						p1.add(checkBox_21);
+																						
+																								JLabel label_9 = new JLabel("乘车信息：");
+																								label_9.addMouseMotionListener(new MouseMotionAdapter() {
+																									@Override
+																									public void mouseDragged(MouseEvent e) {
+																										
+																									}
+																								});
+																								label_9.setBounds(434, 21, 69, 15);
+																								p1.add(label_9);
+																								
+																										JSpinner spinner_1 = new JSpinner();
+																										spinner_1.setBounds(844, 53, 130, 22);
+																										spinner_1.setModel(new SpinnerDateModel(new Date(1477411200000L), null,
+																												null, Calendar.MINUTE));
+																										p1.add(spinner_1);
+																										
+																												label_10 = new JLabel();
+																												label_10.setBounds(495, 21, 453, 15);
+																												p1.add(label_10);
+																												
+																														JLabel label_11 = new JLabel("车    次：");
+																														label_11.setBounds(434, 96, 69, 15);
+																														p1.add(label_11);
+																														
+																																JButton button = new JButton("席别");
+																																button.setBounds(911, 130, 73, 23);
+																																p1.add(button);
+																																
+																																		JButton button_1 = new JButton("乘车人");
+																																		button_1.setBounds(911, 167, 73, 23);
+																																		p1.add(button_1);
+																																		
+																																				list_1 = new JList<Object>(model_train);
+																																				list_1.setBounds(496, 87, 404, 32);
+																																				list_1.addMouseListener(new MouseAdapter() {
+																																					@Override
+																																					public void mouseClicked(MouseEvent e) {
+																																						if (list_1.getSelectedIndex() > -1) {
+																																							model_train.remove(list_1.getSelectedIndex());
+																																						}
+																																					}
+																																				});
+																																				list_1.setVisibleRowCount(2);
+																																				list_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+																																				list_1.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+																																				p1.add(list_1);
+																																				
+																																						list_2 = new JList<Object>();
+																																						list_2.setBounds(496, 125, 404, 32);
+																																						list_2.addMouseListener(new MouseAdapter() {
+																																							@Override
+																																							public void mouseClicked(MouseEvent e) {
+																																								if (e.getClickCount()>=2) {
+																																									if (list_2.getSelectedIndex() > -1) {
+																																										DefaultListModel<Object> model_Seats = new DefaultListModel<Object>();
+																																										for (int i = 0; i < list_2.getModel().getSize(); i++) {
+																																											if (i != list_2.getSelectedIndex()) {
+																																												model_Seats.addElement(list_2.getModel()
+																																														.getElementAt(i));
+																																											}
+																																										}
+																																										list_2.setModel(model_Seats);
+																																									}
+																																								}
+																																							}
+																																						});
+																																						list_2.setVisibleRowCount(2);
+																																						list_2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+																																						list_2.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+																																						p1.add(list_2);
+																																						
+																																								list_3 = new JList<Object>();
+																																								list_3.setBounds(496, 162, 404, 32);
+																																								list_3.addMouseListener(new MouseAdapter() {
+																																									@Override
+																																									public void mouseClicked(MouseEvent e) {
+																																										if (e.getClickCount()>=2) {
+																																											DefaultListModel<Object> model_Passenger = new DefaultListModel<Object>();
+																																											if (list_3.getSelectedIndex() > -1) {
+																																												for (int i = 0; i < list_3.getModel().getSize(); i++) {
+																																													if (i != list_3.getSelectedIndex()) {
+																																														model_Passenger.addElement(list_3.getModel()
+																																																.getElementAt(i));
+																																													}
+																																												}
+																																												list_3.setModel(model_Passenger);
+																																											}
+																																										}
+																																									}
+																																								});
+																																								list_3.setVisibleRowCount(2);
+																																								list_3.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+																																								list_3.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+																																								p1.add(list_3);
+																																								
+																																										PopList.initPopup(button, list_2, pupModel);
+																																										PopList.initPopup(button_1, list_3, pupModel2);
+																																										
+																																												JButton button_2 = new JButton("清空");
+																																												button_2.setBounds(911, 92, 73, 23);
+																																												button_2.addMouseListener(new MouseAdapter() {
+																																													@Override
+																																													public void mouseClicked(MouseEvent e) {
+																																														model_train.removeAllElements();
+																																													}
+																																												});
+																																												p1.add(button_2);
 		JPanel p2 = new JPanel();
 		tabbedPane.add(p2, "订单界面");
 		p2.setLayout(null);
@@ -948,7 +947,7 @@ public class Home_Page {
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(43)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(label, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
@@ -988,7 +987,7 @@ public class Home_Page {
 								.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 656, GroupLayout.PREFERRED_SIZE))
 							.addComponent(chckbxNewCheckBox_1, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
 							.addGap(3)
-							.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE))
+							.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
 							.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 786, GroupLayout.PREFERRED_SIZE))
@@ -1001,58 +1000,60 @@ public class Home_Page {
 					.addGap(41)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(11)
-							.addComponent(label, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
-							.addGap(19)
-							.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(9)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(1)
-									.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+									.addGap(11)
+									.addComponent(label, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
+									.addGap(19)
+									.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
 								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(4)
-									.addComponent(lblNewLabel))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(2)
-									.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(1)
-									.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(1)
-									.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(1)
-									.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-								.addComponent(chckbxNewCheckBox)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(1)
+									.addGap(9)
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 										.addGroup(groupLayout.createSequentialGroup()
 											.addGap(1)
-											.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))))
+											.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(4)
+											.addComponent(lblNewLabel))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(2)
+											.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(1)
+											.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(1)
+											.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(1)
+											.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+										.addComponent(chckbxNewCheckBox)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(1)
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+												.addGroup(groupLayout.createSequentialGroup()
+													.addGap(1)
+													.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(1)
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(radioButton_1)
+												.addComponent(radioButton)
+												.addComponent(radioButton_3)
+												.addComponent(radioButton_2))))
+									.addGap(8)
+									.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
 								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(1)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(radioButton_1)
-										.addComponent(radioButton)
-										.addComponent(radioButton_3)
-										.addComponent(radioButton_2))))
-							.addGap(8)
-							.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(11)
-							.addComponent(chckbxNewCheckBox_1))
+									.addGap(11)
+									.addComponent(chckbxNewCheckBox_1)))
+							.addGap(4)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(6)
+									.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
+								.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)))
 						.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
-					.addGap(4)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(6)
-							.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
-						.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
 					.addGap(9)
 					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 237, GroupLayout.PREFERRED_SIZE)
 					.addGap(10)

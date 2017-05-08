@@ -36,7 +36,7 @@ import com.vcode.http.impl.VHttpClientImpl;
 import com.vcode.http.utils.VBrowser;
 import com.vcode.http.utils.VHttpUtils;
 import com.vcode.ticket.methods.HomeMethods;
-import com.vcode.ticket.ui.Login_Page;
+import com.vcode.ticket.ui.LoginPage;
 
 /**
  * 
@@ -73,7 +73,7 @@ public class HttpUtils {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton()==e.BUTTON1) {
-					ImageIcon icon = new ImageIcon(Login_Page.class.getResource("../image/12306.jpg"));
+					ImageIcon icon = new ImageIcon(LoginPage.class.getResource("../image/12306.jpg"));
 					final JLabel jb3 = new JLabel(icon);
 					jb3.addMouseListener(new MouseAdapter() {
 						@Override

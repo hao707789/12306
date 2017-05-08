@@ -8,6 +8,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -20,19 +25,23 @@ import javax.swing.UIManager;
 
 import com.vcode.http.utils.VBrowser;
 import com.vcode.ticket.methods.LoginMethods;
+import com.vcode.ticket.utils.ComBoTextField;
+import com.vcode.ticket.utils.ConfigUtils;
+import javax.swing.JCheckBox;
 
 /**
  * 登录界面
  * @author Administrator
  *
  */
-public class Login_Page {
+public class LoginPage {
 
 	public JFrame frame;
 	public JTextField txtHao;
 	public JPasswordField passwordField;
 	public JLabel lblNewLabel_1;
 	public JLabel lblNewLabel_2;
+	public JCheckBox checkBox;
 	public SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 	private static LoginMethods loginMethods;
 
@@ -43,7 +52,7 @@ public class Login_Page {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Login_Page window = new Login_Page();
+					LoginPage window = new LoginPage();
 					loginMethods = new LoginMethods(window);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -56,7 +65,7 @@ public class Login_Page {
 	/**
 	 * Create the application.
 	 */
-	public Login_Page() {
+	public LoginPage() {
 		VBrowser.getInstance();
 		initialize();
 	}
@@ -66,7 +75,7 @@ public class Login_Page {
 	 */
 	private void initialize() {
 		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -77,7 +86,6 @@ public class Login_Page {
 		frame.getContentPane().setLayout(null);
 		
 		txtHao = new JTextField();
-		txtHao.setText("");
 		txtHao.setBounds(123, 23, 230, 33);
 		frame.getContentPane().add(txtHao);
 		txtHao.setColumns(10);
@@ -101,7 +109,7 @@ public class Login_Page {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton()==e.BUTTON1) {
-					ImageIcon icon = new ImageIcon(Login_Page.class.getResource("../image/12306.jpg"));
+					ImageIcon icon = new ImageIcon(LoginPage.class.getResource("../image/12306.jpg"));
 					final JLabel jb3 = new JLabel(icon);
 					jb3.addMouseListener(new MouseAdapter() {
 						@Override
@@ -164,6 +172,28 @@ public class Login_Page {
 		});
 		btnNewButton.setBounds(61, 366, 303, 51);
 		frame.getContentPane().add(btnNewButton);
+		
+		//记住用户
+		List<String> items = new ArrayList<String>();
+		Map<String, String> map = null;
+		try {
+			map = ConfigUtils.getInstace().map;
+		} catch (Exception e1) {
+			lblNewLabel_2.setText("配置读取文件失败");
+			lblNewLabel_2.setForeground(Color.red);
+			e1.printStackTrace();
+		}
+		Set<String> set = map.keySet();
+		Iterator<String> it = set.iterator();
+		while(it.hasNext()){
+			items.add(it.next());
+		}
+        ComBoTextField.setupAutoComplete(txtHao,passwordField,items);
+        
+        checkBox = new JCheckBox("记住");
+        checkBox.setSelected(true);
+        checkBox.setBounds(354, 29, 116, 21);
+        frame.getContentPane().add(checkBox);
 		LoginMethods.ticket_init();
 	}
 }

@@ -10,13 +10,13 @@ import com.vcode.http.client.VHttpResponse;
 import com.vcode.http.client.methods.VHttpGet;
 import com.vcode.http.utils.VBrowser;
 import com.vcode.http.utils.VHttpUtils;
-import com.vcode.ticket.ui.Home_Page;
+import com.vcode.ticket.ui.HomePage;
 
 public class BrushTicketMethods extends Thread{
 	
-	private Home_Page home_page;
+	private HomePage home_page;
 
-	public BrushTicketMethods(Home_Page home_page) {
+	public BrushTicketMethods(HomePage home_page) {
 		this.home_page = home_page;
 	}
 

@@ -2,7 +2,6 @@ package com.vcode.ticket.methods;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -17,8 +16,9 @@ import com.vcode.http.client.methods.VHttpPost;
 import com.vcode.http.client.parames.VParames;
 import com.vcode.http.utils.VBrowser;
 import com.vcode.http.utils.VHttpUtils;
-import com.vcode.ticket.ui.Home_Page;
-import com.vcode.ticket.ui.Login_Page;
+import com.vcode.ticket.ui.HomePage;
+import com.vcode.ticket.ui.LoginPage;
+import com.vcode.ticket.utils.ConfigUtils;
 
 /**
  * 登录界面的逻辑和方法
@@ -27,11 +27,11 @@ import com.vcode.ticket.ui.Login_Page;
  */
 public class LoginMethods {
 	
-	private Login_Page login_page;
+	private LoginPage login_page;
 	
 	private String newCode = "";
 	
-	public LoginMethods(Login_Page login_page){
+	public LoginMethods(LoginPage login_page){
 		this.login_page = login_page;
 	}
 
@@ -165,7 +165,25 @@ public class LoginMethods {
 		if (res.getEntity().getStaus()==200){
 			if (VHttpUtils.outHtml(res.getBody()).contains("欢迎您登录中国铁路客户服务中心网站")){		//验证是否登录成功
 				login_page.lblNewLabel_2.setText("登录成功");
-				Home_Page window = new Home_Page();
+				
+				//处理记住密码
+				boolean check = login_page.checkBox.isSelected();
+				String[] str = new String[]{login_page.txtHao.getText(),new String(login_page.passwordField.getPassword())};
+				if (check){
+					try {
+						ConfigUtils.getInstace().rememberPass(str);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}else {
+					try {
+						ConfigUtils.getInstace().removePass(str);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				HomePage window = new HomePage();
 				window.printLog("登录成功,欢迎使用V代码抢票工具");
 				window.printLog("双击车次即可提交订单哦,右击可将车次加入自动刷票的预选车次中,更多隐藏功能等你发现！");
 				login_page.frame.dispose();
