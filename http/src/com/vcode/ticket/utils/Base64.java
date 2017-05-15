@@ -5,7 +5,7 @@ import java.io.IOException;
 public class Base64 {
 	
 	public static void main(String[] args) {
-		System.out.println(encode("".getBytes()));
+		System.out.println(encode("loveXIAO707789".getBytes()));
 	}
 
 	/**
