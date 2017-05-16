@@ -98,7 +98,7 @@ public class ConfigUtils {
 	}
 	
 	public static void main(String[] args) throws IOException, Exception {
-		String [] str = new String[]{"520xiao707789","loveXIAO707789"};
+		String [] str = new String[]{"hao707789","loveXIAO707789"};
 		ConfigUtils.getInstace().removePass(str);
 	}
 }

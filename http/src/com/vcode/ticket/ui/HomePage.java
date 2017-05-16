@@ -104,7 +104,7 @@ public class HomePage {
 	public boolean result = true;
 	public JSpinner spinner;
 	public String sb;
-	public String[] seatOthers;
+	public int[] seatOthers;
 	public JPanel panel_1;
 	public JPanel panel_2;
 	public boolean isRun = false;
@@ -206,7 +206,8 @@ public class HomePage {
 						Date last_date = sdf.parse(time_arr[1]);
 						Date start_date = sdf.parse(start_time);
 						if (first_date.getTime()<=start_date.getTime()&&start_date.getTime()<last_date.getTime()) {
-							addRow(obj);
+							//TODO addRow(new String[]{},obj);
+							addRow(new String[]{},obj);
 						}
 					} catch (JSONException e1) {
 						e1.printStackTrace();
@@ -649,7 +650,8 @@ public class HomePage {
 					//显示全部车次信息
 					for (int i=0;i<datalist.size();i++) {
 						JSONObject obj = datalist.get(i);
-						addRow(obj);
+						//TODO addRow(new String[]{},obj);
+						addRow(new String[]{},obj);
 					}
 				} else {
 					Component[] comps = panel_1.getComponents();
@@ -1205,7 +1207,8 @@ public class HomePage {
 				try {
 					train_code = obj.get("station_train_code").toString();
 					if (train_code.toUpperCase().startsWith(num)) {
-						addRow(obj);
+						//TODO addRow(new String[]{},obj);
+						addRow(new String[]{},obj);
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -1241,7 +1244,8 @@ public class HomePage {
 		}
 		for (int i=0;i<datalist.size();i++) {
 			JSONObject obj = datalist.get(i);
-			addRow(obj);
+			//TODO addRow(new String[]{},obj);
+			addRow(new String[]{},obj);
 		}
 		
 		//处理列
@@ -1302,37 +1306,65 @@ public class HomePage {
 	 * 组装票类型参数，用于自动刷票使用
 	 * 
 	 */
-	public String[] packagingseatOther(){
+	public int[] packagingseatOther(){
 		//组装自动刷票判断
 		ListModel<Object> model2 = list_2.getModel();
-		String[] seatOther = new String[model2.getSize()];
+		int[] seatOther = new int[model2.getSize()];
 		result = true;
 		if (ticket_type==1) {
 			for (int i=0;i<model2.getSize();i++) {
 				if ("商务座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())) {
-					seatOther[i] = "swz_num";
+					seatOther[i] = 32;
 				}else if ("特等座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())) {
-					seatOther[i] = "tz_num";
+					seatOther[i] = 25;
 				}else if ("一等座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "zy_num";
+					seatOther[i] = 31;
 				}else if ("二等座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "ze_num";
+					seatOther[i] = 30;
 				}else if ("高级软卧".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "gr_num";
+					seatOther[i] = 21;
 				}else if ("软卧".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "rw_num";
+					seatOther[i] = 23;
 				}else if ("硬卧".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "yw_num";
+					seatOther[i] = 28;
 				}else if ("软座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "rz_num";
+					seatOther[i] = 24;
 				}else if ("硬座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "yz_num";
+					seatOther[i] = 29;
 				}else if ("无座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "wz_num";
+					seatOther[i] = 26;
 				}else if ("其它".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
-					seatOther[i] = "qt_num";
+					seatOther[i] = 22;
 				}
 			}
+			
+			
+			//于2017-04-24号以后失效
+//			for (int i=0;i<model2.getSize();i++) {
+//				if ("商务座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())) {
+//					seatOther[i] = "swz_num";
+//				}else if ("特等座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())) {
+//					seatOther[i] = "tz_num";
+//				}else if ("一等座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+//					seatOther[i] = "zy_num";
+//				}else if ("二等座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+//					seatOther[i] = "ze_num";
+//				}else if ("高级软卧".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+//					seatOther[i] = "gr_num";
+//				}else if ("软卧".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+//					seatOther[i] = "rw_num";
+//				}else if ("硬卧".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+//					seatOther[i] = "yw_num";
+//				}else if ("软座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+//					seatOther[i] = "rz_num";
+//				}else if ("硬座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+//					seatOther[i] = "yz_num";
+//				}else if ("无座".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+//					seatOther[i] = "wz_num";
+//				}else if ("其它".equalsIgnoreCase(model2.getElementAt(i).toString().trim())){
+//					seatOther[i] = "qt_num";
+//				}
+//			}
 		}
 		return seatOther;
 	}
@@ -1381,28 +1413,29 @@ public class HomePage {
 	 * 添加一行数据
 	 * @param obj
 	 */
-	public void addRow(JSONObject obj) {
+	public void addRow(String[] rows,JSONObject jsMap) {
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		Vector<String> vector = new Vector<String>();
 		try {
-			vector.add(obj.get("station_train_code").toString());
-			vector.add(obj.get("start_station_name").toString());
-			vector.add(obj.get("end_station_name").toString());
-			vector.add(obj.get("lishi").toString());
-			vector.add(obj.get("start_time").toString());
-			vector.add(obj.get("arrive_time").toString());
-			vector.add(obj.get("swz_num").toString());
-			vector.add(obj.get("tz_num").toString());
-			vector.add(obj.get("zy_num").toString());
-			vector.add(obj.get("ze_num").toString());
-			vector.add(obj.get("gr_num").toString());
-			vector.add(obj.get("rw_num").toString());
-			vector.add(obj.get("yw_num").toString());
-			vector.add(obj.get("rz_num").toString());
-			vector.add(obj.get("yz_num").toString());
-			vector.add(obj.get("wz_num").toString());
-			vector.add(obj.get("qt_num").toString());
-			if ("Y".equalsIgnoreCase(obj.get("canWebBuy").toString())) {
+			
+			vector.add(rows[3]);
+			vector.add(jsMap.getString(rows[6]));
+			vector.add(jsMap.getString(rows[7]));
+			vector.add(rows[10]);
+			vector.add(rows[8]);
+			vector.add(rows[9]);
+			vector.add(rows[32]);
+			vector.add(rows[25]);
+			vector.add(rows[31]);
+			vector.add(rows[30]);
+			vector.add(rows[21]);
+			vector.add(rows[23]);
+			vector.add(rows[28]);
+			vector.add(rows[24]);
+			vector.add(rows[29]);
+			vector.add(rows[26]);
+			vector.add(rows[22]);
+			if ("Y".equalsIgnoreCase(rows[11])) {
 				vector.add("可预订");
 			} else {
 				vector.add("不可预订");
@@ -1412,4 +1445,40 @@ public class HomePage {
 			e.printStackTrace();
 		}
 	}
+	
+//	/**
+//	 * 添加一行数据(于2017-04-24号以后无法使用)
+//	 * @param obj
+//	 */
+//	public void addRow(JSONObject obj) {
+//		DefaultTableModel model = (DefaultTableModel) table.getModel();
+//		Vector<String> vector = new Vector<String>();
+//		try {
+//			vector.add(obj.get("station_train_code").toString());
+//			vector.add(obj.get("start_station_name").toString());
+//			vector.add(obj.get("end_station_name").toString());
+//			vector.add(obj.get("lishi").toString());
+//			vector.add(obj.get("start_time").toString());
+//			vector.add(obj.get("arrive_time").toString());
+//			vector.add(obj.get("swz_num").toString());
+//			vector.add(obj.get("tz_num").toString());
+//			vector.add(obj.get("zy_num").toString());
+//			vector.add(obj.get("ze_num").toString());
+//			vector.add(obj.get("gr_num").toString());
+//			vector.add(obj.get("rw_num").toString());
+//			vector.add(obj.get("yw_num").toString());
+//			vector.add(obj.get("rz_num").toString());
+//			vector.add(obj.get("yz_num").toString());
+//			vector.add(obj.get("wz_num").toString());
+//			vector.add(obj.get("qt_num").toString());
+//			if ("Y".equalsIgnoreCase(obj.get("canWebBuy").toString())) {
+//				vector.add("可预订");
+//			} else {
+//				vector.add("不可预订");
+//			}
+//			model.addRow(vector);
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
+//	}
 }

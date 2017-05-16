@@ -47,7 +47,7 @@ public class BrushTicketMethods extends Thread{
 	private void brushVotes() {
 		// 开始刷票
 		VHttpGet get = new VHttpGet(
-				"https://kyfw.12306.cn/otn/leftTicket/queryX?" + home_page.sb);
+				"https://kyfw.12306.cn/otn/leftTicket/query?" + home_page.sb);
 		VHttpResponse res = VBrowser.execute(get);
 		String body = VHttpUtils.outHtml(res.getBody());
 		try {
@@ -60,10 +60,13 @@ public class BrushTicketMethods extends Thread{
 	/**
 	 * 处理刷票返回信息
 	 */
-	private boolean disposeTicketInfo(String body,String[] seatOther) throws JSONException {
+	private boolean disposeTicketInfo(String body,int[] seatOther) throws JSONException {
 		boolean Brush = true;
 		JSONObject json = new JSONObject(body);
-		JSONArray jsonArr = new JSONArray(json.get("data").toString());
+		JSONObject data = new JSONObject(json.get("data").toString());
+		String result = new JSONObject(json.get("data").toString()).get("result").toString();
+		String rsMap = new JSONObject(json.get("data").toString()).get("map").toString();
+		JSONObject jsMap = new JSONObject(rsMap);
 		home_page.table.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
 				"\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730",
 				"\u5386\u65F6", "\u53D1\u8F66\u65F6\u95F4",
@@ -76,39 +79,61 @@ public class BrushTicketMethods extends Thread{
 			}
 		});
 		home_page.datalist.clear();
+		JSONArray jsonArr = new JSONArray(result);
 		for (int i = 0; i < jsonArr.length(); i++) {
-			JSONObject obj = (JSONObject) jsonArr.get(i);
-			JSONObject obj2 = new JSONObject(obj.get("queryLeftNewDTO")
-					.toString());
-			obj2.put("secretStr", obj.get("secretStr").toString());
+			String[] tiketStr = jsonArr.get(i).toString().split("\\|");
 			
 			flag:
 			if (home_page.ticket_type==1 && Brush) {
+				//循环选择的车次，如果是该车次
 				for (int j=0;j<home_page.model_train.getSize();j++) {
 					String train_no = home_page.model_train.get(j).toString();
-					if (obj2.get("station_train_code").toString().trim().equalsIgnoreCase(train_no.trim())) {
-						for (String seat : seatOther) {
-							if (!"--".equals(obj2.get(seat).toString().trim().toUpperCase())) {
+					if (tiketStr[3].trim().equalsIgnoreCase(train_no.trim())) {
+						//判断选择的座席是否有票
+						for (int seat : seatOther) {
+							if (!"--".equals(tiketStr[seat].toString().trim().toUpperCase()) &&
+									!"无".equals(tiketStr[seat].toString().trim().toUpperCase())) {
 								Brush = false;		//结束刷票结果判定
 								home_page.result = false;		//结束循环刷票判定
 								home_page.isRun = false;		//结束运行判断
 								home_page.btnNewButton.setText("自动刷票");
-								new HomeMethods(home_page.window,obj2).start();
+								new HomeMethods(home_page.window,data).start();
 								break flag;
 							}
 						}
 					}
 				}
-				
 			}
-			if (home_page.ticket_type==0) {
-				home_page.result = false;
-			}
-			home_page.datalist.add(obj2);
-			home_page.addRow(obj2);
+			home_page.addRow(tiketStr,jsMap);
+		}
+		if (home_page.ticket_type==0) {
+			home_page.result = false;
 		}
 		home_page.setTableSize();
 		return home_page.result;
+//		for (int i = 0; i < jsonArr.length(); i++) {
+//			JSONObject obj = (JSONObject) jsonArr.get(i);
+//			JSONObject obj2 = new JSONObject(obj.get("queryLeftNewDTO")
+//					.toString());
+//			obj2.put("secretStr", obj.get("secretStr").toString());
+//			
+//			flag:
+//			if (home_page.ticket_type==1 && Brush) {
+//				for (int j=0;j<home_page.model_train.getSize();j++) {
+//					String train_no = home_page.model_train.get(j).toString();
+//					if (obj2.get("station_train_code").toString().trim().equalsIgnoreCase(train_no.trim())) {
+//						for (String seat : seatOther) {
+//							if (!"--".equals(obj2.get(seat).toString().trim().toUpperCase())) {
+//								Brush = false;		//结束刷票结果判定
+//								home_page.result = false;		//结束循环刷票判定
+//								home_page.isRun = false;		//结束运行判断
+//								home_page.btnNewButton.setText("自动刷票");
+//								new HomeMethods(home_page.window,obj2).start();
+//								break flag;
+//							}
+//						}
+//					}
+//				}
+//			}
 	}
-
 }
