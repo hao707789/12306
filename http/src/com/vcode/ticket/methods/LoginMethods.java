@@ -60,18 +60,18 @@ public class LoginMethods {
 	 */
 	private boolean IsChoiceCode(){
 		if ("".equals(login_page.txtHao.getText())) {
-			login_page.lblNewLabel_2.setText("✖请填写用户名");
+			login_page.lblNewLabel_2.setText("提示：请填写用户名");
 			login_page.lblNewLabel_2.setForeground(Color.red);
 			return false;
 		}
 		if (login_page.passwordField.getPassword().length==0) {
-			login_page.lblNewLabel_2.setText("✖请填写密码");
+			login_page.lblNewLabel_2.setText("提示：请填写密码");
 			login_page.lblNewLabel_2.setForeground(Color.red);
 			return false;
 		}
 		JComponent p3 = (JComponent)login_page.frame.getLayeredPane();
 		if (p3.getComponents().length<=0) {
-			login_page.lblNewLabel_2.setText("✖请选择验证码");
+			login_page.lblNewLabel_2.setText("提示：请选择验证码");
 			login_page.lblNewLabel_2.setForeground(Color.red);
 			return false;
 		}
@@ -115,7 +115,7 @@ public class LoginMethods {
 				res.getEntity().disconnect();
 				login();
 			}else {
-				login_page.lblNewLabel_2.setText("✖验证码错误");
+				login_page.lblNewLabel_2.setText("提示：验证码错误");
 				login_page.lblNewLabel_2.setForeground(Color.red);
 				res.getEntity().disconnect();
 				login_page.lblNewLabel_1.setIcon(new ImageIcon(getLoginCode()));
@@ -189,7 +189,7 @@ public class LoginMethods {
 				login_page.frame.dispose();
 				window.show(window);
 			}else {
-				login_page.lblNewLabel_2.setText("✖登录失败");
+				login_page.lblNewLabel_2.setText("提示：登录失败");
 				login_page.lblNewLabel_2.setForeground(Color.red);
 			}
 			res.getEntity().disconnect();

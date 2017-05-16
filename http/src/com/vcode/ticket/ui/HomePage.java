@@ -46,8 +46,10 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import org.json.JSONArray;
@@ -322,20 +324,6 @@ public class HomePage {
 				"\u8F66\u6B21", "\u51FA\u53D1\u5730", "\u76EE\u7684\u5730", "\u5386\u65F6", "\u53D1\u8F66\u65F6\u95F4", "\u5230\u8FBE\u65F6\u95F4", "\u5546\u52A1", "\u7279\u7B49", "\u4E00\u7B49", "\u4E8C\u7B49", "\u9AD8\u8F6F", "\u8F6F\u5367", "\u786C\u5367", "\u8F6F\u5EA7", "\u786C\u5EA7", "\u65E0\u5EA7", "\u5176\u5B83", "\u5907\u6CE8"
 			}
 		));
-		table.getColumnModel().getColumn(3).setPreferredWidth(68);
-		table.getColumnModel().getColumn(4).setPreferredWidth(90);
-		table.getColumnModel().getColumn(5).setPreferredWidth(90);
-		table.getColumnModel().getColumn(6).setPreferredWidth(65);
-		table.getColumnModel().getColumn(7).setPreferredWidth(65);
-		table.getColumnModel().getColumn(8).setPreferredWidth(65);
-		table.getColumnModel().getColumn(9).setPreferredWidth(65);
-		table.getColumnModel().getColumn(10).setPreferredWidth(65);
-		table.getColumnModel().getColumn(11).setPreferredWidth(65);
-		table.getColumnModel().getColumn(12).setPreferredWidth(65);
-		table.getColumnModel().getColumn(13).setPreferredWidth(65);
-		table.getColumnModel().getColumn(14).setPreferredWidth(65);
-		table.getColumnModel().getColumn(15).setPreferredWidth(65);
-		table.getColumnModel().getColumn(16).setPreferredWidth(65);
 		setTableSize();
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -1373,7 +1361,18 @@ public class HomePage {
 	 * 设置表格样式
 	 */
 	public void setTableSize() {
-		table.setToolTipText("");
+		DefaultTableCellRenderer render = new DefaultTableCellRenderer();
+		render.setHorizontalAlignment(SwingConstants.CENTER);
+		for (int i=0;i<table.getColumnModel().getColumnCount();i++) {
+			table.getColumnModel().getColumn(i).setPreferredWidth(65);
+			table.getColumnModel().getColumn(i).setCellRenderer(render);
+		}
+		table.getColumnModel().getColumn(3).setPreferredWidth(68);
+		table.getColumnModel().getColumn(3).setCellRenderer(render);
+		for (int i=4;i<6;i++) {
+			table.getColumnModel().getColumn(i).setPreferredWidth(90);
+			table.getColumnModel().getColumn(i).setCellRenderer(render);
+		}
 	}
 	
 	/**
@@ -1417,30 +1416,35 @@ public class HomePage {
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		Vector<String> vector = new Vector<String>();
 		try {
-			
-			vector.add(rows[3]);
-			vector.add(jsMap.getString(rows[6]));
-			vector.add(jsMap.getString(rows[7]));
-			vector.add(rows[10]);
-			vector.add(rows[8]);
-			vector.add(rows[9]);
-			vector.add(rows[32]);
-			vector.add(rows[25]);
-			vector.add(rows[31]);
-			vector.add(rows[30]);
-			vector.add(rows[21]);
-			vector.add(rows[23]);
-			vector.add(rows[28]);
-			vector.add(rows[24]);
-			vector.add(rows[29]);
-			vector.add(rows[26]);
-			vector.add(rows[22]);
-			if ("Y".equalsIgnoreCase(rows[11])) {
-				vector.add("可预订");
-			} else {
-				vector.add("不可预订");
+			if (rows.length>32) {
+				String sw = "--";
+				if (rows[32]==null || "".equals(rows[32].trim())) {
+					sw = rows[32];
+				}
+				vector.add(rows[3]);
+				vector.add(jsMap.getString(rows[6]));
+				vector.add(jsMap.getString(rows[7]));
+				vector.add(rows[10]);
+				vector.add(rows[8]);
+				vector.add(rows[9]);
+				vector.add(sw);
+				vector.add(rows[25]);
+				vector.add(rows[31]);
+				vector.add(rows[30]);
+				vector.add(rows[21]);
+				vector.add(rows[23]);
+				vector.add(rows[28]);
+				vector.add(rows[24]);
+				vector.add(rows[29]);
+				vector.add(rows[26]);
+				vector.add(rows[22]);
+				if ("Y".equalsIgnoreCase(rows[11])) {
+					vector.add("可预订");
+				} else {
+					vector.add("不可预订");
+				}
+				model.addRow(vector);
 			}
-			model.addRow(vector);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
