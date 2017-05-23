@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -56,7 +57,7 @@ public class Chooser extends JPanel{
     private JComponent showDate;
     private boolean isShow = false;
     private static final String DEFAULTFORMAT = "yyyy-MM-dd";
-    private static final String[] showTEXT = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
+    private static final String[] showTEXT = {"星期天","星期一","星期二","星期三","星期四","星期五","星期六"};
     private static WeekLabel[] weekLabels = new WeekLabel[7];
     private static int defaultStartDAY = 0;//0 is from Sun, 1 is from Mon, 2 is from Tue
     private static Color hoverColor = Color.red; // hover color
@@ -271,7 +272,7 @@ public class Chooser extends JPanel{
         
         public BodyPanel(){
             super(new GridLayout(7, 7));
-            this.setPreferredSize(new java.awt.Dimension(210, 140));
+            this.setPreferredSize(new java.awt.Dimension(350, 140));
             initMonthPanel();
         }
         private void initMonthPanel(){
@@ -306,14 +307,15 @@ public class Chooser extends JPanel{
     private class FooterPanel extends JPanel {
         
         private static final long serialVersionUID = 8135037333899746736L;
-        private JLabel dateLabel;
+        private JButton dateLabel;
         
         public FooterPanel(){
             super(new BorderLayout());
             initFooterPanel();
         }
         private void initFooterPanel(){
-            dateLabel = new JLabel("Today is : "+sdf.format(new java.util.Date()));
+            dateLabel = new JButton("今天 : "+sdf.format(new java.util.Date()));
+            dateLabel.setBounds((this.getWidth()-dateLabel.getWidth())/2, (this.getHeight()-dateLabel.getHeight())/2, dateLabel.getWidth(), dateLabel.getHeight());
             dateLabel.addMouseListener(new MouseListener() {
                 
                 @Override
@@ -336,6 +338,7 @@ public class Chooser extends JPanel{
                 @Override
                 public void mouseClicked(MouseEvent e) {}
             });
+            this.setPreferredSize(new Dimension(250, 30));
             this.add(dateLabel);
         }
         public void updateDate(){};
@@ -533,7 +536,7 @@ public class Chooser extends JPanel{
         JFrame jf = new JFrame("Date Picker Test");
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jf.setLayout(null);
-        jf.setBounds(400, 200, 600, 400);
+        jf.setBounds(400, 200, 300, 300);
         
         Chooser ser = Chooser.getInstance();
         javax.swing.JTextField text = new JTextField();

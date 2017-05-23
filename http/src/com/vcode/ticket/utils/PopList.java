@@ -5,15 +5,19 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
-import java.awt.event.MouseMotionAdapter;
+import javax.swing.UIManager;
 
 public class PopList {
 	
@@ -125,5 +129,89 @@ public class PopList {
 			}
 			
 		});
+	}
+	
+	/**
+	 * 更多日期弹出框
+	 * @param conn	更多日期选择框
+	 * @param ListData	弹出框内容的数据源
+	 * @param direction	弹出框方位，分别为在conn上下左右4个方向弹出，值分别为：up,down,left,right
+	 */
+	public static void moreDatePopup(final Component conn, String[] ListData, final String direction){
+		InstallData[] options = new InstallData[ListData.length];
+		for (int i=0;i<ListData.length;i++) {
+			options[i] = new InstallData(ListData[i]);
+		}
+		
+		JList<InstallData> list = new JList<InstallData>(options);
+		list.setBackground(new java.awt.Color(240, 240, 240));
+		CheckListCellRenderer renderer = new CheckListCellRenderer();
+		
+		JScrollPane JscrollPanel = new JScrollPane();
+		JscrollPanel.setPreferredSize(new Dimension(conn.getWidth(), options.length*18+3));
+		
+		JscrollPanel.setViewportView(list);
+		list.setCellRenderer(renderer);
+		
+		CheckListener lst = new CheckListener(list); 
+		list.addMouseListener(lst); 
+		list.addKeyListener(lst);
+		
+        conn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (isShow) {
+        			if (mypopup!=null) {
+        				mypopup.hide();
+            			isShow = false;
+        			}
+        		}else {
+        			if (mypopup != null) mypopup.hide();
+    				Point point = conn.getLocationOnScreen();
+    		        int pupX = 0;
+    		        int pupY = 0;
+    		        int x = conn.getWidth();
+    				int y = conn.getHeight();
+    				
+    		        if ("up".equals(direction)) {
+    		        	pupX = (int)point.getX();
+    		        	pupY = (int)(point.getY()-JscrollPanel.getPreferredSize().getHeight());
+    		        }else if ("down".equals(direction)){
+    		        	pupX = (int)point.getX();
+    		        	pupY = (int)(point.getY()+y);
+    		        }else if ("left".equals(direction)){
+    		        	pupX = (int)point.getX()-x;
+    		        	pupY = (int)(point.getY());
+    		        }else if ("right".equals(direction)){
+    		        	pupX = (int)point.getX()+x;
+    		        	pupY = (int)(point.getY());
+    		        }
+    				
+    				mypopup = PopupFactory.getSharedInstance().getPopup(
+    						conn,JscrollPanel, pupX,pupY);
+    		        mypopup.show();
+        			isShow = true;
+        		}
+			}
+		});
+	}
+	
+	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		JFrame frame = new JFrame("");
+		frame.setSize(400, 300);
+		frame.setLocationRelativeTo(null);
+		frame.getContentPane().setLayout(null);
+		
+		JCheckBox btnTest = new JCheckBox("更多日期");
+		btnTest.setBounds(174, 106, 93, 23);
+		frame.getContentPane().add(btnTest);
+		
+		PopList.moreDatePopup(btnTest,new String[]{"111","222","333"} , "up");
+		frame.setVisible(true);
 	}
 }
