@@ -153,7 +153,7 @@ public class LoginPage {
 		frame.getContentPane().add(passwordField);
 		
 		lblNewLabel_2 = new JLabel("提示：选择完验证码后，右击同样可以提交哦");
-		lblNewLabel_2.setBounds(61, 340, 293, 29);
+		lblNewLabel_2.setBounds(61, 340, 337, 29);
 		lblNewLabel_2.setForeground(Color.blue);
 		frame.getContentPane().add(lblNewLabel_2);
 		frame.addMouseListener(new MouseAdapter(){  

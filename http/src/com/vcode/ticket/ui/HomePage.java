@@ -68,6 +68,7 @@ import com.vcode.ticket.utils.ConstantUtils;
 import com.vcode.ticket.utils.HttpUtils;
 import com.vcode.ticket.utils.JTextAreaExt;
 import com.vcode.ticket.utils.PopList;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 /**
  * 刷票界面
@@ -160,6 +161,8 @@ public class HomePage {
 		 * textField.setColumns(number);
 		 */
 		textField = new JTextField();
+		textField.setLocation(90, 51);
+		textField.setSize(65, 17);
 		ArrayList<String> items = new ArrayList<String>();
 		Set<String> set = map.keySet();
 		for (String s : set) {
@@ -182,6 +185,7 @@ public class HomePage {
 		textField_2.setColumns(10);
 
 		textField_3 = new JTextField();
+		textField_3.setSize(65, 17);
 		ComBoTextField.setupAutoComplete2(textField_3, items, map);
 		textField_3.setColumns(10);
 
@@ -226,11 +230,15 @@ public class HomePage {
 		 * adult: "1", child: "2", student: "3", disability: "4"
 		 */
 		JRadioButton radioButton = new JRadioButton("成人");
+		radioButton.setSize(55, 21);
 		radioButton.setSelected(true);
 
 		JRadioButton radioButton_1 = new JRadioButton("学生");
+		radioButton_1.setLocation(700, 51);
+		radioButton_1.setSize(55, 21);
 
 		JRadioButton radioButton_2 = new JRadioButton("儿童");
+		radioButton_2.setSize(55, 21);
 
 		JRadioButton radioButton_3 = new JRadioButton("军残");
 
@@ -437,7 +445,7 @@ public class HomePage {
 		panel_3.add(button_2);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(66, 70, 404, 25);
+		scrollPane_2.setBounds(76, 70, 394, 25);
 		panel_3.add(scrollPane_2);
 				
 						list_1 = new JList<Object>(model_train);
@@ -455,7 +463,7 @@ public class HomePage {
 						list_1.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 						
 						JScrollPane scrollPane_3 = new JScrollPane();
-						scrollPane_3.setBounds(66, 117, 404, 25);
+						scrollPane_3.setBounds(76, 117, 394, 25);
 						panel_3.add(scrollPane_3);
 						
 								list_2 = new JList<Object>();
@@ -482,7 +490,7 @@ public class HomePage {
 								list_2.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 								
 								JScrollPane scrollPane_4 = new JScrollPane();
-								scrollPane_4.setBounds(66, 163, 404, 25);
+								scrollPane_4.setBounds(76, 163, 394, 25);
 								panel_3.add(scrollPane_4);
 								
 										list_3 = new JList<Object>();
@@ -619,7 +627,7 @@ public class HomePage {
 		panel_1.setLayout(null);
 
 		final JCheckBox checkBox_22 = new JCheckBox("全部车次");
-		checkBox_22.setBounds(15, 5, 73, 23);
+		checkBox_22.setBounds(14, 5, 92, 23);
 		panel_1.add(checkBox_22);
 		checkBox_22.addMouseListener(new MouseAdapter() {
 			@Override
@@ -666,7 +674,7 @@ public class HomePage {
 
 			}
 		});
-		chckbxg.setBounds(90, 5, 61, 23);
+		chckbxg.setBounds(110, 5, 80, 23);
 		panel_1.add(chckbxg);
 		chckbxg.setSelected(true);
 
@@ -678,7 +686,7 @@ public class HomePage {
 			}
 		});
 
-		chckbxc.setBounds(153, 5, 61, 23);
+		chckbxc.setBounds(194, 5, 80, 23);
 		panel_1.add(chckbxc);
 		chckbxc.setSelected(true);
 
@@ -690,7 +698,7 @@ public class HomePage {
 			}
 		});
 
-		chckbxd.setBounds(216, 5, 61, 23);
+		chckbxd.setBounds(278, 5, 80, 23);
 		panel_1.add(chckbxd);
 		chckbxd.setSelected(true);
 
@@ -701,7 +709,7 @@ public class HomePage {
 				CheckMethods2(chckbxt, panel_1, checkBox_22, "T");
 			}
 		});
-		chckbxt.setBounds(279, 5, 61, 23);
+		chckbxt.setBounds(362, 5, 80, 23);
 		panel_1.add(chckbxt);
 		chckbxt.setSelected(true);
 
@@ -712,7 +720,7 @@ public class HomePage {
 				CheckMethods2(chckbxz, panel_1, checkBox_22, "Z");
 			}
 		});
-		chckbxz.setBounds(342, 5, 61, 23);
+		chckbxz.setBounds(446, 5, 80, 23);
 		panel_1.add(chckbxz);
 		chckbxz.setSelected(true);
 
@@ -723,7 +731,7 @@ public class HomePage {
 				CheckMethods2(chckbxk, panel_1, checkBox_22, "K");
 			}
 		});
-		chckbxk.setBounds(405, 5, 61, 23);
+		chckbxk.setBounds(530, 5, 80, 23);
 		panel_1.add(chckbxk);
 		chckbxk.setSelected(true);
 
@@ -734,7 +742,7 @@ public class HomePage {
 				CheckMethods2(checkBox_6, panel_1, checkBox_22, "*");
 			}
 		});
-		checkBox_6.setBounds(468, 5, 49, 23);
+		checkBox_6.setBounds(614, 5, 58, 23);
 		panel_1.add(checkBox_6);
 		checkBox_6.setSelected(true);
 
@@ -745,7 +753,7 @@ public class HomePage {
 				CheckMethods2(checkBox_7, panel_1, checkBox_22, "*");
 			}
 		});
-		checkBox_7.setBounds(519, 5, 49, 23);
+		checkBox_7.setBounds(686, 5, 58, 23);
 		panel_1.add(checkBox_7);
 		checkBox_7.setSelected(true);
 
@@ -756,13 +764,13 @@ public class HomePage {
 				CheckMethods2(checkBox_9, panel_1, checkBox_22, "*");
 			}
 		});
-		checkBox_9.setBounds(570, 5, 49, 23);
+		checkBox_9.setBounds(758, 5, 58, 23);
 		panel_1.add(checkBox_9);
 		checkBox_9.setSelected(true);
 		panel_2.setLayout(null);
 
 		final JCheckBox checkBox_23 = new JCheckBox("全部席别");
-		checkBox_23.setBounds(15, 4, 73, 23);
+		checkBox_23.setBounds(17, 4, 86, 23);
 		panel_2.add(checkBox_23);
 		checkBox_23.addMouseListener(new MouseAdapter() {
 			@Override
@@ -806,7 +814,7 @@ public class HomePage {
 				CheckMethods(checkBox_10, 6, 65, panel_2, checkBox_23);
 			}
 		});
-		checkBox_10.setBounds(90, 4, 49, 23);
+		checkBox_10.setBounds(107, 4, 62, 23);
 		panel_2.add(checkBox_10);
 		checkBox_10.setSelected(true);
 
@@ -817,7 +825,7 @@ public class HomePage {
 				CheckMethods(checkBox_8, 7, 65, panel_2, checkBox_23);
 			}
 		});
-		checkBox_8.setBounds(153, 4, 49, 23);
+		checkBox_8.setBounds(173, 4, 62, 23);
 		panel_2.add(checkBox_8);
 		checkBox_8.setSelected(true);
 
@@ -828,7 +836,7 @@ public class HomePage {
 				CheckMethods(checkBox_11, 8, 65, panel_2, checkBox_23);
 			}
 		});
-		checkBox_11.setBounds(216, 4, 49, 23);
+		checkBox_11.setBounds(239, 4, 62, 23);
 		panel_2.add(checkBox_11);
 		checkBox_11.setSelected(true);
 
@@ -839,7 +847,7 @@ public class HomePage {
 				CheckMethods(checkBox_12, 9, 65, panel_2, checkBox_23);
 			}
 		});
-		checkBox_12.setBounds(279, 4, 49, 23);
+		checkBox_12.setBounds(305, 4, 62, 23);
 		panel_2.add(checkBox_12);
 		checkBox_12.setSelected(true);
 
@@ -850,7 +858,7 @@ public class HomePage {
 				CheckMethods(checkBox_13, 10, 65, panel_2, checkBox_23);
 			}
 		});
-		checkBox_13.setBounds(342, 4, 49, 23);
+		checkBox_13.setBounds(371, 4, 62, 23);
 		panel_2.add(checkBox_13);
 		checkBox_13.setSelected(true);
 
@@ -861,7 +869,7 @@ public class HomePage {
 				CheckMethods(checkBox_19, 11, 65, panel_2, checkBox_23);
 			}
 		});
-		checkBox_19.setBounds(405, 4, 49, 23);
+		checkBox_19.setBounds(437, 4, 62, 23);
 		panel_2.add(checkBox_19);
 		checkBox_19.setSelected(true);
 
@@ -872,7 +880,7 @@ public class HomePage {
 				CheckMethods(checkBox_15, 12, 65, panel_2, checkBox_23);
 			}
 		});
-		checkBox_15.setBounds(468, 4, 49, 23);
+		checkBox_15.setBounds(503, 4, 62, 23);
 		panel_2.add(checkBox_15);
 		checkBox_15.setSelected(true);
 
@@ -883,7 +891,7 @@ public class HomePage {
 				CheckMethods(checkBox_18, 13, 65, panel_2, checkBox_23);
 			}
 		});
-		checkBox_18.setBounds(519, 4, 49, 23);
+		checkBox_18.setBounds(569, 4, 62, 23);
 		panel_2.add(checkBox_18);
 		checkBox_18.setSelected(true);
 
@@ -894,7 +902,7 @@ public class HomePage {
 				CheckMethods(checkBox_17, 14, 65, panel_2, checkBox_23);
 			}
 		});
-		checkBox_17.setBounds(570, 4, 49, 23);
+		checkBox_17.setBounds(635, 4, 62, 23);
 		panel_2.add(checkBox_17);
 		checkBox_17.setSelected(true);
 
@@ -905,7 +913,7 @@ public class HomePage {
 				CheckMethods(checkBox_16, 15, 65, panel_2, checkBox_23);
 			}
 		});
-		checkBox_16.setBounds(628, 4, 49, 23);
+		checkBox_16.setBounds(701, 4, 62, 23);
 		panel_2.add(checkBox_16);
 		checkBox_16.setSelected(true);
 
@@ -916,7 +924,7 @@ public class HomePage {
 				CheckMethods(checkBox_14, 16, 65, panel_2, checkBox_23);
 			}
 		});
-		checkBox_14.setBounds(682, 4, 49, 23);
+		checkBox_14.setBounds(767, 4, 62, 23);
 		panel_2.add(checkBox_14);
 		checkBox_14.setSelected(true);
 
@@ -932,160 +940,131 @@ public class HomePage {
 		});
 		lblNewLabel.setText("◄►");
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout
-				.setHorizontalGroup(groupLayout.createParallelGroup(
-						Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup().addGap(43).addGroup(groupLayout
-								.createParallelGroup(Alignment.LEADING).addComponent(tabbedPane,
-										GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addGroup(groupLayout
-										.createParallelGroup(Alignment.LEADING, false).addGroup(groupLayout
-												.createSequentialGroup().addGroup(
-														groupLayout.createParallelGroup(Alignment.LEADING)
-																.addComponent(label, GroupLayout.PREFERRED_SIZE, 41,
-																		GroupLayout.PREFERRED_SIZE)
-																.addComponent(label_4,
-																		GroupLayout.PREFERRED_SIZE, 41,
-																		GroupLayout.PREFERRED_SIZE))
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(43)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 1001, GroupLayout.PREFERRED_SIZE)
+							.addGroup(groupLayout.createSequentialGroup()
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+											.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+											.addComponent(label, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+											.addGroup(groupLayout.createSequentialGroup()
+												.addComponent(textField, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
+												.addGap(1)
+												.addComponent(lblNewLabel)
+												.addGap(7)
+												.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+												.addGap(3)
+												.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
+												.addGap(4)
+												.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+												.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE)
+												.addGap(1)
+												.addComponent(chckbxNewCheckBox, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+												.addGap(2)
 												.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-														.addGroup(groupLayout.createSequentialGroup()
-																.addComponent(textField, GroupLayout.PREFERRED_SIZE, 60,
-																		GroupLayout.PREFERRED_SIZE)
-																.addGap(7).addComponent(lblNewLabel).addGap(7)
-																.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 41,
-																		GroupLayout.PREFERRED_SIZE)
-																.addGap(3)
-																.addComponent(textField_3, GroupLayout.PREFERRED_SIZE,
-																		60, GroupLayout.PREFERRED_SIZE)
-																.addGap(4)
-																.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 41,
-																		GroupLayout.PREFERRED_SIZE)
-																.addComponent(textField_2, GroupLayout.PREFERRED_SIZE,
-																		86, GroupLayout.PREFERRED_SIZE)
-																.addGap(1)
-																.addComponent(chckbxNewCheckBox,
-																		GroupLayout.PREFERRED_SIZE, 74,
-																		GroupLayout.PREFERRED_SIZE)
-																.addGap(2)
-																.addGroup(groupLayout
-																		.createParallelGroup(Alignment.LEADING)
-																		.addGroup(groupLayout.createSequentialGroup()
-																				.addGap(57).addComponent(comboBox,
-																						GroupLayout.PREFERRED_SIZE,
-																						GroupLayout.DEFAULT_SIZE,
-																						GroupLayout.PREFERRED_SIZE))
-																		.addComponent(label_3,
-																				GroupLayout.PREFERRED_SIZE, 60,
-																				GroupLayout.PREFERRED_SIZE))
-																.addGap(4)
-																.addGroup(groupLayout
-																		.createParallelGroup(Alignment.LEADING)
-																		.addGroup(groupLayout.createSequentialGroup()
-																				.addGap(57).addComponent(radioButton_1,
-																						GroupLayout.PREFERRED_SIZE, 60,
-																						GroupLayout.PREFERRED_SIZE))
-																		.addComponent(radioButton,
-																				GroupLayout.PREFERRED_SIZE, 61,
-																				GroupLayout.PREFERRED_SIZE)
-																		.addGroup(groupLayout.createSequentialGroup()
-																				.addGap(171).addComponent(radioButton_3,
-																						GroupLayout.PREFERRED_SIZE, 54,
-																						GroupLayout.PREFERRED_SIZE))
-																		.addGroup(groupLayout.createSequentialGroup()
-																				.addGap(113).addComponent(radioButton_2,
-																						GroupLayout.PREFERRED_SIZE, 60,
-																						GroupLayout.PREFERRED_SIZE))))
-														.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 656,
-																GroupLayout.PREFERRED_SIZE))
-												.addComponent(chckbxNewCheckBox_1, GroupLayout.PREFERRED_SIZE, 75,
-														GroupLayout.PREFERRED_SIZE)
-												.addGap(3).addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE,
-														GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-										.addGroup(groupLayout.createSequentialGroup()
-												.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 41,
-														GroupLayout.PREFERRED_SIZE)
-												.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 786,
-														GroupLayout.PREFERRED_SIZE))
-										.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 1001,
-												GroupLayout.PREFERRED_SIZE)))
-								.addGap(49)));
-		groupLayout
-				.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-						.createSequentialGroup().addGap(
-								41)
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+													.addGroup(groupLayout.createSequentialGroup()
+														.addGap(57)
+														.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+													.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE))
+												.addGap(4)
+												.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+													.addGroup(groupLayout.createSequentialGroup()
+														.addGap(57)
+														.addComponent(radioButton_1, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE))
+													.addComponent(radioButton, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)
+													.addGroup(groupLayout.createSequentialGroup()
+														.addGap(171)
+														.addComponent(radioButton_3, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE))
+													.addGroup(groupLayout.createSequentialGroup()
+														.addGap(113)
+														.addComponent(radioButton_2, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)))
+												.addComponent(chckbxNewCheckBox_1, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
+											.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
+												.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+												.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 837, Short.MAX_VALUE))))
+									.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
+								.addGap(7)
+								.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+					.addGap(49))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(41)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createSequentialGroup()
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addGroup(groupLayout.createSequentialGroup().addGap(11)
-														.addComponent(label, GroupLayout.PREFERRED_SIZE,
-																18, GroupLayout.PREFERRED_SIZE)
-														.addGap(19).addComponent(label_4, GroupLayout.PREFERRED_SIZE,
-																18, GroupLayout.PREFERRED_SIZE))
-												.addGroup(groupLayout.createSequentialGroup().addGap(9)
-														.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-																.addGroup(groupLayout.createSequentialGroup().addGap(1)
-																		.addComponent(textField,
-																				GroupLayout.PREFERRED_SIZE,
-																				GroupLayout.DEFAULT_SIZE,
-																				GroupLayout.PREFERRED_SIZE))
-																.addGroup(groupLayout.createSequentialGroup().addGap(4)
-																		.addComponent(lblNewLabel))
-																.addGroup(groupLayout.createSequentialGroup().addGap(2)
-																		.addComponent(label_1,
-																				GroupLayout.PREFERRED_SIZE, 18,
-																				GroupLayout.PREFERRED_SIZE))
-																.addGroup(groupLayout.createSequentialGroup().addGap(1)
-																		.addComponent(textField_3,
-																				GroupLayout.PREFERRED_SIZE,
-																				GroupLayout.DEFAULT_SIZE,
-																				GroupLayout.PREFERRED_SIZE))
-																.addGroup(groupLayout.createSequentialGroup().addGap(1)
-																		.addComponent(label_2,
-																				GroupLayout.PREFERRED_SIZE, 21,
-																				GroupLayout.PREFERRED_SIZE))
-																.addGroup(groupLayout.createSequentialGroup().addGap(1)
-																		.addComponent(textField_2,
-																				GroupLayout.PREFERRED_SIZE,
-																				GroupLayout.DEFAULT_SIZE,
-																				GroupLayout.PREFERRED_SIZE))
-																.addComponent(chckbxNewCheckBox)
-																.addGroup(groupLayout.createSequentialGroup().addGap(1)
-																		.addGroup(groupLayout
-																				.createParallelGroup(Alignment.LEADING)
-																				.addComponent(comboBox,
-																						GroupLayout.PREFERRED_SIZE, 21,
-																						GroupLayout.PREFERRED_SIZE)
-																				.addGroup(groupLayout
-																						.createSequentialGroup().addGap(
-																								1)
-																						.addComponent(label_3,
-																								GroupLayout.PREFERRED_SIZE,
-																								18,
-																								GroupLayout.PREFERRED_SIZE))))
-																.addGroup(groupLayout.createSequentialGroup().addGap(1)
-																		.addGroup(groupLayout
-																				.createParallelGroup(Alignment.LEADING)
-																				.addComponent(radioButton_1)
-																				.addComponent(radioButton)
-																				.addComponent(radioButton_3)
-																				.addComponent(radioButton_2))))
-														.addGap(8).addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 31,
-																GroupLayout.PREFERRED_SIZE))
-												.addGroup(groupLayout.createSequentialGroup().addGap(11)
-														.addComponent(chckbxNewCheckBox_1)))
-										.addGap(4)
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addGroup(groupLayout.createSequentialGroup().addGap(6).addComponent(
-														label_5, GroupLayout.PREFERRED_SIZE, 18,
-														GroupLayout.PREFERRED_SIZE))
-												.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 31,
-														GroupLayout.PREFERRED_SIZE)))
-								.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
-						.addGap(9).addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 237, GroupLayout.PREFERRED_SIZE)
-						.addGap(10)
-						.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 242, GroupLayout.PREFERRED_SIZE)
-						.addGap(36)));
+									.addGap(11)
+									.addComponent(label, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
+									.addGap(19)
+									.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(9)
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addGroup(groupLayout.createSequentialGroup()
+													.addGap(4)
+													.addComponent(lblNewLabel))
+												.addGroup(groupLayout.createSequentialGroup()
+													.addGap(2)
+													.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
+												.addGroup(groupLayout.createSequentialGroup()
+													.addGap(1)
+													.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+												.addGroup(groupLayout.createSequentialGroup()
+													.addGap(1)
+													.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
+												.addGroup(groupLayout.createSequentialGroup()
+													.addGap(1)
+													.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+												.addComponent(chckbxNewCheckBox)
+												.addGroup(groupLayout.createSequentialGroup()
+													.addGap(1)
+													.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+														.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+														.addGroup(groupLayout.createSequentialGroup()
+															.addGap(1)
+															.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))))
+												.addGroup(groupLayout.createSequentialGroup()
+													.addGap(1)
+													.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+														.addComponent(radioButton_1)
+														.addComponent(radioButton)
+														.addComponent(radioButton_3)
+														.addComponent(radioButton_2)))))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(11)
+											.addComponent(chckbxNewCheckBox_1))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(10)
+											.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+									.addGap(7)
+									.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)))
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(12)
+									.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))))
+						.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
+					.addGap(16)
+					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 237, GroupLayout.PREFERRED_SIZE)
+					.addGap(10)
+					.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 242, GroupLayout.PREFERRED_SIZE)
+					.addGap(36))
+		);
 		frame.getContentPane().setLayout(groupLayout);
 
 		frame.addMouseListener(new MouseAdapter() { // 匿名内部类，鼠标事件

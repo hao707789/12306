@@ -5,6 +5,5 @@
 	<classpathentry kind="lib" path="src/lib/org.json-20120521.jar"/>
 	<classpathentry kind="lib" path="src/lib/vhttp.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/V12306"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
