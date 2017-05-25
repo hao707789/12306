@@ -161,8 +161,8 @@ public class HomePage {
 		 * textField.setColumns(number);
 		 */
 		textField = new JTextField();
-		textField.setLocation(90, 51);
-		textField.setSize(65, 17);
+		textField.setLocation(104, 51);
+		textField.setSize(90, 23);
 		ArrayList<String> items = new ArrayList<String>();
 		Set<String> set = map.keySet();
 		for (String s : set) {
@@ -173,28 +173,32 @@ public class HomePage {
 		textField.setColumns(10);
 
 		label = new JLabel("出发地");
+		label.setBounds(43, 52, 55, 18);
 
 		JLabel label_1 = new JLabel("目的地");
+		label_1.setBounds(236, 54, 55, 18);
 
 		JLabel label_2 = new JLabel("日  期");
+		label_2.setBounds(382, 54, 41, 21);
 		frame.getContentPane().setLayout(null);
 		textField_2 = new JTextField();
+		textField_2.setBounds(431, 54, 86, 23);
 
 		Chooser ser2 = Chooser.getInstance("yyyy-MM-dd");
 		ser2.register(textField_2);
 		textField_2.setColumns(10);
 
 		textField_3 = new JTextField();
-		textField_3.setSize(65, 17);
+		textField_3.setLocation(281, 53);
+		textField_3.setSize(90, 23);
 		ComBoTextField.setupAutoComplete2(textField_3, items, map);
 		textField_3.setColumns(10);
 
-		JCheckBox chckbxNewCheckBox = new JCheckBox("更多日期");
-		PopList.moreDatePopup(chckbxNewCheckBox, new String[]{"2017-05-23","2017-05-24"}, ConstantUtils.UP);
-
 		JLabel label_3 = new JLabel("发车时间");
+		label_3.setBounds(529, 55, 65, 18);
 
 		final JComboBox<Object> comboBox = new JComboBox<Object>();
+		comboBox.setBounds(600, 53, 105, 21);
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -230,17 +234,20 @@ public class HomePage {
 		 * adult: "1", child: "2", student: "3", disability: "4"
 		 */
 		JRadioButton radioButton = new JRadioButton("成人");
-		radioButton.setSize(55, 21);
+		radioButton.setLocation(714, 52);
+		radioButton.setSize(61, 21);
 		radioButton.setSelected(true);
 
 		JRadioButton radioButton_1 = new JRadioButton("学生");
-		radioButton_1.setLocation(700, 51);
-		radioButton_1.setSize(55, 21);
+		radioButton_1.setLocation(771, 52);
+		radioButton_1.setSize(60, 21);
 
 		JRadioButton radioButton_2 = new JRadioButton("儿童");
-		radioButton_2.setSize(55, 21);
+		radioButton_2.setLocation(827, 52);
+		radioButton_2.setSize(60, 21);
 
 		JRadioButton radioButton_3 = new JRadioButton("军残");
+		radioButton_3.setBounds(885, 52, 58, 21);
 
 		ButtonGroup btgroup = new ButtonGroup();
 		btgroup.add(radioButton);
@@ -269,7 +276,7 @@ public class HomePage {
 				}
 			}
 		});
-		btnNewButton.setBounds(964, 41, 80, 67);
+		btnNewButton.setBounds(953, 85, 86, 67);
 
 		final JCheckBox chckbxNewCheckBox_1 = new JCheckBox("刷票模式");
 		chckbxNewCheckBox_1.addMouseListener(new MouseAdapter() {
@@ -290,17 +297,22 @@ public class HomePage {
 				}
 			}
 		});
-		chckbxNewCheckBox_1.setBounds(886, 52, 75, 23);
+		chckbxNewCheckBox_1.setBounds(945, 53, 100, 21);
 		frame.getContentPane().add(chckbxNewCheckBox_1);
 		frame.getContentPane().add(btnNewButton);
 
 		JLabel label_4 = new JLabel("车  型");
+		label_4.setBounds(43, 89, 41, 18);
 		JLabel label_5 = new JLabel("席  别");
+		label_5.setBounds(43, 123, 41, 18);
 
 		panel_1 = new JPanel();
+		panel_1.setBounds(104, 80, 837, 31);
 		panel_2 = new JPanel();
+		panel_2.setBounds(104, 117, 837, 31);
 
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(43, 164, 1001, 237);
 		table = new JTable();
 		table.setRowHeight(20);
 		table.addMouseListener(new MouseAdapter() {
@@ -349,6 +361,7 @@ public class HomePage {
 		setTableSize();
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(43, 411, 1001, 242);
 
 		DefaultListModel<Object> pupModel = new DefaultListModel<Object>();
 		pupModel.addElement("商务座");
@@ -394,11 +407,11 @@ public class HomePage {
 		panel_3.setLayout(null);
 
 		JLabel label_6 = new JLabel("刷票频率：");
-		label_6.setBounds(8, 32, 69, 15);
+		label_6.setBounds(8, 32, 80, 15);
 		panel_3.add(label_6);
 
 		spinner = new JSpinner();
-		spinner.setBounds(66, 29, 53, 22);
+		spinner.setBounds(91, 29, 78, 22);
 		panel_3.add(spinner);
 		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null, new Integer(100)));
 
@@ -407,26 +420,17 @@ public class HomePage {
 		panel_3.add(label_7);
 
 		JLabel label_8 = new JLabel("优先席别：");
-		label_8.setBounds(10, 119, 69, 15);
+		label_8.setBounds(10, 119, 80, 15);
 		panel_3.add(label_8);
 
 		JCheckBox chckbxNewCheckBox_2 = new JCheckBox("部分提交");
-		chckbxNewCheckBox_2.setBounds(245, 28, 81, 23);
+		chckbxNewCheckBox_2.setBounds(300, 28, 90, 23);
 		panel_3.add(chckbxNewCheckBox_2);
 
 		JCheckBox checkBox_20 = new JCheckBox("无座不提交");
-		checkBox_20.setBounds(146, 28, 91, 23);
+		checkBox_20.setBounds(180, 28, 110, 23);
 		panel_3.add(checkBox_20);
 		checkBox_20.setSelected(true);
-
-		JCheckBox checkBox_21 = new JCheckBox("定时启动");
-		checkBox_21.setBounds(334, 28, 81, 23);
-		panel_3.add(checkBox_21);
-
-		JSpinner spinner_1 = new JSpinner();
-		spinner_1.setBounds(423, 28, 130, 22);
-		panel_3.add(spinner_1);
-		spinner_1.setModel(new SpinnerDateModel(new Date(1477411200000L), null, null, Calendar.MINUTE));
 
 		JLabel label_11 = new JLabel("车    次：");
 		label_11.setBounds(10, 74, 69, 15);
@@ -445,7 +449,7 @@ public class HomePage {
 		panel_3.add(button_2);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(76, 70, 394, 25);
+		scrollPane_2.setBounds(86, 70, 384, 25);
 		panel_3.add(scrollPane_2);
 				
 						list_1 = new JList<Object>(model_train);
@@ -463,7 +467,7 @@ public class HomePage {
 						list_1.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 						
 						JScrollPane scrollPane_3 = new JScrollPane();
-						scrollPane_3.setBounds(76, 117, 394, 25);
+						scrollPane_3.setBounds(86, 117, 384, 25);
 						panel_3.add(scrollPane_3);
 						
 								list_2 = new JList<Object>();
@@ -490,7 +494,7 @@ public class HomePage {
 								list_2.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 								
 								JScrollPane scrollPane_4 = new JScrollPane();
-								scrollPane_4.setBounds(76, 163, 394, 25);
+								scrollPane_4.setBounds(86, 163, 384, 25);
 								panel_3.add(scrollPane_4);
 								
 										list_3 = new JList<Object>();
@@ -929,6 +933,7 @@ public class HomePage {
 		checkBox_14.setSelected(true);
 
 		JLabel lblNewLabel = new JLabel(new ImageIcon("arrow.png"));
+		lblNewLabel.setBounds(198, 54, 30, 13);
 		lblNewLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -939,133 +944,28 @@ public class HomePage {
 			}
 		});
 		lblNewLabel.setText("◄►");
-		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(43)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 1001, GroupLayout.PREFERRED_SIZE)
-							.addGroup(groupLayout.createSequentialGroup()
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-											.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-											.addComponent(label, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-											.addGroup(groupLayout.createSequentialGroup()
-												.addComponent(textField, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
-												.addGap(1)
-												.addComponent(lblNewLabel)
-												.addGap(7)
-												.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-												.addGap(3)
-												.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
-												.addGap(4)
-												.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-												.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE)
-												.addGap(1)
-												.addComponent(chckbxNewCheckBox, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-												.addGap(2)
-												.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-													.addGroup(groupLayout.createSequentialGroup()
-														.addGap(57)
-														.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-													.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE))
-												.addGap(4)
-												.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-													.addGroup(groupLayout.createSequentialGroup()
-														.addGap(57)
-														.addComponent(radioButton_1, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE))
-													.addComponent(radioButton, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)
-													.addGroup(groupLayout.createSequentialGroup()
-														.addGap(171)
-														.addComponent(radioButton_3, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE))
-													.addGroup(groupLayout.createSequentialGroup()
-														.addGap(113)
-														.addComponent(radioButton_2, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)))
-												.addComponent(chckbxNewCheckBox_1, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
-											.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-												.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 837, Short.MAX_VALUE))))
-									.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
-								.addGap(7)
-								.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-					.addGap(49))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(41)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(11)
-									.addComponent(label, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
-									.addGap(19)
-									.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addGap(9)
-											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addGroup(groupLayout.createSequentialGroup()
-													.addGap(4)
-													.addComponent(lblNewLabel))
-												.addGroup(groupLayout.createSequentialGroup()
-													.addGap(2)
-													.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
-												.addGroup(groupLayout.createSequentialGroup()
-													.addGap(1)
-													.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-												.addGroup(groupLayout.createSequentialGroup()
-													.addGap(1)
-													.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
-												.addGroup(groupLayout.createSequentialGroup()
-													.addGap(1)
-													.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-												.addComponent(chckbxNewCheckBox)
-												.addGroup(groupLayout.createSequentialGroup()
-													.addGap(1)
-													.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-														.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
-														.addGroup(groupLayout.createSequentialGroup()
-															.addGap(1)
-															.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))))
-												.addGroup(groupLayout.createSequentialGroup()
-													.addGap(1)
-													.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-														.addComponent(radioButton_1)
-														.addComponent(radioButton)
-														.addComponent(radioButton_3)
-														.addComponent(radioButton_2)))))
-										.addGroup(groupLayout.createSequentialGroup()
-											.addGap(11)
-											.addComponent(chckbxNewCheckBox_1))
-										.addGroup(groupLayout.createSequentialGroup()
-											.addGap(10)
-											.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-									.addGap(7)
-									.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)))
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(12)
-									.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))))
-						.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
-					.addGap(16)
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 237, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 242, GroupLayout.PREFERRED_SIZE)
-					.addGap(36))
-		);
-		frame.getContentPane().setLayout(groupLayout);
+		frame.getContentPane().setLayout(null);
+		frame.getContentPane().add(chckbxNewCheckBox_1);
+		frame.getContentPane().add(btnNewButton);
+		frame.getContentPane().add(tabbedPane);
+		frame.getContentPane().add(scrollPane);
+		frame.getContentPane().add(label_4);
+		frame.getContentPane().add(label);
+		frame.getContentPane().add(textField);
+		frame.getContentPane().add(lblNewLabel);
+		frame.getContentPane().add(label_1);
+		frame.getContentPane().add(textField_3);
+		frame.getContentPane().add(label_2);
+		frame.getContentPane().add(textField_2);
+		frame.getContentPane().add(comboBox);
+		frame.getContentPane().add(label_3);
+		frame.getContentPane().add(radioButton_1);
+		frame.getContentPane().add(radioButton);
+		frame.getContentPane().add(radioButton_3);
+		frame.getContentPane().add(radioButton_2);
+		frame.getContentPane().add(panel_2);
+		frame.getContentPane().add(panel_1);
+		frame.getContentPane().add(label_5);
 
 		frame.addMouseListener(new MouseAdapter() { // 匿名内部类，鼠标事件
 			public void mouseClicked(MouseEvent e) { // 鼠标完成点击事件
